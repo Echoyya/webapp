@@ -25,6 +25,7 @@ export const getCookie = name => {
     // eslint-disable-next-line no-useless-escape
     new RegExp(
       "(?:(?:^|.*;)\\s*" +
+        // eslint-disable-next-line no-useless-escape
         encodeURIComponent(name).replace(/[\-\.\+\*]/g, "\\$&") +
         "\\s*\\=\\s*([^;]*).*$)|^.*$"
     ),

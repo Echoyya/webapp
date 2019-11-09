@@ -4,6 +4,7 @@ import tokenMap from "@/functions/token";
 import env from "@/functions/config";
 import { getCookie, setCookie } from "@/functions/utils";
 import App from "./App.vue";
+import errorPage from "./error.vue";
 
 Vue.config.productionTip = false;
 
@@ -177,12 +178,14 @@ axios
       render: h => h(App)
     }).$mount("#app");
   })
-  .catch(err => {
+  .catch(() => {
+    new Vue({
+      render: h => h(errorPage)
+    }).$mount("#app");
     // const res = err["response"];
     // Vue.prototype.$serverTime = res.headers.date; //TODO format
     // Vue.prototype.$deviceId = res.data.deviceID; // TODO 匿名
     // Vue.prototype.$countryCode = res.data.countryCode;
     // Vue.prototype.$isLogin = false;
-    console.log(err);
     // 登录状态失效
   });
