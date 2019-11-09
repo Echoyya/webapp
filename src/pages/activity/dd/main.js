@@ -1,11 +1,13 @@
 import Vue from "vue";
-import App from "./App.vue";
 import axios from "axios";
 import tokenMap from "@/functions/token";
-import { getCookie, setCookie } from "@/functions/utils";
 import env from "@/functions/config";
+import { getCookie, setCookie } from "@/functions/utils";
+import App from "./App.vue";
 
-const evCountlyServer = env.evCountlyServer;
+Vue.config.productionTip = false;
+
+const countlyServer = env.countlyServer;
 const countlyAppKey = env.countlyAppKey;
 const gaIosKey = env.gaIosKey;
 const gaWapKey = env.gaWapKey;
@@ -43,9 +45,7 @@ function sendMsg(url) {
   s.src = url;
 }
 
-Vue.config.productionTip = false;
 let appType = 0;
-
 let token = window.getToken && window.getToken();
 if (token) {
   appType = 1;
@@ -57,9 +57,6 @@ if (token) {
 Vue.prototype.$appType = appType;
 
 const ua = navigator.userAgent;
-const deviceInfo = ua.match(/\(([^)]*)\)/)[1].split(";");
-const swidth = screen.width * window.devicePixelRatio;
-const sheight = screen.height * window.devicePixelRatio;
 const os =
   (appType === 1 && "Android") ||
   (appType === 2 && "IOS") ||
@@ -83,9 +80,9 @@ const commonLog = {
   dd: "" + window.devicePixelRatio, // 屏幕密度
   desp: "", // 跳转页面
   durp: 0,
-  di: deviceInfo[deviceInfo.length - 1].split("like")[0], // 设备信息
+  di: "", // 设备信息
   did: "", // 设备唯一标识
-  dr: swidth + "x" + sheight, // 屏幕分辨率
+  dr: "", // 屏幕分辨率
   iid: "", // 安装唯一标识
   lst: "a", // 用户登录状态
   lt: "event", // 报数类型
@@ -147,7 +144,7 @@ axios
     const sendEvLog = msg => {
       const result = serializeMsg(msg, "event");
       sendMsg(
-        evCountlyServer +
+        countlyServer +
           "/i?logtype=event&app_key=" +
           countlyAppKey +
           "&events=" +
@@ -170,6 +167,12 @@ axios
 
     Vue.prototype.$sendEvLog = sendEvLog;
 
+    sendEvLog({
+      category: "h5_open",
+      action: "page_init_start",
+      label: location.pathname,
+      value: now
+    });
     new Vue({
       render: h => h(App)
     }).$mount("#app");
