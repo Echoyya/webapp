@@ -301,7 +301,7 @@
             <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
         </div>
         <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
-        <!-- <mShare /> -->
+        <mShare ref="share" />
         <alert-dialog ref="alert" />
         <confirm-dialog ref="confirm" />
         <toast-dialog ref="toast" />
@@ -314,7 +314,7 @@ import alertDialog from "@/components/alert";
 import confirmDialog from "@/components/confirm";
 import toastDialog from "@/components/toast";
 // import { getCookie, setCookie } from '@/functions/utils'
-// import mShare from '@/components/web/share.vue'
+import mShare from "@/components/web/share.vue";
 import {
   callApp,
   downApk,
@@ -324,7 +324,7 @@ import {
 } from "@/functions/app";
 export default {
   components: {
-    // mShare,
+    mShare,
     alertDialog,
     confirmDialog,
     toastDialog
@@ -334,10 +334,10 @@ export default {
       // 页面
       show_rules: false,
       show_pick: false,
-      // appType: this.$appType,
-      // isLogin: this.$isLogin,
-      appType: 1,
-      isLogin: true,
+      appType: this.$appType,
+      isLogin: this.$isLogin,
+      // appType: 1,
+      // isLogin: true,
       firstTime: true,
       msg: "",
       user_id: this.$user.id,
@@ -359,8 +359,6 @@ export default {
       vote_id: 64,
       startTime: "",
       endTime: "",
-      // tip: "",
-      // tip_timer: null,
       canVotes: true,
 
       // 抽奖
@@ -508,7 +506,7 @@ export default {
   //     }
   // },
   mounted() {
-    this.mSendEvLog('page_show', '', '')
+    this.mSendEvLog("page_show", "", "");
     this.getCommentInfo();
     this.getLotteryMsg();
     this.getAdvisorList();
@@ -543,7 +541,7 @@ export default {
         if (!this.canClickTab1) {
           return;
         }
-        this.mSendEvLog('tab_click', 'vote', '')
+        this.mSendEvLog("tab_click", "vote", "");
         this.canClickTab1 = false;
         this.show_in = false;
         this.l_show = false;
@@ -577,7 +575,7 @@ export default {
         if (!this.canClickTab2) {
           return;
         }
-        this.mSendEvLog('tab_click', 'interact', '')
+        this.mSendEvLog("tab_click", "interact", "");
         this.canClickTab2 = false;
         this.pageVote = false;
         clearInterval(this.tmsg);
@@ -744,7 +742,9 @@ export default {
             });
           } else {
             this.commentList = [];
-            this.$refs.alert.show("Get comment list error! " + res.data.message);
+            this.$refs.alert.show(
+              "Get comment list error! " + res.data.message
+            );
           }
         })
         .catch(err => {
@@ -873,7 +873,7 @@ export default {
       })
         .then(res => {
           if (res.data.code === 0) {
-            this.mSendEvLog('pick_click', local == 'left' ? 'A' : 'B', '')
+            this.mSendEvLog("pick_click", local == "left" ? "A" : "B", "");
             this.pageList[this.index].candidates[num].ballot_num++;
             this.pageList[this.index].ticket_num = 0;
             // 动画
@@ -1045,7 +1045,7 @@ export default {
       })
         .then(res => {
           if (res.data.code === 0) {
-            this.mSendEvLog('send_click', this.commentText, '')
+            this.mSendEvLog("send_click", this.commentText, "");
             const during = this.during;
             const item = document.createElement("span");
             const img = document.createElement("img");
@@ -1152,7 +1152,7 @@ export default {
       }
     },
     showRule() {
-      this.mSendEvLog('rule_click', '', '')
+      this.mSendEvLog("rule_click", "", "");
       this.show_rules = true;
       document.body.style.overflow = "hidden";
       document.body.style.position = "fixed";
@@ -1160,23 +1160,23 @@ export default {
       document.body.style.right = "0";
     },
     toComment(label) {
-      this.mSendEvLog('audreg_click', label, '')
+      this.mSendEvLog("audreg_click", label, "");
       this.$router.push(`/hybrid/vote/BSSComment`);
       // window.location.href = '/hybrid/vote/BSSComment'
     },
     // 埋点方法
     mSendEvLog(action, label, value) {
-        this.$sendEvLog({
-            category: 'form_BSSVote2_' + this.platform,
-            action: action,
-            label: label,
-            value: value
-        })
-        console.log('form_BSSVote2_' + this.platform, action, label, value)
+      this.$sendEvLog({
+        category: "form_BSSVote2_" + this.platform,
+        action: action,
+        label: label,
+        value: value
+      });
+      console.log("form_BSSVote2_" + this.platform, action, label, value);
     },
     // app登录方法
     toSignIn() {
-      this.mSendEvLog('signin_click', '', '')
+      this.mSendEvLog("signin_click", "", "");
       if (this.appType <= 0) {
         this.callOrDownApp("signin");
       } else if (this.appType == 1) {
@@ -1192,7 +1192,7 @@ export default {
     // 调出分享弹层(app/web)
     toShare(label) {
       if (label == "voterules") this.closeShadow();
-      this.mSendEvLog('share_click', label, '')
+      this.mSendEvLog("share_click", label, "");
       if (this.appType >= 1) {
         shareInvite(
           `${window.location.href}?pin=${this.$user.id}&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
@@ -1201,7 +1201,8 @@ export default {
           this.imgUrl
         );
       } else {
-        this.$store.commit("SET_SHARE_STATE", true);
+        this.$refs.share.show();
+        // this.$store.commit("SET_SHARE_STATE", true);
       }
     },
     // 唤醒转入活动页或下载App
@@ -1213,11 +1214,11 @@ export default {
           window.location.href,
         () => {
           // 下载App
-          this.mSendEvLog('downloadpopup_show', label, '')
+          this.mSendEvLog("downloadpopup_show", label, "");
           this.$refs.confirm.show(
             "Pakua Startimes ON app na shiriki BSS2019",
             () => {
-              this.mSendEvLog('downloadpopup_clickok', label, '')
+              this.mSendEvLog("downloadpopup_clickok", label, "");
               downApk.call(this);
               // const voteDownTag = getCookie('vote_share_down')
               // const user = getCookie('vote_share_user')
@@ -1239,7 +1240,7 @@ export default {
               // }
             },
             () => {
-              this.mSendEvLog('downloadpopup_clicknot', label, '')
+              this.mSendEvLog("downloadpopup_clicknot", label, "");
             },
             "PAKUA",
             "FUTA"
@@ -1303,7 +1304,7 @@ export default {
     },
     // 播放视频方法
     toPlayer(advisor, action, label) {
-      this.mSendEvLog(action, label, '')
+      this.mSendEvLog(action, label, "");
       if (this.appType == 0) {
         this.callOrDownApp("pic");
         return;
@@ -1318,12 +1319,12 @@ export default {
         return;
       }
       if (this.appType == 0) {
-        this.mSendEvLog('votebtn_click', advisor.name, '')
+        this.mSendEvLog("votebtn_click", advisor.name, "");
         this.callOrDownApp("vote");
         return;
       }
       if (this.$serverTime < this.startTime) {
-        this.mSendEvLog('votebtn_click', advisor.name, '')
+        this.mSendEvLog("votebtn_click", advisor.name, "");
         this.$refs.alert.show(
           "Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!",
           () => {},
@@ -1331,12 +1332,12 @@ export default {
         );
         return;
       } else if (this.$serverTime > this.endTime) {
-        this.mSendEvLog('votebtn_click', advisor.name, '')
+        this.mSendEvLog("votebtn_click", advisor.name, "");
         this.$refs.alert.show("Samahani, kura zimekwisha.", () => {}, "SAWA");
         return;
       }
       if (this.voteLeft <= 0) {
-        this.mSendEvLog('votebtn_click', advisor.name, '')
+        this.mSendEvLog("votebtn_click", advisor.name, "");
         this.$refs.confirm.show(
           "Samahani, kura yako iliyobaki ni 0, shirikisha marafiki zako na upate kura zaidi.",
           () => {
@@ -1370,7 +1371,9 @@ export default {
         (value == 5 && this.voteLeft < 5) ||
         (value == 10 && this.voteLeft < 10)
       ) {
-        this.$refs.toast.show("Kura imeshindikana. Hakuna kura za kutosha zilizobaki.")
+        this.$refs.toast.show(
+          "Kura imeshindikana. Hakuna kura za kutosha zilizobaki."
+        );
         return;
       }
       this.canVotes = false;
@@ -1388,11 +1391,13 @@ export default {
       })
         .then(res => {
           if (res.data.code === 0) {
-            this.mSendEvLog('votecnt_click', '', value)
+            this.mSendEvLog("votecnt_click", "", value);
             this.voteLeft -= value;
             this.getLeftLottery();
             if (this.voteLeft > 0) {
-              this.$refs.toast.show("Upigaji umefanikiwa! Umepata nafasi ya kucheza bahati nasibu.")
+              this.$refs.toast.show(
+                "Upigaji umefanikiwa! Umepata nafasi ya kucheza bahati nasibu."
+              );
             } else {
               this.$refs.confirm.show(
                 "Upigaji umefanikiwa! Shirikisha marafiki kupata kura zaidi.",
@@ -1609,7 +1614,7 @@ export default {
       if (!this.click) {
         return;
       }
-      this.mSendEvLog('lottery_click', '', '-1')
+      this.mSendEvLog("lottery_click", "", "-1");
       if (this.appType == 0) {
         this.callOrDownApp("lottery");
         return;
@@ -1694,7 +1699,9 @@ export default {
                 this.voteLeft += res.data.data;
               }, 1000);
             } else {
-              this.$refs.alert.show("Get ticket award error!" + res.data.message);
+              this.$refs.alert.show(
+                "Get ticket award error!" + res.data.message
+              );
             }
           });
         } else if (this.indexs === 6) {
@@ -1703,7 +1710,7 @@ export default {
             this.$refs.alert.show(
               "Hongera! Umepata nafasi moja zaidi!",
               () => {
-                this.click = true
+                this.click = true;
                 this.startLottery();
               },
               "SAWA"
@@ -1746,12 +1753,18 @@ export default {
                   }
                 }
                 console.log(`中奖位置${this.prize + 1}`);
-                if (this.prize + 1 == 3) this.mSendEvLog('lottery_click', 'vip', '1')
-                else if (this.prize + 1 == 4) this.mSendEvLog('lottery_click', '40offcoupon', '1')
-                else if (this.prize + 1 == 5) this.mSendEvLog('lottery_click', '30offcoupon', '1')
-                else if (this.prize + 1 == 6) this.mSendEvLog('lottery_click', 'morevotes', '1')
-                else if (this.prize + 1 == 7) this.mSendEvLog('lottery_click', 'tryagain', '0')
-                else if (this.prize + 1 == 8) this.mSendEvLog('lottery_click', 'sorry', '0')
+                if (this.prize + 1 == 3)
+                  this.mSendEvLog("lottery_click", "vip", "1");
+                else if (this.prize + 1 == 4)
+                  this.mSendEvLog("lottery_click", "40offcoupon", "1");
+                else if (this.prize + 1 == 5)
+                  this.mSendEvLog("lottery_click", "30offcoupon", "1");
+                else if (this.prize + 1 == 6)
+                  this.mSendEvLog("lottery_click", "morevotes", "1");
+                else if (this.prize + 1 == 7)
+                  this.mSendEvLog("lottery_click", "tryagain", "0");
+                else if (this.prize + 1 == 8)
+                  this.mSendEvLog("lottery_click", "sorry", "0");
               } else {
                 setTimeout(() => {
                   clearTimeout(this.timers);
@@ -1835,8 +1848,8 @@ export default {
               }
             });
             this.clipsList.forEach(item => {
-                this.mSendEvLog('video_show', item.description, '')
-            })
+              this.mSendEvLog("video_show", item.description, "");
+            });
             this.canClickTab2 = true;
           } else {
             this.$refs.alert.show("Get program error!");
@@ -1845,7 +1858,7 @@ export default {
         .catch(err => {
           this.$refs.alert.show("Get program error!!" + err);
         });
-    },
+    }
   },
   head() {
     return {
@@ -1923,7 +1936,8 @@ export default {
 }
 .wrapper {
   img,
-  div,li {
+  div,
+  li {
     box-sizing: border-box;
   }
   background-image: url("~@/assets/img/vote/BSSVote2/bg-img.jpg");

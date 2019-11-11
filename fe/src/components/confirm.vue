@@ -1,9 +1,9 @@
 <template>
-    <div class="alert-box">
+    <div class="confirm-box">
         <div :style="{display:style}" class="shadow-box"></div>
         <div
             :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}"
-            ref="confirms" 
+            ref="confirms"
             class="dialog"
         >
             <div class="dialog-body">
@@ -75,7 +75,7 @@ export default {
 };
 </script>
 <style lang="less" scoped>
-.alert-box {
+.confirm-box {
   .shadow-box {
     position: fixed;
     left: 0;

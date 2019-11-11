@@ -3,7 +3,7 @@
         <div :style="{display:style}" class="shadow-box"></div>
         <div
             :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}"
-            ref="alerts" 
+            ref="alerts"
             class="dialog"
         >
             <div class="dialog-body">
