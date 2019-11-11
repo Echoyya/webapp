@@ -1,0 +1,9 @@
+ingress:
+  enabled: true
+  openPod: false
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  other:
+  - name: webapp-dev.startimes.me
+    path:
+      - /

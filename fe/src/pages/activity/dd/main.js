@@ -4,7 +4,7 @@ import tokenMap from "@/functions/token";
 import env from "@/functions/config";
 import { getCookie, setCookie } from "@/functions/utils";
 import App from "./App.vue";
-import errorPage from "./error.vue";
+import errorPage from "@/components/error.vue";
 
 Vue.config.productionTip = false;
 
@@ -133,60 +133,61 @@ axios.interceptors.request.use(
 Vue.prototype.$axios = axios;
 
 axios
-    .get("/cms/users/me")
-    .then(res => {
-        const role = res.data.roleName;
-        Vue.prototype.$serverTime = res.headers.server_time;
-        Vue.prototype.$deviceId = res.data.deviceID;
-        Vue.prototype.$countryCode = res.data.countryCode;
-        Vue.prototype.$isLogin = role && role.toUpperCase() !== "ANONYMOUS";
-        Vue.prototype.$user = res.data;
-        Vue.prototype.$head = res.data.head;
+  .get("/cms/users/me")
+  .then(res => {
+    // TODO 匿名初始化
+    const role = res.data.roleName;
+    Vue.prototype.$serverTime = res.headers.server_time;
+    Vue.prototype.$deviceId = res.data.deviceID;
+    Vue.prototype.$countryCode = res.data.countryCode;
+    Vue.prototype.$isLogin = role && role.toUpperCase() !== "ANONYMOUS";
+    Vue.prototype.$user = res.data;
 
-        const sendEvLog = msg => {
-            const result = serializeMsg(msg, "event");
-            sendMsg(
-                countlyServer +
-                "/i?logtype=event&app_key=" +
-                countlyAppKey +
-                "&events=" +
-                result +
-                "&device_id=" +
-                res.data.deviceID +
-                "&timestamp=" +
-                now
-            );
+    const sendEvLog = msg => {
+      const result = serializeMsg(msg, "event");
+      sendMsg(
+        countlyServer +
+          "/i?logtype=event&app_key=" +
+          countlyAppKey +
+          "&events=" +
+          result +
+          "&device_id=" +
+          res.data.deviceID +
+          "&timestamp=" +
+          now
+      );
 
-            // eslint-disable-next-line no-undef
-            ga("send", {
-                hitType: "event",
-                eventCategory: msg.category,
-                eventAction: msg.action,
-                eventLabel: msg.label,
-                eventValue: 1
-            });
-        };
+      // eslint-disable-next-line no-undef
+      ga("send", {
+        hitType: "event",
+        eventCategory: msg.category,
+        eventAction: msg.action,
+        eventLabel: msg.label,
+        eventValue: 1
+      });
+    };
 
-        Vue.prototype.$sendEvLog = sendEvLog;
+    Vue.prototype.$sendEvLog = sendEvLog;
 
-        sendEvLog({
-            category: "h5_open",
-            action: "page_init_start",
-            label: location.pathname,
-            value: now
-        });
-        new Vue({
-            render: h => h(App)
-        }).$mount("#app");
-    })
-    .catch(() => {
-        new Vue({
-            render: h => h(errorPage)
-        }).$mount("#app");
-        // const res = err["response"];
-        // Vue.prototype.$serverTime = res.headers.date; //TODO format
-        // Vue.prototype.$deviceId = res.data.deviceID; // TODO 匿名
-        // Vue.prototype.$countryCode = res.data.countryCode;
-        // Vue.prototype.$isLogin = false;
-        // 登录状态失效
+    sendEvLog({
+      category: "h5_open",
+      action: "page_init_start",
+      label: location.pathname,
+      value: now
     });
+    new Vue({
+      render: h => h(App)
+    }).$mount("#app");
+  })
+  .catch(() => {
+    new Vue({
+      render: h => h(errorPage)
+    }).$mount("#app");
+
+    // const res = err["response"];
+    // Vue.prototype.$serverTime = res.headers.date; //TODO format
+    // Vue.prototype.$deviceId = res.data.deviceID; // TODO 匿名
+    // Vue.prototype.$countryCode = res.data.countryCode;
+    // Vue.prototype.$isLogin = false;
+    // 登录状态失效
+  });
