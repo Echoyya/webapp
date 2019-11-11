@@ -12,26 +12,26 @@
                 </ul>
             </div>
             <div class="topic">
-                <img v-show="topic.cover" class="title" :src="topic.cover" alt />
-                <div class="pick-box">
+                <img v-show="topic.cover" class="title" :src="topic.cover" />
+                <div class="pick-box" v-if="pageList[index]">
                     <div class="left">
                         <div>
-                            <img v-if="pageList[index]" :src="pageList[index].candidates[0].icon" alt />
+                            <img :src="pageList[index].candidates[0].icon" />
                         </div>
                     </div>
                     <div class="middle">
-                        <img src="@/assets/img/vote/DreamTrip/img-vs.png" alt />
+                        <img src="@/assets/img/vote/DreamTrip/img-vs.png" />
                         <p>{{allNum}}</p>
-                        <img src="@/assets/img/vote/DreamTrip/text1.png" alt />
+                        <img src="@/assets/img/vote/DreamTrip/text1.png" />
                     </div>
                     <div class="right">
                         <div>
-                            <img v-if="pageList[index]" :src="pageList[index].candidates[1].icon" alt />
+                            <img :src="pageList[index].candidates[1].icon" />
                         </div>
                     </div>
                     <div v-show="!picked||appType==0" class="pick">
-                        <div v-if="pageList[index]" class="btn">PICK</div>
-                        <div v-if="pageList[index]" class="btn">PICK</div>
+                        <div class="btn">PICK</div>
+                        <div class="btn">PICK</div>
                     </div>
                     <div v-show="picked&&appType>0" class="progress" :class="{'show-in':show_in}">
                         <div class="bar l"></div>
@@ -227,6 +227,7 @@ export default {
             data.data.forEach(item => {
               this.source[item.name] = item;
             });
+            // this.initPage()
           } else {
             this.$refs.alert.show("Get source list error! " + data.message);
           }
@@ -263,6 +264,7 @@ export default {
             }
             this.commentList = tmpArr;
             // TODO 判断是否可以点击tab
+            this.canClickTab1 = true
             this.$nextTick(() => {
               for (let j = 0; j < this.number * 2; j++) {
                 document.getElementById(j).style.right = -2000 + "px";

@@ -4,7 +4,7 @@ import tokenMap from "@/functions/token";
 import env from "@/functions/config";
 import { getCookie, setCookie } from "@/functions/utils";
 import App from "./App.vue";
-import errorPage from "./error.vue";
+import errorPage from "@/components/error.vue";
 
 Vue.config.productionTip = false;
 
@@ -120,21 +120,22 @@ const serializeMsg = (msg, type) => {
 axios.defaults.baseURL = "http://qa.upms.startimestv.com"; // TODO 环境变量;
 axios.defaults.headers.token = token;
 
-axios.interceptors.request.use(
-  function(config) {
-    return config;
-  },
-  function(error) {
-    // Do something with request error
-    return Promise.reject(error);
-  }
-);
+// axios.interceptors.request.use(
+//   function(config) {
+//     return config;
+//   },
+//   function(error) {
+//     // Do something with request error
+//     return Promise.reject(error);
+//   }
+// );
 
 Vue.prototype.$axios = axios;
 
 axios
   .get("/cms/users/me")
   .then(res => {
+    // TODO 匿名初始化
     const role = res.data.roleName;
     Vue.prototype.$serverTime = res.headers.server_time;
     Vue.prototype.$deviceId = res.data.deviceID;
@@ -182,6 +183,7 @@ axios
     new Vue({
       render: h => h(errorPage)
     }).$mount("#app");
+
     // const res = err["response"];
     // Vue.prototype.$serverTime = res.headers.date; //TODO format
     // Vue.prototype.$deviceId = res.data.deviceID; // TODO 匿名
