@@ -182,7 +182,7 @@ export default {
   },
   methods: {
     mSendEvLog(action, label, value) {
-      this.sendEvLog({
+      this.$sendEvLog({
         category: "vote_DreamDestination_" + this.platform,
         action: action,
         label: label,
