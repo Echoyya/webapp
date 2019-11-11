@@ -302,7 +302,6 @@
         </div>
         <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
         <!-- <mShare /> -->
-        <!-- <div v-show="tip" class="vote-toast">{{tip}}</div> -->
         <alert-dialog ref="alert" />
         <confirm-dialog ref="confirm" />
         <toast-dialog ref="toast" />
@@ -315,7 +314,7 @@ import alertDialog from "@/components/alert";
 import confirmDialog from "@/components/confirm";
 import toastDialog from "@/components/toast";
 // import { getCookie, setCookie } from '@/functions/utils'
-// import mShare from '~/components/web/share.vue'
+// import mShare from '@/components/web/share.vue'
 import {
   callApp,
   downApk,
@@ -325,7 +324,7 @@ import {
 } from "@/functions/app";
 export default {
   components: {
-    // mShare
+    // mShare,
     alertDialog,
     confirmDialog,
     toastDialog
@@ -560,7 +559,7 @@ export default {
           this.$serverTime <= this.endTime
         ) {
           for (let j = 0; j < this.number * 2; j++) {
-            this.getDom(j).style.right = 2000 + "px";
+            document.getElementById(j).style.right = 2000 + "px";
           }
           const comment = document.getElementById("comment");
           let spans = document.getElementsByClassName("new-barrage");
@@ -651,9 +650,6 @@ export default {
         .findIndex(currentPage => num <= currentPage);
       return index <= 0 ? 1 : index;
     },
-    getDom(id) {
-      return document.getElementById(id);
-    },
     // 获取期数，播出时间，票数，状态，投票单元
     getPagelist() {
       this.$axios
@@ -742,7 +738,7 @@ export default {
             this.canClickTab1 = true;
             this.$nextTick(() => {
               for (let j = 0; j < this.number * 2; j++) {
-                this.getDom(j).style.right = -2000 + "px";
+                document.getElementById(j).style.right = -2000 + "px";
               }
               this.initComment();
             });
@@ -774,13 +770,13 @@ export default {
         const commentWidth = p.offsetWidth + 35;
         commentItem.style.width = commentWidth + 15 + "px";
       }
-      // let s = this.getDom(this.count).offsetWidth / (this.speed * 3) + 0.3
-      let s = this.getDom(this.count).offsetWidth / this.speed;
+      // let s = document.getElementById(this.count).offsetWidth / (this.speed * 3) + 0.3
+      let s = document.getElementById(this.count).offsetWidth / this.speed;
       if (s < this.minSp) s = this.minSp;
       else if (s > this.maxSp) s = this.maxSp;
       this.animate(
-        this.getDom(this.count),
-        -this.getDom(this.count).offsetWidth,
+        document.getElementById(this.count),
+        -document.getElementById(this.count).offsetWidth,
         s
       );
     },
@@ -810,13 +806,13 @@ export default {
             this.getCommentList();
             return true;
           }
-          // let s = this.getDom(this.count).offsetWidth / (this.speed * 3) + 0.3
-          let s = this.getDom(this.count).offsetWidth / this.speed;
+          // let s = document.getElementById(this.count).offsetWidth / (this.speed * 3) + 0.3
+          let s = document.getElementById(this.count).offsetWidth / this.speed;
           if (s < this.minSp) s = this.minSp;
           else if (s > this.maxSp) s = this.maxSp;
           this.animate(
-            this.getDom(this.count),
-            -this.getDom(this.count).offsetWidth,
+            document.getElementById(this.count),
+            -document.getElementById(this.count).offsetWidth,
             s
           );
         }
@@ -1065,16 +1061,18 @@ export default {
             p.innerText = this.commentText;
             p.style.display = "inline-block";
             p.style.color = "#fff";
-            p.style.marginLeft = 10 + "px";
+            p.style.top = -6 + "px";
+            p.style.position = "relative";
+            p.style.marginLeft = 6 + "px";
             p.style.whiteSpace = "nowrap";
             img.style.display = "inline-block";
-            img.style.width = "28px";
-            img.style.height = "28px";
+            img.style.width = "26px";
+            img.style.height = "26px";
             img.style.backgroundColor = "#bfbfbf";
             img.style.borderRadius = "14px";
             img.style.position = "relative";
-            img.style.top = "-1px";
-            img.style.left = "1.8px";
+            img.style.top = "2px";
+            img.style.left = "2.2px";
             item.appendChild(img);
             item.appendChild(p);
             document.getElementsByClassName("comment")[0].appendChild(item);
@@ -1373,7 +1371,6 @@ export default {
         (value == 10 && this.voteLeft < 10)
       ) {
         this.$refs.toast.show("Kura imeshindikana. Hakuna kura za kutosha zilizobaki.")
-        // this.tipShow("Kura imeshindikana. Hakuna kura za kutosha zilizobaki.");
         return;
       }
       this.canVotes = false;
@@ -1396,9 +1393,6 @@ export default {
             this.getLeftLottery();
             if (this.voteLeft > 0) {
               this.$refs.toast.show("Upigaji umefanikiwa! Umepata nafasi ya kucheza bahati nasibu.")
-              // this.tipShow(
-              //   "Upigaji umefanikiwa! Umepata nafasi ya kucheza bahati nasibu."
-              // );
             } else {
               this.$refs.confirm.show(
                 "Upigaji umefanikiwa! Shirikisha marafiki kupata kura zaidi.",
@@ -1612,6 +1606,9 @@ export default {
     },
     // 抽奖按钮为灰提示
     canNotLottery() {
+      if (!this.click) {
+        return;
+      }
       this.mSendEvLog('lottery_click', '', '-1')
       if (this.appType == 0) {
         this.callOrDownApp("lottery");
@@ -1706,6 +1703,7 @@ export default {
             this.$refs.alert.show(
               "Hongera! Umepata nafasi moja zaidi!",
               () => {
+                this.click = true
                 this.startLottery();
               },
               "SAWA"
@@ -1748,12 +1746,12 @@ export default {
                   }
                 }
                 console.log(`中奖位置${this.prize + 1}`);
-                if (this.prize + 1 == 1) this.mSendEvLog('lottery_click', 'vip', '1')
-                else if (this.prize + 1 == 2) this.mSendEvLog('lottery_click', '40offcoupon', '1')
-                else if (this.prize + 1 == 3) this.mSendEvLog('lottery_click', '30offcoupon', '1')
-                else if (this.prize + 1 == 4) this.mSendEvLog('lottery_click', 'morevotes', '1')
-                else if (this.prize + 1 == 5) this.mSendEvLog('lottery_click', 'tryagain', '0')
-                else if (this.prize + 1 == 6) this.mSendEvLog('lottery_click', 'sorry', '0')
+                if (this.prize + 1 == 3) this.mSendEvLog('lottery_click', 'vip', '1')
+                else if (this.prize + 1 == 4) this.mSendEvLog('lottery_click', '40offcoupon', '1')
+                else if (this.prize + 1 == 5) this.mSendEvLog('lottery_click', '30offcoupon', '1')
+                else if (this.prize + 1 == 6) this.mSendEvLog('lottery_click', 'morevotes', '1')
+                else if (this.prize + 1 == 7) this.mSendEvLog('lottery_click', 'tryagain', '0')
+                else if (this.prize + 1 == 8) this.mSendEvLog('lottery_click', 'sorry', '0')
               } else {
                 setTimeout(() => {
                   clearTimeout(this.timers);
@@ -1848,15 +1846,6 @@ export default {
           this.$refs.alert.show("Get program error!!" + err);
         });
     },
-    // toast方法
-    // tipShow(text, duration = 2000) {
-    //   clearInterval(this.tip_timer);
-    //   const _this = this;
-    //   this.tip = text;
-    //   this.tip_timer = setTimeout(() => {
-    //     _this.tip = "";
-    //   }, duration);
-    // }
   },
   head() {
     return {
@@ -2928,20 +2917,5 @@ export default {
     background-color: #000;
     z-index: 998;
   }
-  // .vote-toast {
-  //   position: fixed;
-  //   left: 50%;
-  //   top: 50%;
-  //   margin-left: -7.5rem;
-  //   margin-top: -2.1rem;
-  //   font-size: 0.9rem;
-  //   background: rgba(0, 0, 0, 0.65);
-  //   padding: 0.6rem 1.5rem;
-  //   border-radius: 3px;
-  //   width: 15rem;
-  //   // height: 4.2rem;
-  //   color: #fff;
-  //   z-index: 9999;
-  // }
 }
 </style>
