@@ -4,7 +4,7 @@ import tokenMap from "@/functions/token";
 import env from "@/functions/config";
 import { getCookie, setCookie } from "@/functions/utils";
 import App from "./App.vue";
-import errorPage from "./error.vue";
+import errorPage from "@/components/error.vue";
 
 Vue.config.productionTip = false;
 

@@ -92,12 +92,12 @@ export const invokeByIframe = function(target, failback) {
 
 export const callApp = function(page, failback) {
   const utmParam = getUtmParam.call(this);
-  this.sendEvLog(
+  this.$sendEvLog(
     Object.assign(
       {
         category: "callup_app",
         action: "callup",
-        label: this.$route.path,
+        label: location.pathname,
         value: 1
       },
       utmParam.map
@@ -121,7 +121,7 @@ export const callApp = function(page, failback) {
 
 export const downApk = function(callback) {
   const utmParam = getUtmParam.call(this);
-  this.sendEvLog(
+  this.$sendEvLog(
     Object.assign(
       {
         category: "callup_app",
@@ -147,7 +147,7 @@ export const callMarket = function(failback) {
   const utmParam = getUtmParam.call(this);
   const source = utmParam.str;
 
-  this.sendEvLog(
+  this.$sendEvLog(
     Object.assign(
       {
         category: "callup_app",
@@ -226,7 +226,7 @@ export const shareInvite = (link, shareTitle, shareContent, shareImg) => {
 };
 
 export const getUtmParam = function() {
-  const query = this.$route.query;
+  const query = location.search;
   const referrer = query.referrer;
   let source = "&referrer=";
   let utmSource = "";
@@ -292,4 +292,27 @@ export const getQueryVariable = function(query, key) {
       return decodeURIComponent(pair[1]);
     }
   }
+};
+
+export const addTicketByDownload = function() {
+  // TODO 环境变量
+  this.$axios
+    .get("http://qa.upms.startimestv.com/hybrid/api/sign")
+    .then(res => {
+      console.log(res.data);
+    });
+  // this.$axios({
+  //   method: "POST",
+  //   headers: {
+  //     "content-type": "application/x-www-form-urlencoded",
+  //     token: this.$store.state.token,
+  //     "X-Secret": voteDownTag
+  //   },
+  //   data: qs.stringify({
+  //     vote_id: this.vote_id,
+  //     target: user,
+  //     action: "SHARE_DOWNLOAD"
+  //   }),
+  //   url: "/voting/v1/ticket"
+  // });
 };

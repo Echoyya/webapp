@@ -197,7 +197,8 @@ import {
   downApk,
   playVodinApp,
   toNativePage,
-  shareInvite
+  shareInvite,
+  addTicketByDownload
 } from "@/functions/app";
 export default {
   components: {
@@ -211,7 +212,7 @@ export default {
       // 页面
       show_rules: false,
       show_pick: false,
-      appType: 1,
+      appType: this.$appType,
       isLogin: true,
       firstTime: true,
       msg: "",
@@ -1063,6 +1064,7 @@ export default {
     },
     // 唤醒转入活动页或下载App
     callOrDownApp(label) {
+      console.log(123)
       // 唤醒App
       callApp.call(
         this,
@@ -1076,24 +1078,7 @@ export default {
             () => {
               this.mSendEvLog("downloadpopup_clickok", label, "");
               downApk.call(this);
-              // const voteDownTag = getCookie('vote_share_down')
-              // const user = getCookie('vote_share_user')
-              // if (voteDownTag && voteDownTag != -1) {
-              //     this.$axios({
-              //         method: 'POST',
-              //         headers: {
-              //             'content-type': 'application/x-www-form-urlencoded',
-              //             token: this.$store.state.token,
-              //             'X-Secret': voteDownTag
-              //         },
-              //         data: qs.stringify({
-              //             vote_id: this.vote_id,
-              //             target: user,
-              //             action: 'SHARE_DOWNLOAD'
-              //         }),
-              //         url: '/voting/v1/ticket'
-              //     })
-              // }
+              addTicketByDownload();
             },
             () => {
               this.mSendEvLog("downloadpopup_clicknot", label, "");
