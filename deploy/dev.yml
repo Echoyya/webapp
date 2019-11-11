@@ -4,6 +4,6 @@ ingress:
   annotations:
     kubernetes.io/ingress.class: nginx
   other:
-  - name: starltp-ui-test2.startimes.me
+  - name: webapp-dev.startimes.me
     path:
-    - /
+      - /

@@ -9,4 +9,4 @@ echo "用户选择的helm更新为：${params.isUpHelm}"
 //发送邮件通知人列表。;号分割。如"penglj@startimes.com.cn;zhoup@startimes.com.cn"
 def mailto="shangxb@startimes.com.cn"
 
-buildStaticWebUI("starltp-ui","fe",mailto,params)
+buildStaticWebUI("webapp","fe",mailto,params)
