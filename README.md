@@ -1,24 +1,16 @@
-# webapp
+# newtranstar
 
-## Project setup
-```
-npm install
-```
+> This is a professional translation website of startimes.com
 
-### Compiles and hot-reloads for development
-```
-npm run dev
-```
+## Build Setup
 
-### Compiles and minifies for production
-```
-npm run build
-```
+``` bash
+# install dependencies
+$ npm run install
 
-### Lints and fixes files
-```
-npm run lint
-```
+# serve with hot reload at localhost:3000
+$ npm run dev
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+
+# build for production and launch server generate static project for nginx 
+$ npm run build

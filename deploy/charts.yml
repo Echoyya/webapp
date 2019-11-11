@@ -1,0 +1,28 @@
+replicaCount: 1
+
+persistentVolume:
+  enabled: false
+
+tolerations:
+  enabled: false
+nodeSelector:
+  enabled: false
+server:
+  ports:
+    dubbo_port: 80
+    health_port: 80
+  db:
+    enabled: false
+  imagePullSecrets:
+    enabled: true
+  health:
+    enabled: false
+  resources:
+    limits:
+      cpu: 500m
+      memory: 1024Mi
+    requests:
+      cpu: 100m
+      memory: 256Mi
+  env:
+    server.port: 8080
