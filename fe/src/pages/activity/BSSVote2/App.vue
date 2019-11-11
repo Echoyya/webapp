@@ -178,7 +178,7 @@
             <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
         </div>
         <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
-        <!-- <mShare /> -->
+        <mShare ref="share" />
         <alert-dialog ref="alert" />
         <confirm-dialog ref="confirm" />
         <toast-dialog ref="toast" />
@@ -191,7 +191,7 @@ import alertDialog from "@/components/alert";
 import confirmDialog from "@/components/confirm";
 import toastDialog from "@/components/toast";
 // import { getCookie, setCookie } from '@/functions/utils'
-// import mShare from '@/components/web/share.vue'
+import mShare from "@/components/web/share.vue";
 import {
   callApp,
   downApk,
@@ -202,7 +202,7 @@ import {
 } from "@/functions/app";
 export default {
   components: {
-    // mShare,
+    mShare,
     alertDialog,
     confirmDialog,
     toastDialog
@@ -213,7 +213,7 @@ export default {
       show_rules: false,
       show_pick: false,
       appType: this.$appType,
-      isLogin: true,
+      isLogin: this.$isLogin,
       firstTime: true,
       msg: "",
       user_id: this.$user.id,
@@ -235,8 +235,6 @@ export default {
       vote_id: 64,
       startTime: "",
       endTime: "",
-      // tip: "",
-      // tip_timer: null,
       canVotes: true,
 
       // 抽奖
@@ -1059,12 +1057,12 @@ export default {
           this.imgUrl
         );
       } else {
-        this.$store.commit("SET_SHARE_STATE", true);
+        this.$refs.share.show();
+        // this.$store.commit("SET_SHARE_STATE", true);
       }
     },
     // 唤醒转入活动页或下载App
     callOrDownApp(label) {
-      console.log(123)
       // 唤醒App
       callApp.call(
         this,
@@ -1078,7 +1076,7 @@ export default {
             () => {
               this.mSendEvLog("downloadpopup_clickok", label, "");
               downApk.call(this);
-              addTicketByDownload();
+              addTicketByDownload.call(this);
             },
             () => {
               this.mSendEvLog("downloadpopup_clicknot", label, "");
