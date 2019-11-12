@@ -1,10 +1,10 @@
 <template>
-    <div class="error">
-        <img src="@/assets/img/web/error500.png" alt />
-        Sorry, there is a network error.
-        <br />Please
-        <a href>try again</a>.
-    </div>
+  <div class="error">
+    <img src="@/assets/img/web/error500.png" alt />
+    Sorry, there is a network error.
+    <br />Please
+    <a href>try again</a>.
+  </div>
 </template>
 <script>
 export default {

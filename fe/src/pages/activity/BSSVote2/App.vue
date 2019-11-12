@@ -1,188 +1,188 @@
 <template>
-    <div class="wrapper">
-        <div class="container">
-            <div class="top">
-                <img src="@/assets/img/vote/BSSVote2/img-banner.jpg" alt="bg-img" class="bg-img" />
-                <div class="tab-box">
-                    <img src="@/assets/img/vote/BSSVote2/ic-rule.png" @click="showRule" />
-                    <img src="@/assets/img/vote/BSSVote2/ic-share.png" @click="toShare('upshare')" />
-                </div>
-            </div>
-            <div class="page-control">
-                <p :class="pageVote?'active':''" @click="changePage('vote')">KURA</p>
-                <p :class="pageVote?'':'active'" @click="changePage('barrage')">MAONI</p>
-            </div>
-            <div v-if="pageVote" class="page-vote">
-                <img class="text text1" src="@/assets/img/vote/BSSVote2/text1.png" alt />
-                <div class="date">NOVEMBA 18 - DESEMBA 10</div>
-                <div class="vote-box">
-                    <div class="vote-remaining">
-                        <div class="remain">KURA ZILIZOBAKI:{{appType==0?0:(voteLeft>0?voteLeft:0)}}</div>
-                    </div>
-                    <div v-if="coupleList.length>0">
-                        <ul class="clearfix">
-                            <li v-for="(item,key) in coupleList" :key="key" data-id="item.id">
-                                <div class="item-box">
-                                    <div>
-                                        <img :src="item.icon" class="icon" @click="toPlayer(item,'votepic_click',item.name)" />
-                                    </div>
-                                    <span class="name">{{item.name.toUpperCase()}}</span>
-                                </div>
-                                <div class="vote-btn">
-                                    <div class="btn" @click="handleViceVote(item,key)">KURA</div>
-                                </div>
-                                <div class="handle-pick-box">
-                                    <img src="@/assets/img/vote/BSSVote2/ic-pick.png" alt />
-                                    <div class="title">CHAGUA KURA ZAKO</div>
-                                    <div class="votes">Kura zilizobaki: {{voteLeft}}</div>
-                                    <div class="pick">
-                                        <div class="vote-value" :class="voteLeft>=1?'abled':'disabled'" @click="handleVote(item,1)">+1</div>
-                                        <div class="vote-value" :class="voteLeft>=5?'abled':'disabled'" @click="handleVote(item,5)">+5</div>
-                                        <div class="vote-value" :class="voteLeft>=10?'abled':'disabled'" @click="handleVote(item,10)">+10</div>
-                                    </div>
-                                    <div class="cancel" @click="closeShadow">GHAIRI</div>
-                                </div>
-                            </li>
-                        </ul>
-                    </div>
-                </div>
-                <img class="text text2" src="@/assets/img/vote/BSSVote2/text2.png" alt />
-                <div class="more-vote">
-                    <div class="vip">
-                        <!-- APP外、匿名、登录都不是会员 -->
-                        <img v-if="appType==0||(appType>0&&!isOttVip&&!isLinkVip)" src="@/assets/img/vote/BSSVote2/ic-noOtt-noLink.png" alt />
-                        <!-- 都是会员 -->
-                        <img v-if="appType>0&&isOttVip&&isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-isLink.png" alt />
-                        <!-- 是OTT 不是LINK -->
-                        <img v-if="appType>0&&isOttVip&&!isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-noLink.png" alt />
-                        <!-- 不是OTT 是LINK -->
-                        <img v-if="appType>0&&!isOttVip&&isLinkVip" src="@/assets/img/vote/BSSVote2/ic-noOtt-isLink.png" alt />
-                        <div v-if="appType==0||appType>0&&!isOttVip" class="op open-ott" @click="toVip('ottvip')"></div>
-                        <div v-if="appType==0||appType>0&&!isLinkVip" class="op open-dvb" @click="toVip('dvbvip')"></div>
-                    </div>
-                    <img v-if="appType>0&&isLogin" src="@/assets/img/vote/BSSVote2/ic-2login.png" alt />
-                    <img v-else src="@/assets/img/vote/BSSVote2/ic-2login-no.png" alt @click="toSignIn" />
-                    <img src="@/assets/img/vote/BSSVote2/ic-3share.png" alt @click="toShare('invite')" />
-                    <div class="num">
-                        <p>FANIKIWA KUALIKA RAFIKI {{share_num}}</p>
-                    </div>
-                </div>
-                <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
-                <img v-if="isCommentStart" src="@/assets/img/vote/BSSRegister/ic-link-comment.png" alt class="link" @click="toComment('mid')" />
-                <img v-if="appType>0&&!isLogin" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login-no.png" @click="toSignIn" />
-                <img v-if="!(appType>0&&!isLogin)" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login.png" alt />
-                <div class="lottery-box">
-                    <div class="lottery">
-                        <div class="count">NAFASI ZILIZOBAKI:{{appType>0&&isLogin?(lotteryLeft>0?lotteryLeft:0):0}}</div>
-                        <div class="lottery-type">
-                            <ul class="clearfix">
-                                <li v-for="(item,key) in lotteryList" :key="key" :class="indexs==key?'active':''">
-                                    <div>
-                                        <div class="prize">
-                                            <img :src="item.picture_url" alt />
-                                            <p>{{item.name}}</p>
-                                        </div>
-                                    </div>
-                                </li>
-                                <div v-if="appType>0&&isLogin&&lotteryLeft>0" class="getLuck" @click="startLottery">Anza</div>
-                                <div v-else class="getLuck-gray" @click="canNotLottery">Anza</div>
-                            </ul>
-                        </div>
-                        <div class="msg">
-                            <ul ref="msgul" :class="{anim:animates==true}">
-                                <img src="@/assets/img/vote/BSSRegister/sound.png" alt />
-                                <li
-                                    v-for="item in msgList"
-                                    :key="item.key"
-                                >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} umeshinda {{item.reward_name||''}}!</li>
-                            </ul>
-                        </div>
-                        <div class="tip">
-                            <p>TAFUTA ZAWADI KWENYE ME -> KUPONI YANGU</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div v-else class="page-barrage">
-                <div class="topic">
-                    <img class="title" :src="topic" alt />
-                    <div class="pick-box">
-                        <div class="left">
-                            <div>
-                                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[0].icon" alt />
-                            </div>
-                        </div>
-                        <div class="middle">
-                            <img src="@/assets/img/vote/BSSVote2/ic-or.png" alt />
-                            <img src="@/assets/img/vote/BSSVote2/ic-pick-text.png" alt />
-                            <p>{{allNum}}</p>
-                        </div>
-                        <div class="right">
-                            <div>
-                                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[1].icon" alt />
-                            </div>
-                        </div>
-                        <div v-show="!picked||appType==0" class="pick">
-                            <div v-if="pageListReady[index]" class="btn" @click="handlePick('left',pageListReady[index].candidates)">CHAGUA</div>
-                            <div v-if="pageListReady[index]" class="btn" @click="handlePick('right',pageListReady[index].candidates)">CHAGUA</div>
-                        </div>
-                        <div v-show="picked&&appType>0" class="progress" :class="{'show-in':show_in}">
-                            <div class="bar l"></div>
-                            <div class="bar r"></div>
-                            <div class="left">{{leftNum}}%</div>
-                            <div class="right">{{rightNum}}%</div>
-                            <span class="add-one l" :class="{'l-show':l_show}">+1</span>
-                            <span class="add-one r" :class="{'r-show':r_show}">+1</span>
-                        </div>
-                    </div>
-                </div>
-                <div id="comment" class="comment">
-                    <div class="comment-box">
-                        <ul v-show="commentListReady.length>0" id="ulList">
-                            <li v-for="(item,key) in commentListReady" :id="key" :key="key" class="barrage">
-                                <img :src="item.avatar" alt />
-                                <p>{{item.content}}</p>
-                            </li>
-                        </ul>
-                    </div>
-                    <div class="send-box">
-                        <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
-                        <div class="btn" @click="sendComment">{{disabled?`${during}s`:`TUMA`}}</div>
-                    </div>
-                </div>
-                <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
-            </div>
-            <img class="text text4" src="@/assets/img/vote/BSSVote2/text4.png" alt />
-            <div class="past-programme">
-                <ul class="clearfix">
-                    <li v-for="(item,i) in clipsList" :key="i">
-                        <div @click="toPlayer(item,'video_click',item.description)">
-                            <img class="url" :src="item.cover" />
-                        </div>
-                        <p class="title">{{(item.description)}}</p>
-                    </li>
-                </ul>
-            </div>
+  <div class="wrapper">
+    <div class="container">
+      <div class="top">
+        <img src="@/assets/img/vote/BSSVote2/img-banner.jpg" alt="bg-img" class="bg-img" />
+        <div class="tab-box">
+          <img src="@/assets/img/vote/BSSVote2/ic-rule.png" @click="showRule" />
+          <img src="@/assets/img/vote/BSSVote2/ic-share.png" @click="toShare('upshare')" />
         </div>
-        <div v-show="show_rules" class="rules-box">
-            <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
-            <div class="rule-text">
-                1. Kutoka tarehe 8th Oct hadi 30th Oct, una kura 5 kila siku baada ya kuingia. Kura zitakuwa zinajumlishwa na kuwa halali hadi mwisho wa shughuli.
-                <br />2. Unaweza kumpigia kura mshiriki yeyote unayempenda!
-                <br />3. Washirikishe link rafiki zako na waombe wapakue app ya StarTimes ON ili kupata kura zaidi! Utapata kura 5 zaidi kwa kila mtumiaji mpya. Unavyozidi kuleta watumiaji wapya, ndivyo unavyopata kura zaidi!
-                <br />4. Kila wakati unapopiga kura, utapata nafasi moja ya kushinda, na utapata fursa ya kushinda Abreader subwoofer, yenye thamani ya Shilingi 85,000 na Aborder bluetooth speaker, yenye thamani ya Shilingi 35,000, pamoja na Max VIP ya Mwezi ya StarTimes ON na Kuponi.
-                <br />5. Zawadi zitakuwa zinatolewa siku ya pili ya kazi katika Me-> Kuponi zangu.
-                <br />6. Wagombea 10 bora wenye kura nyingi zaidi wataweza kuingia kwenye usaili wa mwisho na kupata nafasi ya kushiriki 2019BSS.
-            </div>
-            <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
-            <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
+      </div>
+      <div class="page-control">
+        <p :class="pageVote?'active':''" @click="changePage('vote')">KURA</p>
+        <p :class="pageVote?'':'active'" @click="changePage('barrage')">MAONI</p>
+      </div>
+      <div v-if="pageVote" class="page-vote">
+        <img class="text text1" src="@/assets/img/vote/BSSVote2/text1.png" alt />
+        <div class="date">NOVEMBA 18 - DESEMBA 10</div>
+        <div class="vote-box">
+          <div class="vote-remaining">
+            <div class="remain">KURA ZILIZOBAKI:{{appType==0?0:(voteLeft>0?voteLeft:0)}}</div>
+          </div>
+          <div v-if="coupleList.length>0">
+            <ul class="clearfix">
+              <li v-for="(item,key) in coupleList" :key="key" data-id="item.id">
+                <div class="item-box">
+                  <div>
+                    <img :src="item.icon" class="icon" @click="toPlayer(item,'votepic_click',item.name)" />
+                  </div>
+                  <span class="name">{{item.name.toUpperCase()}}</span>
+                </div>
+                <div class="vote-btn">
+                  <div class="btn" @click="handleViceVote(item,key)">KURA</div>
+                </div>
+                <div class="handle-pick-box">
+                  <img src="@/assets/img/vote/BSSVote2/ic-pick.png" alt />
+                  <div class="title">CHAGUA KURA ZAKO</div>
+                  <div class="votes">Kura zilizobaki: {{voteLeft}}</div>
+                  <div class="pick">
+                    <div class="vote-value" :class="voteLeft>=1?'abled':'disabled'" @click="handleVote(item,1)">+1</div>
+                    <div class="vote-value" :class="voteLeft>=5?'abled':'disabled'" @click="handleVote(item,5)">+5</div>
+                    <div class="vote-value" :class="voteLeft>=10?'abled':'disabled'" @click="handleVote(item,10)">+10</div>
+                  </div>
+                  <div class="cancel" @click="closeShadow">GHAIRI</div>
+                </div>
+              </li>
+            </ul>
+          </div>
         </div>
-        <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
-        <mShare ref="share" />
-        <alert-dialog ref="alert" />
-        <confirm-dialog ref="confirm" />
-        <toast-dialog ref="toast" />
+        <img class="text text2" src="@/assets/img/vote/BSSVote2/text2.png" alt />
+        <div class="more-vote">
+          <div class="vip">
+            <!-- APP外、匿名、登录都不是会员 -->
+            <img v-if="appType==0||(appType>0&&!isOttVip&&!isLinkVip)" src="@/assets/img/vote/BSSVote2/ic-noOtt-noLink.png" alt />
+            <!-- 都是会员 -->
+            <img v-if="appType>0&&isOttVip&&isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-isLink.png" alt />
+            <!-- 是OTT 不是LINK -->
+            <img v-if="appType>0&&isOttVip&&!isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-noLink.png" alt />
+            <!-- 不是OTT 是LINK -->
+            <img v-if="appType>0&&!isOttVip&&isLinkVip" src="@/assets/img/vote/BSSVote2/ic-noOtt-isLink.png" alt />
+            <div v-if="appType==0||appType>0&&!isOttVip" class="op open-ott" @click="toVip('ottvip')"></div>
+            <div v-if="appType==0||appType>0&&!isLinkVip" class="op open-dvb" @click="toVip('dvbvip')"></div>
+          </div>
+          <img v-if="appType>0&&isLogin" src="@/assets/img/vote/BSSVote2/ic-2login.png" alt />
+          <img v-else src="@/assets/img/vote/BSSVote2/ic-2login-no.png" alt @click="toSignIn" />
+          <img src="@/assets/img/vote/BSSVote2/ic-3share.png" alt @click="toShare('invite')" />
+          <div class="num">
+            <p>FANIKIWA KUALIKA RAFIKI {{share_num}}</p>
+          </div>
+        </div>
+        <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
+        <img v-if="isCommentStart" src="@/assets/img/vote/BSSRegister/ic-link-comment.png" alt class="link" @click="toComment('mid')" />
+        <img v-if="appType>0&&!isLogin" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login-no.png" @click="toSignIn" />
+        <img v-if="!(appType>0&&!isLogin)" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login.png" alt />
+        <div class="lottery-box">
+          <div class="lottery">
+            <div class="count">NAFASI ZILIZOBAKI:{{appType>0&&isLogin?(lotteryLeft>0?lotteryLeft:0):0}}</div>
+            <div class="lottery-type">
+              <ul class="clearfix">
+                <li v-for="(item,key) in lotteryList" :key="key" :class="indexs==key?'active':''">
+                  <div>
+                    <div class="prize">
+                      <img :src="item.picture_url" alt />
+                      <p>{{item.name}}</p>
+                    </div>
+                  </div>
+                </li>
+                <div v-if="appType>0&&isLogin&&lotteryLeft>0" class="getLuck" @click="startLottery">Anza</div>
+                <div v-else class="getLuck-gray" @click="canNotLottery">Anza</div>
+              </ul>
+            </div>
+            <div class="msg">
+              <ul ref="msgul" :class="{anim:animates==true}">
+                <img src="@/assets/img/vote/BSSRegister/sound.png" alt />
+                <li
+                  v-for="item in msgList"
+                  :key="item.key"
+                >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} umeshinda {{item.reward_name||''}}!</li>
+              </ul>
+            </div>
+            <div class="tip">
+              <p>TAFUTA ZAWADI KWENYE ME -> KUPONI YANGU</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else class="page-barrage">
+        <div class="topic">
+          <img class="title" :src="topic" alt />
+          <div class="pick-box">
+            <div class="left">
+              <div>
+                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[0].icon" alt />
+              </div>
+            </div>
+            <div class="middle">
+              <img src="@/assets/img/vote/BSSVote2/ic-or.png" alt />
+              <img src="@/assets/img/vote/BSSVote2/ic-pick-text.png" alt />
+              <p>{{allNum}}</p>
+            </div>
+            <div class="right">
+              <div>
+                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[1].icon" alt />
+              </div>
+            </div>
+            <div v-show="!picked||appType==0" class="pick">
+              <div v-if="pageListReady[index]" class="btn" @click="handlePick('left',pageListReady[index].candidates)">CHAGUA</div>
+              <div v-if="pageListReady[index]" class="btn" @click="handlePick('right',pageListReady[index].candidates)">CHAGUA</div>
+            </div>
+            <div v-show="picked&&appType>0" class="progress" :class="{'show-in':show_in}">
+              <div class="bar l"></div>
+              <div class="bar r"></div>
+              <div class="left">{{leftNum}}%</div>
+              <div class="right">{{rightNum}}%</div>
+              <span class="add-one l" :class="{'l-show':l_show}">+1</span>
+              <span class="add-one r" :class="{'r-show':r_show}">+1</span>
+            </div>
+          </div>
+        </div>
+        <div id="comment" class="comment">
+          <div class="comment-box">
+            <ul v-show="commentListReady.length>0" id="ulList">
+              <li v-for="(item,key) in commentListReady" :id="key" :key="key" class="barrage">
+                <img :src="item.avatar" alt />
+                <p>{{item.content}}</p>
+              </li>
+            </ul>
+          </div>
+          <div class="send-box">
+            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
+            <div class="btn" @click="sendComment">{{disabled?`${during}s`:`TUMA`}}</div>
+          </div>
+        </div>
+        <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
+      </div>
+      <img class="text text4" src="@/assets/img/vote/BSSVote2/text4.png" alt />
+      <div class="past-programme">
+        <ul class="clearfix">
+          <li v-for="(item,i) in clipsList" :key="i">
+            <div @click="toPlayer(item,'video_click',item.description)">
+              <img class="url" :src="item.cover" />
+            </div>
+            <p class="title">{{(item.description)}}</p>
+          </li>
+        </ul>
+      </div>
     </div>
+    <div v-show="show_rules" class="rules-box">
+      <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
+      <div class="rule-text">
+        1. Kutoka tarehe 8th Oct hadi 30th Oct, una kura 5 kila siku baada ya kuingia. Kura zitakuwa zinajumlishwa na kuwa halali hadi mwisho wa shughuli.
+        <br />2. Unaweza kumpigia kura mshiriki yeyote unayempenda!
+        <br />3. Washirikishe link rafiki zako na waombe wapakue app ya StarTimes ON ili kupata kura zaidi! Utapata kura 5 zaidi kwa kila mtumiaji mpya. Unavyozidi kuleta watumiaji wapya, ndivyo unavyopata kura zaidi!
+        <br />4. Kila wakati unapopiga kura, utapata nafasi moja ya kushinda, na utapata fursa ya kushinda Abreader subwoofer, yenye thamani ya Shilingi 85,000 na Aborder bluetooth speaker, yenye thamani ya Shilingi 35,000, pamoja na Max VIP ya Mwezi ya StarTimes ON na Kuponi.
+        <br />5. Zawadi zitakuwa zinatolewa siku ya pili ya kazi katika Me-> Kuponi zangu.
+        <br />6. Wagombea 10 bora wenye kura nyingi zaidi wataweza kuingia kwenye usaili wa mwisho na kupata nafasi ya kushiriki 2019BSS.
+      </div>
+      <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
+      <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
+    </div>
+    <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
+    <mShare ref="share" />
+    <alert-dialog ref="alert" />
+    <confirm-dialog ref="confirm" />
+    <toast-dialog ref="toast" />
+  </div>
 </template>
 <script>
 import qs from "qs";
@@ -1051,7 +1051,9 @@ export default {
       this.mSendEvLog("share_click", label, "");
       if (this.appType >= 1) {
         shareInvite(
-          `${window.location.href}?pin=${this.isLogin?this.$user.id:""}&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
+          `${window.location.href}?pin=${
+            this.isLogin ? this.$user.id : ""
+          }&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -1076,7 +1078,7 @@ export default {
             () => {
               this.mSendEvLog("downloadpopup_clickok", label, "");
               downApk.call(this);
-              addTicketByDownload.call(this,this.vote_id);
+              addTicketByDownload.call(this, this.vote_id);
             },
             () => {
               this.mSendEvLog("downloadpopup_clicknot", label, "");

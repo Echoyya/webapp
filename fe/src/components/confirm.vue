@@ -1,24 +1,24 @@
 <template>
-    <div class="confirm-box">
-        <div :style="{display:style}" class="shadow-box"></div>
-        <div
-            :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}"
-            ref="confirms"
-            class="dialog"
-        >
-            <div class="dialog-body">
-                <div class="pop-default">
-                    <p>
-                        <span v-html="msg" />
-                    </p>
-                </div>
-            </div>
-            <div class="dialog-footer">
-                <div class="btn" @click="sure">{{yes}}</div>
-                <div class="btn" @click="close">{{no}}</div>
-            </div>
+  <div class="confirm-box">
+    <div :style="{display:style}" class="shadow-box"></div>
+    <div
+      :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}"
+      ref="confirms"
+      class="dialog"
+    >
+      <div class="dialog-body">
+        <div class="pop-default">
+          <p>
+            <span v-html="msg" />
+          </p>
         </div>
+      </div>
+      <div class="dialog-footer">
+        <div class="btn" @click="sure">{{yes}}</div>
+        <div class="btn" @click="close">{{no}}</div>
+      </div>
     </div>
+  </div>
 </template>
 <script>
 export default {

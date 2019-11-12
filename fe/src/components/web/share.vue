@@ -1,24 +1,24 @@
 <template>
-    <div :style="{display:style}" class="share-box">
-        <div class="shadow-box" @click="close"></div>
-        <div class="slide-bar-share">
-            <p>Share to:</p>
-            <ul>
-                <li @click="shareWithFacebook">
-                    <img src="@/assets/img/web/ic_facebook_def.png" />
-                    <p>Facebook</p>
-                </li>
-                <li @click="copyLink">
-                    <img src="@/assets/img/web/ic_copylink_def copy.png" />
-                    <p>Copy Link</p>
-                </li>
-                <li @click="shareWithTwitter">
-                    <img src="@/assets/img/web/ic_twitter_def.png" />
-                    <p>Twitter</p>
-                </li>
-            </ul>
-        </div>
+  <div :style="{display:style}" class="share-box">
+    <div class="shadow-box" @click="close"></div>
+    <div class="slide-bar-share">
+      <p>Share to:</p>
+      <ul>
+        <li @click="shareWithFacebook">
+          <img src="@/assets/img/web/ic_facebook_def.png" />
+          <p>Facebook</p>
+        </li>
+        <li @click="copyLink">
+          <img src="@/assets/img/web/ic_copylink_def copy.png" />
+          <p>Copy Link</p>
+        </li>
+        <li @click="shareWithTwitter">
+          <img src="@/assets/img/web/ic_twitter_def.png" />
+          <p>Twitter</p>
+        </li>
+      </ul>
     </div>
+  </div>
 </template>
 <script>
 // import { shareByFacebook, shareByTwitter, copyClipboard } from '@/functions/utils'

@@ -1,96 +1,96 @@
 <template>
-    <div id="app" class="wrapper">
-        <div class="container">
-            <img src="@/assets/img/vote/DreamTrip/bg_banner.png" alt="bg-img" class="bg-img" />
-            <div class="tab">
-                <img src="@/assets//img/vote/DreamTrip/btn_share.png" alt class="share-btn" />
-                <ul v-show="pageList.length>0">
-                    <li v-for="(item,i) in pageList" :key="i" class="lis" :class="i==index?'active':(i<currentPage?'pre':'')">
-                        <p class="ep">{{item.group_name}}</p>
-                        <p class="time">{{item.start_time.substr(0, 10)}}</p>
-                    </li>
-                </ul>
+  <div id="app" class="wrapper">
+    <div class="container">
+      <img src="@/assets/img/vote/DreamTrip/bg_banner.png" alt="bg-img" class="bg-img" />
+      <div class="tab">
+        <img src="@/assets//img/vote/DreamTrip/btn_share.png" alt class="share-btn" />
+        <ul v-show="pageList.length>0">
+          <li v-for="(item,i) in pageList" :key="i" class="lis" :class="i==index?'active':(i<currentPage?'pre':'')">
+            <p class="ep">{{item.group_name}}</p>
+            <p class="time">{{item.start_time.substr(0, 10)}}</p>
+          </li>
+        </ul>
+      </div>
+      <div class="topic">
+        <img v-show="topic.cover" class="title" :src="topic.cover" />
+        <div class="pick-box" v-if="pageList[index]">
+          <div class="left">
+            <div>
+              <img :src="pageList[index].candidates[0].icon" />
             </div>
-            <div class="topic">
-                <img v-show="topic.cover" class="title" :src="topic.cover" />
-                <div class="pick-box" v-if="pageList[index]">
-                    <div class="left">
-                        <div>
-                            <img :src="pageList[index].candidates[0].icon" />
-                        </div>
-                    </div>
-                    <div class="middle">
-                        <img src="@/assets/img/vote/DreamTrip/img-vs.png" />
-                        <p>{{allNum}}</p>
-                        <img src="@/assets/img/vote/DreamTrip/text1.png" />
-                    </div>
-                    <div class="right">
-                        <div>
-                            <img :src="pageList[index].candidates[1].icon" />
-                        </div>
-                    </div>
-                    <div v-show="!picked||appType==0" class="pick">
-                        <div class="btn">PICK</div>
-                        <div class="btn">PICK</div>
-                    </div>
-                    <div v-show="picked&&appType>0" class="progress" :class="{'show-in':show_in}">
-                        <div class="bar l"></div>
-                        <div class="bar r"></div>
-                        <div class="left">{{leftNum}}%</div>
-                        <div class="right">{{rightNum}}%</div>
-                        <span class="icon-y"></span>
-                        <span class="icon-b"></span>
-                        <span class="add-one l" :class="{'l-show':l_show}">+1</span>
-                        <span class="add-one r" :class="{'r-show':r_show}">+1</span>
-                    </div>
-                </div>
-                <img class="cloud2" src="@/assets/img/vote/DreamTrip/img_clound2.png" alt />
-                <img class="cloud3" src="@/assets/img/vote/DreamTrip/img_clound3.png" alt />
+          </div>
+          <div class="middle">
+            <img src="@/assets/img/vote/DreamTrip/img-vs.png" />
+            <p>{{allNum}}</p>
+            <img src="@/assets/img/vote/DreamTrip/text1.png" />
+          </div>
+          <div class="right">
+            <div>
+              <img :src="pageList[index].candidates[1].icon" />
             </div>
-            <div id="comment" class="comment">
-                <div class="comment-box">
-                    <ul v-show="commentList.length>0" id="ulList">
-                        <li v-for="(item,key) in commentList" :id="key" :key="key" class="barrage">
-                            <img :src="item.avatar" alt />
-                            <p>{{item.content}}</p>
-                        </li>
-                    </ul>
-                </div>
-                <div class="send-box">
-                    <textarea v-model="commentText" type="text" placeholder="Share your feelings..." maxlength="100" />
-                    <div class="btn">{{disabled?`${during}s`:`SEND`}}</div>
-                </div>
-            </div>
-            <img src="@/assets/img/vote/DreamTrip/img_share.png" class="img-share" alt @click="toShare" />
-            <div class="bg-bottom">
-                <img class="bg-img" src="@/assets/img/vote/DreamTrip/bg_down.png" alt />
-                <div class="bottom-item">
-                    <div class="video" @click="toPlayer(video.link_vod_code,'topic')">
-                        <div class="div">
-                            <img :src="video.cover" alt />
-                        </div>
-                        <img src="@/assets/img/vote/DreamTrip/btn-play.png" alt class="play" />
-                        <div class="title">{{video.description}}</div>
-                    </div>
-                    <div class="video" @click="toPlayer(film.link_vod_code,'fulleps')">
-                        <div class="div">
-                            <img :src="film.cover" alt />
-                        </div>
-                        <img src="@/assets/img/vote/DreamTrip/btn-play.png" alt class="play" />
-                        <div class="title">{{film.description}}</div>
-                    </div>
-                    <div class="video" @click="toPlayer(highLight.link_vod_code,'highlight')">
-                        <div class="div">
-                            <img :src="highLight.cover" alt />
-                        </div>
-                        <img src="@/assets/img/vote/DreamTrip/btn-play.png" alt class="play" />
-                        <div class="title">{{highLight.description}}</div>
-                    </div>
-                </div>
-            </div>
+          </div>
+          <div v-show="!picked||appType==0" class="pick">
+            <div class="btn">PICK</div>
+            <div class="btn">PICK</div>
+          </div>
+          <div v-show="picked&&appType>0" class="progress" :class="{'show-in':show_in}">
+            <div class="bar l"></div>
+            <div class="bar r"></div>
+            <div class="left">{{leftNum}}%</div>
+            <div class="right">{{rightNum}}%</div>
+            <span class="icon-y"></span>
+            <span class="icon-b"></span>
+            <span class="add-one l" :class="{'l-show':l_show}">+1</span>
+            <span class="add-one r" :class="{'r-show':r_show}">+1</span>
+          </div>
         </div>
-        <alert-dialog ref="alert" />
+        <img class="cloud2" src="@/assets/img/vote/DreamTrip/img_clound2.png" alt />
+        <img class="cloud3" src="@/assets/img/vote/DreamTrip/img_clound3.png" alt />
+      </div>
+      <div id="comment" class="comment">
+        <div class="comment-box">
+          <ul v-show="commentList.length>0" id="ulList">
+            <li v-for="(item,key) in commentList" :id="key" :key="key" class="barrage">
+              <img :src="item.avatar" alt />
+              <p>{{item.content}}</p>
+            </li>
+          </ul>
+        </div>
+        <div class="send-box">
+          <textarea v-model="commentText" type="text" placeholder="Share your feelings..." maxlength="100" />
+          <div class="btn">{{disabled?`${during}s`:`SEND`}}</div>
+        </div>
+      </div>
+      <img src="@/assets/img/vote/DreamTrip/img_share.png" class="img-share" alt @click="toShare" />
+      <div class="bg-bottom">
+        <img class="bg-img" src="@/assets/img/vote/DreamTrip/bg_down.png" alt />
+        <div class="bottom-item">
+          <div class="video" @click="toPlayer(video.link_vod_code,'topic')">
+            <div class="div">
+              <img :src="video.cover" alt />
+            </div>
+            <img src="@/assets/img/vote/DreamTrip/btn-play.png" alt class="play" />
+            <div class="title">{{video.description}}</div>
+          </div>
+          <div class="video" @click="toPlayer(film.link_vod_code,'fulleps')">
+            <div class="div">
+              <img :src="film.cover" alt />
+            </div>
+            <img src="@/assets/img/vote/DreamTrip/btn-play.png" alt class="play" />
+            <div class="title">{{film.description}}</div>
+          </div>
+          <div class="video" @click="toPlayer(highLight.link_vod_code,'highlight')">
+            <div class="div">
+              <img :src="highLight.cover" alt />
+            </div>
+            <img src="@/assets/img/vote/DreamTrip/btn-play.png" alt class="play" />
+            <div class="title">{{highLight.description}}</div>
+          </div>
+        </div>
+      </div>
     </div>
+    <alert-dialog ref="alert" />
+  </div>
 </template>
 <script>
 import { words } from "./words";

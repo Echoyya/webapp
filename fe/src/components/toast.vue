@@ -1,5 +1,5 @@
 <template>
-    <div v-show="tip" ref="toast" class="toast" :style="{'margin-left':offsetLeft,'margin-top':offsetTop}">{{tip}}</div>
+  <div v-show="tip" ref="toast" class="toast" :style="{'margin-left':offsetLeft,'margin-top':offsetTop}">{{tip}}</div>
 </template>
 <script>
 export default {
