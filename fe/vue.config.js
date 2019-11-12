@@ -40,7 +40,6 @@ module.exports = {
     assetsDir: "assets",
     pages: pages,
     devServer: {
-        host: 'localhost',
         port: 1024
     }
 };
