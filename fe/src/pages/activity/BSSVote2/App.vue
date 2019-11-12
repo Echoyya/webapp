@@ -1663,7 +1663,7 @@ export default {
           vote_id: this.vote_id,
           user_id: this.user_id
         }),
-        url: "hybrid/vote/getTicketAward"
+        url: "/hybrid/vote/getTicketAward"
       })
         .then(res => {
           callback && callback(res);
