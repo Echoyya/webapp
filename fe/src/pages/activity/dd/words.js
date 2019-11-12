@@ -1,4 +1,4 @@
-export function words() {
+export const words = function() {
   return [
     "anal",
     "anus",
@@ -78,4 +78,4 @@ export function words() {
     "whore",
     "wtf"
   ];
-}
+};
