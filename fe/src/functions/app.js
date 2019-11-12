@@ -296,8 +296,8 @@ export const getQueryVariable = function(query, key) {
 
 export const addTicketByDownload = function(vote_id) {
   // TODO 环境变量
-  const user = getQueryVariable(location.href, "pin");
-
+  const user = getQueryVariable(location.search, "pin");
+  console.log(location.search, user);
   this.$axios.get("/hybrid/api/sign").then(({ data }) => {
     if (data.code == 200) {
       this.$axios({
