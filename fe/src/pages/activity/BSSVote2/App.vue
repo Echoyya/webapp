@@ -1690,6 +1690,9 @@ export default {
               this.mSendEvLog("video_show", item.description, "");
             });
             this.canClickTab2 = true;
+            if(this.$serverTime>this.endTime) {
+              this.changePage("barrage");
+            }
           } else {
             this.$refs.alert.show("Get program error!");
           }
