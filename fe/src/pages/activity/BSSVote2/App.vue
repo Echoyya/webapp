@@ -152,8 +152,8 @@
                 </div>
                 <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
             </div>
-            <img v-if="isCommentStart" class="text text4" src="@/assets/img/vote/BSSVote2/text4.png" alt />
-            <div v-if="isCommentStart" class="past-programme">
+            <img class="text text4" src="@/assets/img/vote/BSSVote2/text4.png" alt />
+            <div class="past-programme">
                 <ul class="clearfix">
                     <li v-for="(item,i) in clipsList" :key="i">
                         <div @click="toPlayer(item,'video_click',item.description)">
@@ -1778,6 +1778,9 @@ export default {
   div,
   li {
     box-sizing: border-box;
+  }
+  textarea::-webkit-input-placeholder {
+    color: #acacac;
   }
   background-image: url("~@/assets/img/vote/BSSVote2/bg-img.jpg");
   background-size: contain;
