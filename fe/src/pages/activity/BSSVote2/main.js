@@ -47,7 +47,10 @@ function sendMsg(url) {
 }
 
 let appType = 0;
-let token = window.getToken && window.getToken();
+let token =
+  window.getChannelId &&
+  window.getChannelId.getToken &&
+  window.getChannelId.getToken();
 if (token) {
   appType = 1;
   setCookie("token", token);

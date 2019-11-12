@@ -93,7 +93,7 @@
     </div>
 </template>
 <script>
-import words from "./words";
+import { words } from "./words";
 import alertDialog from "@/components/alert";
 import { playVodinApp, shareInvite } from "@/functions/app";
 export default {
@@ -264,7 +264,7 @@ export default {
             }
             this.commentList = tmpArr;
             // TODO 判断是否可以点击tab
-            this.canClickTab1 = true
+            this.canClickTab1 = true;
             this.$nextTick(() => {
               for (let j = 0; j < this.number * 2; j++) {
                 document.getElementById(j).style.right = -2000 + "px";
