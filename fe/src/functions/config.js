@@ -1,5 +1,9 @@
 let env;
-if (location.href.indexOf("localhost") >= 0) {
+if (
+  location.hostname.indexOf("localhost") >= 0 ||
+  location.hostname.indexOf("test1") >= 0 ||
+  location.hostname.indexOf("dev") >= 0
+) {
   env = {
     gaWapKey: "UA-55969660-8",
     gaAndroidKey: "UA-55969660-8",
@@ -13,7 +17,7 @@ if (location.href.indexOf("localhost") >= 0) {
     gaAndroidKey: "UA-55969660-7",
     gaIosKey: "UA-55969660-5",
     countlyAppKey: "cd58cfb3e81658905d802cbe44b04683effbc7ed",
-    count: "https://event.startimestv.com"
+    countlyServer: "https://event.startimestv.com"
   };
 }
 export default env;
