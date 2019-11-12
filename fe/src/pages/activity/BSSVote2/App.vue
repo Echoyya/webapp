@@ -186,7 +186,7 @@
 </template>
 <script>
 import qs from "qs";
-import { Base64 } from "js-base64";
+// import { Base64 } from "js-base64";
 import alertDialog from "@/components/alert";
 import confirmDialog from "@/components/confirm";
 import toastDialog from "@/components/toast";
@@ -308,11 +308,11 @@ export default {
       canClickTab1: false,
       canClickTab2: false,
 
-      title: "Bongo Star Search 2019",
+      // title: "Bongo Star Search 2019",
       imgUrl: "http://cdn.startimestv.com/banner/BSSVote2-banner.png",
       shareTitle: "Bongo Star Search 2019",
       shareText: "Saidia mshiriki wako unayempenda kurudi kwenye show!",
-      content: "Saidia mshiriki wako unayempenda kurudi kwenye show!"
+      // content: "Saidia mshiriki wako unayempenda kurudi kwenye show!"
     };
   },
   computed: {
@@ -456,7 +456,6 @@ export default {
       const textdom = document.getElementsByTagName("textarea")[0];
       textdom.addEventListener("keydown", e => {
         if (e.keyCode == 13) {
-          console.log("enter");
           e.preventDefault();
           return false;
         }
@@ -522,8 +521,7 @@ export default {
               this.timeList,
               this.$serverTime
             );
-            console.log(this.topicList);
-            console.log("currentPage: " + this.currentPage);
+            // console.log("currentPage: " + this.currentPage);
             this.topic = this.topicList[this.currentPage - 1].cover;
             if (this.index != this.currentPage - 1) {
               this.index = this.currentPage - 1;
@@ -1511,7 +1509,7 @@ export default {
         clearTimeout(this.timers); // 清除转动定时器，停止转动
         // this.prize = -1
         this.times = 0;
-        console.log("你已经中奖了，位置" + (this.indexs + 1));
+        // console.log("你已经中奖了，位置" + (this.indexs + 1));
         if (this.indexs < 5) {
           setTimeout(() => {
             this.$refs.alert.show(
@@ -1703,57 +1701,6 @@ export default {
           this.$refs.alert.show("Get program error!!" + err);
         });
     }
-  },
-  head() {
-    return {
-      title: this.title,
-      meta: [
-        { name: "description", property: "description", content: this.content },
-        {
-          name: "og:description",
-          property: "og:description",
-          content: this.content
-        },
-        {
-          name: "og:image",
-          property: "og:image",
-          content: this.imgUrl
-        },
-        {
-          name: "twitter:card",
-          property: "twitter:card",
-          content: "summary_large_image"
-        },
-        { name: "og:title", property: "og:title", content: this.shareTitle },
-        {
-          name: "al:android:url",
-          property: "al:android:url",
-          content:
-            "starvideo://platformapi/webtoapp?channel=facebook&target=" +
-            Base64.encode(
-              `com.star.mobile.video.activity.BrowserActivity?loadUrl=http://m.startimestv.com/hybrid/vote/BSSVote2`.replace(
-                /&/g,
-                "**"
-              )
-            )
-        },
-        {
-          name: "al:android:app_name",
-          property: "al:android:app_name",
-          content: "StarTimes"
-        },
-        {
-          name: "al:android:package",
-          property: "al:android:package",
-          content: "com.star.mobile.video"
-        },
-        {
-          name: "al:web:url",
-          property: "al:web:url",
-          content: "http://m.startimestv.com"
-        }
-      ]
-    };
   }
 };
 </script>
