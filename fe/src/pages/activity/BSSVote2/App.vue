@@ -1076,7 +1076,7 @@ export default {
             () => {
               this.mSendEvLog("downloadpopup_clickok", label, "");
               downApk.call(this);
-              addTicketByDownload.call(this);
+              addTicketByDownload.call(this,this.vote_id);
             },
             () => {
               this.mSendEvLog("downloadpopup_clicknot", label, "");

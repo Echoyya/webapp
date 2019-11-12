@@ -296,24 +296,25 @@ export const getQueryVariable = function(query, key) {
 
 export const addTicketByDownload = function(vote_id) {
   // TODO 环境变量
-  const user = getQueryVariable(location.search, "pin");
-  console.log(location.search, user);
-  this.$axios.get("/hybrid/api/sign").then(({ data }) => {
-    if (data.code == 200) {
-      this.$axios({
-        method: "POST",
-        headers: {
-          "content-type": "application/x-www-form-urlencoded",
-          token: this.$token,
-          "X-Secret": data.data
-        },
-        data: qs.stringify({
-          vote_id: vote_id,
-          target: user,
-          action: "SHARE_DOWNLOAD"
-        }),
-        url: "/voting/v1/ticket"
-      });
-    }
-  });
+  const user = getQueryVariable(location.search.replace("?", ""), "pin");
+  if (user) {
+    this.$axios.get("/hybrid/api/sign").then(({ data }) => {
+      if (data.code == 200) {
+        this.$axios({
+          method: "POST",
+          headers: {
+            "content-type": "application/x-www-form-urlencoded",
+            token: this.$token,
+            "X-Secret": data.data
+          },
+          data: qs.stringify({
+            vote_id: vote_id,
+            target: user,
+            action: "SHARE_DOWNLOAD"
+          }),
+          url: "/voting/v1/ticket"
+        });
+      }
+    });
+  }
 };
