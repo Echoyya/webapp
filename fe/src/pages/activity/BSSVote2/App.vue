@@ -1125,7 +1125,7 @@ export default {
     getAdvisorList() {
       this.$axios
         .get(
-          `/voting/v1/candidates-show?vote_id=${this.vote_id}&sort_type=BALLOT&size=20`
+          `/voting/v1/candidates-show?vote_id=${this.vote_id}&sort_type=INDEX&size=20`
         )
         .then(res => {
           if (res.data.code === 0) {
@@ -1899,72 +1899,6 @@ export default {
             width: 30.5%;
             float: left;
             margin: 0 1% 1.3rem;
-            &:nth-child(1) .item-box,
-            &:nth-child(2) .item-box,
-            &:nth-child(3) .item-box {
-              &::before {
-                display: block;
-                text-align: center;
-                line-height: 1.3rem;
-                width: 1.3rem;
-                height: 1.3rem;
-                border-radius: 50%;
-                position: absolute;
-                top: 0.8rem;
-                left: 0;
-                z-index: 2;
-              }
-              &::after {
-                content: "";
-                display: block;
-                width: 1.35rem;
-                height: 1.35rem;
-                position: absolute;
-                top: -0.2rem;
-                right: 0;
-                z-index: 2;
-                background-size: 1.35rem 1.35rem;
-              }
-            }
-            &:nth-child(1) .item-box {
-              &::before {
-                content: "1";
-                color: #be6c00;
-                background-color: #fed44e;
-              }
-              &::after {
-                background-image: url("~@/assets/img/vote/BSSVote2/crown1.png");
-              }
-              div {
-                border: 2px solid #ffdf19;
-              }
-            }
-            &:nth-child(2) .item-box {
-              &::before {
-                content: "2";
-                color: #e66104;
-                background-color: #feb690;
-              }
-              &::after {
-                background-image: url("~@/assets/img/vote/BSSVote2/crown3.png");
-              }
-              div {
-                border: 2px solid #feb690;
-              }
-            }
-            &:nth-child(3) .item-box {
-              &::before {
-                content: "3";
-                color: #959595;
-                background-color: #dad8dd;
-              }
-              &::after {
-                background-image: url("~@/assets/img/vote/BSSVote2/crown2.png");
-              }
-              div {
-                border: 2px solid #dad8dd;
-              }
-            }
             .item-box {
               position: relative;
               width: 100%;
