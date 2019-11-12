@@ -1051,7 +1051,7 @@ export default {
       this.mSendEvLog("share_click", label, "");
       if (this.appType >= 1) {
         shareInvite(
-          `${window.location.href}?pin=${this.$user.id}&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
+          `${window.location.href}?pin=${this.isLogin?this.$user.id:""}&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -1656,7 +1656,7 @@ export default {
       this.$axios({
         method: "POST",
         headers: {
-          "content-type": "application/x-www-form-urlencoded"
+          "content-type": "application/json"
           // token: this.$store.state.token
         },
         data: qs.stringify({
@@ -2132,6 +2132,7 @@ export default {
           position: absolute;
           bottom: 1.7rem;
           left: 0;
+          font-size: 0.75rem;
           p {
             display: block;
             border-radius: 0.2rem;
