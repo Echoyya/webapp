@@ -23,32 +23,26 @@
         </div>
       </div>
     </div>
-    <div v-show="!show_share" class="invite box">
+    <div v-if="team.length>0" v-show="!show_share" class="invite box">
       <div class="title">Invite two friends to draw a lottery:</div>
       <div class="contant">
         <div>
           <div>
-            <img :src="team.team_member_dtos[0].logo" alt />
+            <img :src="team[0].logo" alt />
           </div>
-          <span>{{team.team_member_dtos[0].nick_name}}</span>
+          <span>{{team[0].nick_name}}</span>
         </div>
-        <img src="@/assets/img/vote/TeamFission/ic_forward2.png" alt />
+        <img src="@/assets/img/vote/TeamFission/ic_forward2.png" />
         <div>
           <div>
-            <img
-              v-if="team.team_recommend_dtos[0].team_member_dtos[0]"
-              :src="team.team_recommend_dtos[0].team_member_dtos[0].logo"
-              alt
-            />
+            <img v-if="team[1]" :src="team[1].logo" />
+            <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
           </div>
         </div>
         <div>
           <div>
-            <img
-              v-if="team.team_recommend_dtos[0].team_member_dtos[1]"
-              :src="team.team_recommend_dtos[0].team_member_dtos[1].logo"
-              alt
-            />
+            <img v-if="team[2]" :src="team[2].logo" />
+            <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
           </div>
         </div>
       </div>
@@ -93,27 +87,27 @@
     </div>
 
     <mShare ref="share" />
-    <alert-dialog ref="alert" />
-    <confirm-dialog ref="confirm" />
     <toast-dialog ref="toast" />
+    <malert ref="malert" />
+    <malert ref="findTeamAlert">
+      <a slot="link" href="/activity/team/search.html">CHANGE</a>
+    </malert>
   </div>
 </template>
 <script>
-import alertDialog from '@/components/alert'
-import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable, toNativePage } from '@/functions/app'
+import malert from '@/pages/activity/team/malert'
 export default {
   components: {
     mBanner,
     mShare,
-    alertDialog,
-    confirmDialog,
-    toastDialog
+    toastDialog,
+    malert
   },
   data() {
     return {
@@ -135,27 +129,7 @@ export default {
       show_share: false,
 
       //team
-      team: {
-        allow_lottery: true,
-        team_member_dtos: [
-          {
-            nick_name: 'leader',
-            logo: 'http://cdn.startimestv.com/banner/bss-more.png'
-          }
-        ],
-        joined: true,
-        team_recommend_dtos: [
-          {
-            team_no: 'string',
-            team_member_dtos: [
-              {
-                nick_name: 'name1',
-                logo: 'http://cdn.startimestv.com/banner/bss-more.png'
-              }
-            ]
-          }
-        ]
-      },
+      team: [],
       teamNum: 999898,
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
@@ -265,43 +239,85 @@ export default {
   mounted() {
     const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (teamno && !isNaN(teamno)) {
+      // history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
       searchTeam.call(this, teamno, data => {
-        // TODO 判断队伍是否满员
-
-        if (data.data.newcomer && data.data.team_member_dtos.length > 0) {
-          // 新用户
-          const teamLeader = data.data.team_member_dtos[0].nick_name
-          this.$refs.confirm.show(
-            'Here! You are going to join ' + teamLeader + '`s team',
-            () => {
-              // 加入队伍
-              joinTeam.call(this, teamno, data => {
-                if (data.code == 0) {
-                  location.href = '/activity/team/home.html'
-                } else {
-                  this.$refs.alert.show(
-                    data.message,
-                    () => {
-                      createTeam.call(this, () => {
-                        location.href = '/activity/team/home.html'
-                      })
-                    },
-                    'FORM A NEW TEAM'
-                  )
-                }
-              })
-            },
-            () => {
-              // 更换队伍
-            },
-            'OK',
-            'ChangeTeam'
-          )
+        if (data.code >= 2) {
+          //未找到队伍
+          this.$refs.malert.show(data.message)
         } else {
-          // 老用户
+          if (data.data.newcomer) {
+            if (data.code > 0) {
+              // 队伍未满
+              const teamLeader = data.data.team_member_dtos[0].nick_name
+              this.$refs.findTeamAlert.show(
+                'Here! You are going to join ' + teamLeader + '`s team',
+                () => {
+                  // 加入队伍
+                  if (this.$isLogin) {
+                    joinTeam.call(this, teamno, data => {
+                      if (data.code == 0) {
+                        this.team = data.data.team_member_dtos
+                      } else {
+                        this.$refs.malert.show(data.message)
+                      }
+                    })
+                  } else if (this.$appType === 1) {
+                    toNativePage('com.star.mobile.video.account.LoginActivity')
+                  } else {
+                    toNativePage('startimes://login')
+                  }
+                },
+                'OK'
+              )
+            } else {
+              // 队伍已满
+              this.$refs.malert.show('Change another Team', () => {
+                location.href = '/activity/team/search.html'
+              })
+            }
+          } else {
+            // 老用户
+            this.$refs.malert.show('老用户提示文案', () => {
+              if (this.$isLogin) {
+                createTeam.call(this, () => {
+                  if (data.code == 0) {
+                    this.team = data.data.team_member_dtos
+                  } else if (data.code == 1) {
+                    this.$refs.malert.show(
+                      '您已经有队伍了，暂时不能组队了',
+                      () => {
+                        this.$axios.get(`/voting/team-building/v1/participating-team`).then(({ data }) => {
+                          this.team = data.data.team_member_dtos
+                        })
+                      },
+                      '查看我所在的队伍'
+                    )
+                  }
+                })
+              } else if (this.$appType === 1) {
+                toNativePage('com.star.mobile.video.account.LoginActivity')
+              } else {
+                toNativePage('startimes://login')
+              }
+            })
+          }
         }
-        console.log(data)
       })
+    } else {
+      if (this.$isLogin) {
+        // 获取当前所在队伍 TODO 无法跨域问题
+        this.$axios.get(`/voting/team-building/v1/participating-team`).then(({ data }) => {
+          this.team = data.data.team_member_dtos
+        })
+      } else {
+        // 创建假的队伍
+        this.team = [
+          {
+            nick_name: this.$user.nickName,
+            logo: this.$user.head || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
+          }
+        ]
+      }
     }
     this.getLotteryType()
     this.getMsgList()
