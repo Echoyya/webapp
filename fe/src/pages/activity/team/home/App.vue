@@ -3,7 +3,7 @@
     <mBanner />
     <div class="remaining box">
       <div class="title">Remaining:</div>
-      <div class="times">
+      <div class="contant">
         <div class="day">{{days}} days</div>
         <div class="day">
           <div>{{hour}} h</div>
@@ -13,25 +13,15 @@
       </div>
     </div>
     <div class="invite box">
-      <div class="title">Remaining:</div>
-      <div class="times">
-        <div class="day">{{days}} days</div>
-        <div class="day">
-          <div>{{hour}} h</div>
-          <div>{{min}} m</div>
-          <div>{{sed}} s</div>
-        </div>
+      <div class="title">Invite two friends to draw a lottery:</div>
+      <div class="contant">
+        <div>aaa</div>
       </div>
     </div>
     <div class="lottery box">
-      <div class="title">Remaining:</div>
-      <div class="times">
-        <div class="day">{{days}} days</div>
-        <div class="day">
-          <div>{{hour}} h</div>
-          <div>{{min}} m</div>
-          <div>{{sed}} s</div>
-        </div>
+      <div class="title">Draw your prize!</div>
+      <div class="contant">
+        <div>bbb</div>
       </div>
     </div>
     <mShare ref="share" />
@@ -122,17 +112,16 @@ export default {
   font-size: 0.9rem;
   letter-spacing: -0.03rem;
   position: static;
-  background-color: #7C003D;
+  background-color: #7c003d;
   .box {
     position: relative;
     z-index: 2;
     width: 90%;
-    height: 9rem;
     margin: 0 auto;
     font-style: italic;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
-      width: 80%;
+      width: 85%;
       height: 2rem;
       color: #ffbc00;
       border-top-right-radius: 1rem;
@@ -140,12 +129,18 @@ export default {
       padding-left: 0.8rem;
       line-height: 2rem;
     }
-    .times {
+    .contant {
       padding: 0.5rem;
       background-image: linear-gradient(rgba(165, 3, 80, 0.5), #600165);
       border-radius: 1rem;
       border-top-left-radius: 0;
       color: #fff;
+    }
+  }
+  .remaining {
+    margin: -18% auto 0;
+    height: 9rem;
+    .contant {
       .day {
         width: 100%;
         height: 2.5rem;
@@ -162,8 +157,11 @@ export default {
       }
     }
   }
-  .remaining {
-    margin: -18% auto 1rem;
+  .invite {
+    height: 9rem;
+  }
+  .lottery {
+    height: 22rem;
   }
 }
 </style>
