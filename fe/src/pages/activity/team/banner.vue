@@ -7,16 +7,16 @@
       <div class="about" @click="showRule">About</div>
     </div>
     <div v-show="show_rules" class="rules-box">
-      <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
+      <img src="@/assets/img/vote/TeamFission/ic_close.png" alt @click="closeShadow" />
       <div class="rule-text">
-        1. Kutoka tarehe 8th Oct hadi 30th Oct, una kura 5 kila siku baada ya kuingia. Kura zitakuwa zinajumlishwa na kuwa halali hadi mwisho wa shughuli.
-        <br />2. Unaweza kumpigia kura mshiriki yeyote unayempenda!
-        <br />3. Washirikishe link rafiki zako na waombe wapakue app ya StarTimes ON ili kupata kura zaidi! Utapata kura 5 zaidi kwa kila mtumiaji mpya. Unavyozidi kuleta watumiaji wapya, ndivyo unavyopata kura zaidi!
-        <br />4. Kila wakati unapopiga kura, utapata nafasi moja ya kushinda, na utapata fursa ya kushinda Abreader subwoofer, yenye thamani ya Shilingi 85,000 na Aborder bluetooth speaker, yenye thamani ya Shilingi 35,000, pamoja na Max VIP ya Mwezi ya StarTimes ON na Kuponi.
-        <br />5. Zawadi zitakuwa zinatolewa siku ya pili ya kazi katika Me-> Kuponi zangu.
-        <br />6. Wagombea 10 bora wenye kura nyingi zaidi wataweza kuingia kwenye usaili wa mwisho na kupata nafasi ya kushiriki 2019BSS.
+        <p>Rules</p>
+        1. The team leader can call 2 friends and form a team to enter the lucky draw.<br/>
+        2. Prizes include 1 Day VIP, 7 Days VIP and 30  Days VIP.<br/>
+        3. Only new devices and accounts are identified as new users can join the team.<br/>
+        4. Each user have up to 10 chances to win. <br/>
+        5. Activity valid until Dec 25, 2019<br/>
+        6. StarTimes ON reserves the right of final decision and interpretation.<br/>
       </div>
-      <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
     </div>
     <div v-show="show_rules" class="shadow-box" @click="closeShadow"></div>
   </div>
@@ -104,52 +104,44 @@ export default {
   }
   .rules-box {
     width: 17rem;
-    height: 26rem;
+    height: 22rem;
     line-height: 1.2rem;
     position: fixed;
     overflow: hidden;
     top: 50%;
     left: 50%;
     margin-left: -8.5rem;
-    margin-top: -13rem;
+    margin-top: -11rem;
     z-index: 999;
+    background-image: linear-gradient(#A40020,#6B004A);
+    border-radius: 0.3rem;
+    color: #Fff;
     img {
-      &:first-child {
-        width: 100%;
-        display: block;
-      }
-      &:last-child {
-        width: 10%;
-        display: block;
-        margin: 1.5rem auto 0;
-      }
+        width: 1.5rem;
+        height: 1.5rem;
+        position: absolute;
+        top: 0.5rem;
+        right: 0.5rem;
+        z-index: 1000;
     }
     .rule-text {
-      width: 15rem;
-      height: 14.5rem;
-      color: #1b9145;
+      p {
+        width: 100%;
+        height: 3rem;
+        text-align: center;
+        margin: 0 auto;
+        font-size: 1.2rem;
+        line-height: 2rem;
+      }
+      width: 16rem;
       position: absolute;
-      left: 1rem;
-      top: 4rem;
+      left: 0.5rem;
+      top: 1rem;
       padding: 0.5rem;
-      overflow-x: hidden;
-      overflow-y: scroll;
+      overflow: hidden;
       &::-webkit-scrollbar {
         display: none;
       }
-    }
-    .share-btn {
-      width: 8rem;
-      height: 1.8rem;
-      text-align: center;
-      line-height: 1.8rem;
-      color: #fff;
-      background-image: url('~@/assets/img/vote/BSSRegister/btn-success.png');
-      background-size: 8rem 1.8rem;
-      position: absolute;
-      left: 4.5rem;
-      top: 19.2rem;
-      border-radius: 0.2rem;
     }
   }
   .shadow-box {

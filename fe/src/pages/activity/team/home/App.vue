@@ -2,6 +2,7 @@
   <div class="wrapper">
     <mBanner />
     <div class="remaining box">
+      <img src="@/assets/img/vote/TeamFission/ic-awards.png" @click="showAwards" />
       <div class="title">Remaining:</div>
       <div class="contant">
         <div class="day">
@@ -22,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div class="invite box">
+    <div v-show="!show_share" class="invite box">
       <div class="title">Invite two friends to draw a lottery:</div>
       <div class="contant">
         <div>
@@ -51,6 +52,15 @@
           </div>
         </div>
       </div>
+      <img src="@/assets/img/vote/TeamFission/btn-friends.png" @click="show_share=true" />
+    </div>
+    <div v-show="show_share" class="share-box">
+      <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false" />
+      <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
+      <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
+      <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
+      <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
+      <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
     </div>
     <div class="lottery box">
       <div class="title">Draw your prize!</div>
@@ -95,8 +105,8 @@ import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
-import { getQueryVariable } from '@/functions/app'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
 export default {
   components: {
     mBanner,
@@ -122,6 +132,7 @@ export default {
       hour: '',
       min: '',
       sed: '',
+      show_share: false,
 
       //team
       team: {
@@ -145,6 +156,7 @@ export default {
           }
         ]
       },
+      teamNum: 999898,
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
       counts: 8, // 总共有多少个位置
@@ -254,7 +266,6 @@ export default {
     const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (teamno && !isNaN(teamno)) {
       searchTeam.call(this, teamno, data => {
-        
         // TODO 判断队伍是否满员
 
         if (data.data.newcomer && data.data.team_member_dtos.length > 0) {
@@ -297,6 +308,38 @@ export default {
     this.msgScroll()
   },
   methods: {
+    toFacebook() {
+      if (this.appType == 1) {
+        shareByFacebook('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      }
+    },
+    toWhatsApp() {
+      if (this.appType == 1) {
+        shareByWhatsApp('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      }
+    },
+    toXender() {
+      if (this.appType == 1) {
+        shareByXender(this.teamNum + '')
+      }
+    },
+    toDownload() {
+      if (this.appType == 1) {
+        shareByDownload()
+      }
+    },
+    toCopylink() {
+      if (this.appType == 1) {
+        const bool = shareByCopyLink('https://www.taobao.com/')
+        this.$refs.alert.show(bool)
+      }
+    },
+    showAwards() {
+      console.log('my awards')
+    },
+    toSearch() {
+      window.location.href = '/activity/team/search'
+    },
     // 获取消息列表
     getMsgList() {
       this.$axios
@@ -412,7 +455,7 @@ export default {
     font-style: italic;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
-      width: 85%;
+      width: 80%;
       height: 2rem;
       color: #ffbc00;
       border-top-right-radius: 1rem;
@@ -421,7 +464,7 @@ export default {
       line-height: 2rem;
     }
     .contant {
-      padding: 0.5rem 0.5rem 1.5rem;
+      padding: 0.5rem;
       background-image: linear-gradient(rgba(165, 3, 80, 0.5), #600165);
       border-radius: 1rem;
       border-top-left-radius: 0;
@@ -429,7 +472,13 @@ export default {
     }
   }
   .remaining {
-    margin: -18% auto 1rem;
+    margin: -18% auto 0.5rem;
+    > img {
+      position: absolute;
+      width: 20%;
+      top: -2.5rem;
+      right: -0.5rem;
+    }
     .contant {
       .day {
         width: 100%;
@@ -466,8 +515,9 @@ export default {
     }
   }
   .invite {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     .contant {
+      padding: 0.5rem 0.5rem 1.5rem;
       position: relative;
       > div {
         display: inline-block;
@@ -478,6 +528,8 @@ export default {
           border: 2px solid #8700b1;
           border-radius: 50%;
           overflow: hidden;
+          background-image: url('~@/assets/img/vote/TeamFission/bg-add.png');
+          background-size: 100% 100%;
           img {
             width: 100%;
             height: 100%;
@@ -503,10 +555,10 @@ export default {
         margin-right: 5%;
       }
       :nth-child(2) {
-        margin-right: 5%;
+        margin-right: 6%;
       }
       :nth-child(3) {
-        margin-right: 8%;
+        margin-right: 10%;
       }
       > img {
         width: 18%;
@@ -514,10 +566,31 @@ export default {
         top: -1.4rem;
       }
     }
+    > img {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+  }
+  .share-box {
+    width: 95%;
+    margin: 0.5rem auto;
+    padding: 0.5rem;
+    background-color: #a1014b;
+    height: 10rem;
+    border-radius: 1rem;
+    > img {
+      width: 20%;
+      &:first-child {
+        display: block;
+        margin-left: 93%;
+        margin-bottom: 1rem;
+        width: 7%;
+        background-image: url('~@/assets/img/vote/TeamFission/ic_download.png');
+      }
+    }
   }
   .lottery {
     height: 23rem;
-    font-style: normal;
     .contant {
       padding: 0;
       height: 20.5rem;
@@ -529,6 +602,7 @@ export default {
         background-image: url('~@/assets/img/vote/TeamFission/bg-lottery.png');
         background-size: 100% 19.5rem;
         color: #ad5500;
+        font-style: normal;
         ul {
           width: 90%;
           margin: 0 auto;
@@ -660,6 +734,7 @@ export default {
           padding-left: 2.5rem;
           line-height: 2rem;
           height: 2rem;
+          font-size: 0.75rem;
           color: #fff;
           overflow: hidden;
           text-overflow: ellipsis;
