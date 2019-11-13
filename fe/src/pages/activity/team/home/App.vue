@@ -35,24 +35,32 @@
         <img src="@/assets/img/vote/TeamFission/ic_forward2.png" alt />
         <div>
           <div>
-            <img v-if="team.team_recommend_dtos[0].team_member_dtos[0]" :src="team.team_recommend_dtos[0].team_member_dtos[0].logo" alt />
+            <img
+              v-if="team.team_recommend_dtos[0].team_member_dtos[0]"
+              :src="team.team_recommend_dtos[0].team_member_dtos[0].logo"
+              alt
+            />
           </div>
         </div>
         <div>
           <div>
-            <img v-if="team.team_recommend_dtos[0].team_member_dtos[1]" :src="team.team_recommend_dtos[0].team_member_dtos[1].logo" alt />
+            <img
+              v-if="team.team_recommend_dtos[0].team_member_dtos[1]"
+              :src="team.team_recommend_dtos[0].team_member_dtos[1].logo"
+              alt
+            />
           </div>
         </div>
       </div>
-      <img src="@/assets/img/vote/TeamFission/btn-friends.png" @click="show_share=true">
+      <img src="@/assets/img/vote/TeamFission/btn-friends.png" @click="show_share=true" />
     </div>
     <div v-show="show_share" class="share-box">
-      <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false">
-      <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook">
-      <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp">
-      <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender">
-      <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload">
-      <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink">
+      <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false" />
+      <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
+      <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
+      <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
+      <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
+      <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
     </div>
     <div class="lottery box">
       <div class="title">Draw your prize!</div>
@@ -97,6 +105,8 @@ import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
+import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
 export default {
   components: {
     mBanner,
@@ -146,6 +156,7 @@ export default {
           }
         ]
       },
+      teamNum: 999898,
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
       counts: 8, // 总共有多少个位置
@@ -252,26 +263,76 @@ export default {
     }, 300)
   },
   mounted() {
-    // this.mSendEvLog("page_show", "", "");
+    const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
+    if (teamno && !isNaN(teamno)) {
+      searchTeam.call(this, teamno, data => {
+        // TODO 判断队伍是否满员
+
+        if (data.data.newcomer && data.data.team_member_dtos.length > 0) {
+          // 新用户
+          const teamLeader = data.data.team_member_dtos[0].nick_name
+          this.$refs.confirm.show(
+            'Here! You are going to join ' + teamLeader + '`s team',
+            () => {
+              // 加入队伍
+              joinTeam.call(this, teamno, data => {
+                if (data.code == 0) {
+                  location.href = '/activity/team/home.html'
+                } else {
+                  this.$refs.alert.show(
+                    data.message,
+                    () => {
+                      createTeam.call(this, () => {
+                        location.href = '/activity/team/home.html'
+                      })
+                    },
+                    'FORM A NEW TEAM'
+                  )
+                }
+              })
+            },
+            () => {
+              // 更换队伍
+            },
+            'OK',
+            'ChangeTeam'
+          )
+        } else {
+          // 老用户
+        }
+        console.log(data)
+      })
+    }
     this.getLotteryType()
     this.getMsgList()
     this.msgScroll()
   },
   methods: {
     toFacebook() {
-
+      if (this.appType == 1) {
+        shareByFacebook('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      }
     },
     toWhatsApp() {
-
+      if (this.appType == 1) {
+        shareByWhatsApp('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      }
     },
     toXender() {
-
+      if (this.appType == 1) {
+        shareByXender(this.teamNum + '')
+      }
     },
     toDownload() {
-
+      if (this.appType == 1) {
+        shareByDownload()
+      }
     },
     toCopylink() {
-      
+      if (this.appType == 1) {
+        const bool = shareByCopyLink('https://www.taobao.com/')
+        this.$refs.alert.show(bool)
+      }
     },
     showAwards() {
       console.log('my awards')
@@ -467,7 +528,7 @@ export default {
           border: 2px solid #8700b1;
           border-radius: 50%;
           overflow: hidden;
-          background-image: url("~@/assets/img/vote/TeamFission/bg-add.png");
+          background-image: url('~@/assets/img/vote/TeamFission/bg-add.png');
           background-size: 100% 100%;
           img {
             width: 100%;
@@ -514,7 +575,7 @@ export default {
     width: 95%;
     margin: 0.5rem auto;
     padding: 0.5rem;
-    background-color: #A1014B;
+    background-color: #a1014b;
     height: 10rem;
     border-radius: 1rem;
     > img {
@@ -524,7 +585,7 @@ export default {
         margin-left: 93%;
         margin-bottom: 1rem;
         width: 7%;
-        background-image: url("~@/assets/img/vote/TeamFission/ic_download.png");
+        background-image: url('~@/assets/img/vote/TeamFission/ic_download.png');
       }
     }
   }
