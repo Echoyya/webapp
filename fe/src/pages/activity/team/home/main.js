@@ -122,7 +122,7 @@ const serializeMsg = (msg, type) => {
   return JSON.stringify([param]);
 };
 
-axios.defaults.baseURL = "http://qa.upms.startimestv.com"; // TODO 环境变量;
+axios.defaults.baseURL = "http://dev.upms.startimestv.com"; // TODO 环境变量;
 axios.defaults.headers.token = token;
 
 axios.interceptors.request.use(
