@@ -2,6 +2,7 @@
   <div class="wrapper">
     <mBanner />
     <div class="remaining box">
+      <img src="@/assets/img/vote/TeamFission/ic-awards.png" @click="showAwards" />
       <div class="title">Remaining:</div>
       <div class="contant">
         <div class="day">
@@ -247,6 +248,9 @@ export default {
     this.msgScroll()
   },
   methods: {
+    showAwards() {
+      console.log('my awards')
+    },
     // 获取消息列表
     getMsgList() {
       this.$axios
@@ -280,7 +284,7 @@ export default {
                   item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
                 }
               }
-              if(item.user_id) item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
+              if (item.user_id) item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
               for (let i = 0; i < this.lotteryType.length; i++) {
                 if (item.reward_id == this.lotteryType[i].id) {
                   item.reward_name = this.lotteryType[i].name
@@ -362,7 +366,7 @@ export default {
     font-style: italic;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
-      width: 85%;
+      width: 80%;
       height: 2rem;
       color: #ffbc00;
       border-top-right-radius: 1rem;
@@ -371,7 +375,7 @@ export default {
       line-height: 2rem;
     }
     .contant {
-      padding: 0.5rem 0.5rem 1.5rem;
+      padding: 0.5rem;
       background-image: linear-gradient(rgba(165, 3, 80, 0.5), #600165);
       border-radius: 1rem;
       border-top-left-radius: 0;
@@ -380,6 +384,12 @@ export default {
   }
   .remaining {
     margin: -18% auto 1rem;
+    > img {
+      position: absolute;
+      width: 20%;
+      top: -2.5rem;
+      right: -0.5rem;
+    }
     .contant {
       .day {
         width: 100%;
@@ -418,6 +428,7 @@ export default {
   .invite {
     margin-bottom: 1rem;
     .contant {
+      padding: 0.5rem 0.5rem 1.5rem;
       position: relative;
       > div {
         display: inline-block;
@@ -443,7 +454,7 @@ export default {
           }
         }
         span {
-          color: #9F00EE;
+          color: #9f00ee;
           font-style: normal;
           position: absolute;
           left: 6%;
@@ -453,10 +464,10 @@ export default {
         margin-right: 5%;
       }
       :nth-child(2) {
-        margin-right: 5%;
+        margin-right: 6%;
       }
       :nth-child(3) {
-        margin-right: 8%;
+        margin-right: 10%;
       }
       > img {
         width: 18%;
@@ -467,7 +478,6 @@ export default {
   }
   .lottery {
     height: 23rem;
-    font-style: normal;
     .contant {
       padding: 0;
       height: 20.5rem;
@@ -479,6 +489,7 @@ export default {
         background-image: url('~@/assets/img/vote/TeamFission/bg-lottery.png');
         background-size: 100% 19.5rem;
         color: #ad5500;
+        font-style: normal;
         ul {
           width: 90%;
           margin: 0 auto;
@@ -610,6 +621,7 @@ export default {
           padding-left: 2.5rem;
           line-height: 2rem;
           height: 2rem;
+          font-size: 0.75rem;
           color: #fff;
           overflow: hidden;
           text-overflow: ellipsis;
