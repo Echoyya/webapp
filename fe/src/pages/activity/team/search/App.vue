@@ -18,7 +18,7 @@
       </div>
     </div>
     <div v-show="mumberList.length>=3" class="team-btn">
-      <span>Oops,  you're a little late， form a new team.</span>
+      <span>Oops, you're a little late， form a new team.</span>
       <div @click="create">Form A New Team</div>
     </div>
     <div v-show="mumberList.length>=1&&mumberList.length<3" class="team-btn">
@@ -63,6 +63,7 @@ export default {
     submit() {
       const reg = /^[0-9]+$/g
       if (!reg.test(this.teamNum)) {
+        this.$refs.alert.show('Input error')
         return
       }
       searchTeam.call(this, this.teamNum, data => {
