@@ -150,7 +150,7 @@ export default {
       click: true,
 
       lotteryLeft: 0,
-      lottery_id: 3,
+      lottery_id: 4,
       lotteryType: [],
       loaded_l: false,
 
