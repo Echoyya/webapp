@@ -8,6 +8,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
+// import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
 export default {
   components: {
     mBanner
