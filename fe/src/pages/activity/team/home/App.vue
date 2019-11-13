@@ -44,6 +44,7 @@
           </div>
         </div>
       </div>
+      <img src="@/assets/img/vote/TeamFission/btn-friends.png" @click="toSearch">
     </div>
     <div class="lottery box">
       <div class="title">Draw your prize!</div>
@@ -251,6 +252,9 @@ export default {
     showAwards() {
       console.log('my awards')
     },
+    toSearch() {
+      window.location.href = '/activity/team/search'
+    },
     // 获取消息列表
     getMsgList() {
       this.$axios
@@ -383,7 +387,7 @@ export default {
     }
   }
   .remaining {
-    margin: -18% auto 1rem;
+    margin: -18% auto 0.5rem;
     > img {
       position: absolute;
       width: 20%;
@@ -426,7 +430,7 @@ export default {
     }
   }
   .invite {
-    margin-bottom: 1rem;
+    margin-bottom: 0.5rem;
     .contant {
       padding: 0.5rem 0.5rem 1.5rem;
       position: relative;
@@ -439,6 +443,8 @@ export default {
           border: 2px solid #8700b1;
           border-radius: 50%;
           overflow: hidden;
+          background-image: url("~@/assets/img/vote/TeamFission/bg-add.png");
+          background-size: 100% 100%;
           img {
             width: 100%;
             height: 100%;
@@ -474,6 +480,10 @@ export default {
         position: relative;
         top: -1.4rem;
       }
+    }
+    > img {
+      width: 100%;
+      margin-top: 0.5rem;
     }
   }
   .lottery {
