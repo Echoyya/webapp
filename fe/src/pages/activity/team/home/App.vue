@@ -25,15 +25,55 @@
     <div class="invite box">
       <div class="title">Invite two friends to draw a lottery:</div>
       <div class="contant">
-        <div>aaa</div>
+        <div>
+          <div>
+            <img :src="team.team_member_dtos[0].logo" alt />
+          </div>
+          <span>{{team.team_member_dtos[0].nick_name}}</span>
+        </div>
+        <img src="@/assets/img/vote/TeamFission/ic_forward2.png" alt />
+        <div>
+          <div>
+            <img v-if="team.team_recommend_dtos[0].team_member_dtos[0]" :src="team.team_recommend_dtos[0].team_member_dtos[0].logo" alt />
+          </div>
+        </div>
+        <div>
+          <div>
+            <img v-if="team.team_recommend_dtos[0].team_member_dtos[1]" :src="team.team_recommend_dtos[0].team_member_dtos[1].logo" alt />
+          </div>
+        </div>
       </div>
     </div>
     <div class="lottery box">
       <div class="title">Draw your prize!</div>
       <div class="contant">
-        <div>bbb</div>
+        <div class="lottery-type">
+          <ul class="clearfix">
+            <li v-for="(item,key) in lotteryList" :key="key" :class="indexs==key?'active':''">
+              <div>
+                <div class="prize">
+                  <img :src="item.picture_url" alt />
+                  <p>{{item.name}}</p>
+                </div>
+              </div>
+            </li>
+            <div class="getLuck" @click="startLottery">DRAW</div>
+          </ul>
+        </div>
       </div>
     </div>
+    <div class="msg-box">
+      <div class="msg">
+        <ul ref="msgul" :class="{anim:animates==true}">
+          <img src="@/assets/img/vote/BSSRegister/sound.png" alt />
+          <li
+            v-for="item in msgList"
+            :key="item.key"
+          >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} umeshinda {{item.reward_name||''}}!</li>
+        </ul>
+      </div>
+    </div>
+
     <mShare ref="share" />
     <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
@@ -72,6 +112,33 @@ export default {
       hour: '',
       min: '',
       sed: '',
+
+      //team
+      team: {
+        allow_lottery: true,
+        team_member_dtos: [
+          {
+            nick_name: 'leader',
+            logo: 'http://cdn.startimestv.com/banner/bss-more.png'
+          }
+        ],
+        joined: true,
+        team_recommend_dtos: [
+          {
+            team_no: 'string',
+            team_member_dtos: [
+              {
+                nick_name: 'name1',
+                logo: 'http://cdn.startimestv.com/banner/bss-more.png'
+              }
+              // {
+              //   nick_name: 'name2',
+              //   logo: 'http://cdn.startimestv.com/banner/bss-30off.png'
+              // }
+            ]
+          }
+        ]
+      },
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
       counts: 8, // 总共有多少个位置
@@ -85,6 +152,7 @@ export default {
       lotteryLeft: 0,
       lottery_id: 3,
       lotteryType: [],
+      loaded_l: false,
 
       // 消息轮播
       animates: false,
@@ -96,6 +164,20 @@ export default {
     }
   },
   computed: {
+    lotteryList() {
+      if (this.loaded_l) {
+        return this.lotteryType
+      } else {
+        return []
+      }
+    },
+    msgList() {
+      if (this.loaded_l && this.loaded_m) {
+        return this.items
+      } else {
+        return []
+      }
+    },
     platform() {
       if (this.appType == 1) {
         return 'Android'
@@ -164,8 +246,103 @@ export default {
   },
   mounted() {
     // this.mSendEvLog("page_show", "", "");
+    this.getLotteryType()
+    this.getMsgList()
+    this.msgScroll()
   },
-  methods: {}
+  methods: {
+    // 获取消息列表
+    getMsgList() {
+      this.$axios
+        .get(`/voting/lottery/v1/winnings?lottery_id=${this.lottery_id}`)
+        .then(res => {
+          if (res.data.code === 0) {
+            // if (this.$serverTime <= this.startTime) {
+            //   this.items = [];
+            // } else {
+            this.items = res.data.data
+            this.items.forEach(item => {
+              if (item.user_name) {
+                if (new RegExp(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[a-z0-9]*[a-z0-9]+\.){1,63}[a-z0-9]+$/).test(item.user_name)) {
+                  // 邮箱用户
+                  const arr = item.user_name.split('@')
+                  if (arr[0].length > 3) {
+                    item.user_name =
+                      arr[0].substr(0, 2) + arr[0].slice(2, -1).replace(/[^\s]/g, '*') + arr[0].substring(arr[0].length - 1) + '@' + arr[1]
+                  }
+                  if (arr[0].length == 3) {
+                    item.user_name = arr[0].replace(/(\w{1})\w{1}(\w{1})/, '$1*$2') + '@' + arr[1]
+                  }
+                  if (arr[0].length == 2) {
+                    item.user_name = arr[0].replace(/\w{1}(\w{1})/, '*$1') + '@' + arr[1]
+                  }
+                  if (arr[0].length == 1) {
+                    item.user_name = arr[0].replace(/\w{1}/, '*') + '@' + arr[1]
+                  }
+                } else if (new RegExp(/^\d{1,}$/).test(item.user_name)) {
+                  // 手机用户
+                  item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
+                }
+              }
+              item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
+              for (let i = 0; i < this.lotteryType.length; i++) {
+                if (item.reward_id == this.lotteryType[i].id) {
+                  item.reward_name = this.lotteryType[i].name
+                }
+              }
+            })
+            this.loaded_m = true
+            // }
+          } else {
+            this.items = [] // 服务器端计算数据错误时
+            this.$refs.alert.show('Get winnings error!')
+          }
+        })
+        .catch(err => {
+          this.items = []
+          this.$refs.alert.show('Get winnings error!! ' + err)
+        })
+    },
+    msgScroll() {
+      this.tmsg = setInterval(() => {
+        // if (this.$serverTime > this.endTime) clearInterval(this.tmsg)
+        this.getMsgList()
+      }, 60000)
+      const msgul = this.$refs.msgul
+      this.tscroll = setInterval(() => {
+        msgul.style.marginTop = '-30px'
+        this.animates = !this.animates
+        setTimeout(() => {
+          this.msgList.push(this.msgList[0])
+          this.msgList.shift()
+          msgul.style.marginTop = '0'
+          this.animates = !this.animates // 避免回滚
+        }, 500)
+      }, 2000)
+    },
+    // 获取抽奖种类
+    getLotteryType() {
+      this.$axios
+        .get(`/voting/lottery/v1/rewards?lottery_id=${this.lottery_id}`)
+        .then(res => {
+          if (res.data.code === 0) {
+            this.lotteryType = res.data.data
+          } else {
+            this.lotteryType = [] // 服务器端计算数据错误时
+            this.$refs.alert.show('Get rewards error!')
+          }
+          this.loaded_l = true
+          // this.getMsgList();
+        })
+        .catch(err => {
+          this.lotteryType = []
+          this.$refs.alert.show('Get rewards error!! ' + err)
+        })
+    },
+    startLottery() {
+      console.log('start')
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
@@ -180,11 +357,11 @@ export default {
   font-size: 0.9rem;
   letter-spacing: -0.03rem;
   position: static;
-  background-color: #7c003d;
+  background-image: linear-gradient(#7c003d, #6c0049);
   .box {
     position: relative;
     z-index: 2;
-    width: 90%;
+    width: 95%;
     margin: 0 auto;
     font-style: italic;
     .title {
@@ -198,7 +375,7 @@ export default {
       line-height: 2rem;
     }
     .contant {
-      padding: 0.5rem;
+      padding: 0.5rem 0.5rem 1.5rem;
       background-image: linear-gradient(rgba(165, 3, 80, 0.5), #600165);
       border-radius: 1rem;
       border-top-left-radius: 0;
@@ -244,10 +421,207 @@ export default {
     }
   }
   .invite {
-    height: 9rem;
+    margin-bottom: 1rem;
+    .contant {
+      position: relative;
+      > div {
+        display: inline-block;
+        width: 20%;
+        > div {
+          width: 100%;
+          position: relative;
+          border: 2px solid #8700b1;
+          border-radius: 50%;
+          overflow: hidden;
+          img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            top: 0;
+          }
+          &:before {
+            content: '';
+            display: inline-block;
+            padding-bottom: 100%;
+            width: 0;
+            vertical-align: middle;
+          }
+        }
+        span {
+          color: #9F00EE;
+          font-style: normal;
+          position: absolute;
+          left: 6%;
+        }
+      }
+      :nth-child(1) {
+        margin-right: 5%;
+      }
+      :nth-child(2) {
+        margin-right: 5%;
+      }
+      :nth-child(3) {
+        margin-right: 8%;
+      }
+      > img {
+        width: 18%;
+        position: relative;
+        top: -1.4rem;
+      }
+    }
   }
   .lottery {
-    height: 22rem;
+    height: 23rem;
+    font-style: normal;
+    .contant {
+      padding: 0;
+      height: 20.5rem;
+      padding: 0.5rem 0 0.5rem;
+      .lottery-type {
+        width: 100%;
+        height: 19.5rem;
+        margin: 0 auto;
+        background-image: url('~@/assets/img/vote/TeamFission/bg-lottery.png');
+        background-size: 100% 19.5rem;
+        color: #ad5500;
+        ul {
+          width: 90%;
+          margin: 0 auto;
+          border-radius: 0.5rem;
+          padding: 0.2rem 0;
+          position: relative;
+          height: 20rem;
+          li {
+            width: 30%;
+            height: 5.5rem;
+            display: block;
+            position: absolute;
+            overflow: hidden;
+            border-radius: 0.2rem;
+            background-color: #fff;
+            border: 0.25rem solid transparent;
+            border-radius: 0.5rem;
+            &:nth-child(1) {
+              left: 3%;
+              top: 1.1rem;
+            }
+            &:nth-child(2) {
+              left: 35%;
+              top: 1.1rem;
+            }
+            &:nth-child(3) {
+              left: 67%;
+              top: 1.1rem;
+            }
+            &:nth-child(4) {
+              left: 67%;
+              top: 6.9rem;
+            }
+            &:nth-child(5) {
+              left: 67%;
+              top: 12.7rem;
+            }
+            &:nth-child(6) {
+              left: 35%;
+              top: 12.7rem;
+            }
+            &:nth-child(7) {
+              left: 3%;
+              top: 12.7rem;
+            }
+            &:nth-child(8) {
+              left: 3%;
+              top: 6.9rem;
+            }
+            &.active {
+              border: 0.25rem solid #8cd021;
+            }
+            > div {
+              width: 100%;
+              height: 5.5rem;
+              padding: 0 0.2rem;
+              .prize {
+                img {
+                  display: block;
+                  width: auto;
+                  height: 2.7rem;
+                  margin: 0 auto;
+                  padding: 0.3rem 0;
+                }
+                p {
+                  display: block;
+                  width: 100%;
+                  text-align: center;
+                  font-size: 0.75rem;
+                  display: -webkit-box;
+                  -webkit-box-orient: vertical;
+                  -webkit-line-clamp: 2;
+                  overflow: hidden;
+                }
+              }
+            }
+          }
+          .getLuck {
+            width: 30%;
+            height: 5.5rem;
+            border-radius: 0.2rem;
+            text-align: center;
+            position: absolute;
+            top: 6.9rem;
+            left: 35%;
+            background-size: 100% 5.5rem;
+            font-size: 1.2rem;
+            font-weight: bold;
+            line-height: 5.5rem;
+            color: #fff;
+            background-image: url('~@/assets/img/vote/TeamFission/bg-start.png');
+            &:active {
+              background-image: url('~@/assets/img/vote/TeamFission/bg-start.png');
+            }
+          }
+        }
+      }
+    }
+  }
+  .msg-box {
+    width: 95%;
+    margin: 0 auto;
+    padding: 0.5rem 0 1rem;
+    .msg {
+      width: 100%;
+      height: 2rem;
+      line-height: 2rem;
+      overflow: hidden;
+      transition: all 0.5s;
+      position: relative;
+      margin-bottom: 0.3rem;
+      background-color: #26010e;
+      border-radius: 1rem;
+      .anim {
+        transition: all 0.5s;
+      }
+      img {
+        position: absolute;
+        display: block;
+        width: 1.23rem;
+        height: 1rem;
+        left: 0.8rem;
+        top: 0.5rem;
+      }
+      ul {
+        width: 100%;
+        li {
+          width: 100%;
+          padding-left: 2.5rem;
+          line-height: 2rem;
+          height: 2rem;
+          color: #fff;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+        }
+      }
+    }
   }
 }
 </style>
