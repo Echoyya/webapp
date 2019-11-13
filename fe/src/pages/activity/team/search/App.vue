@@ -1,27 +1,48 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div>
-      <!-- TODO search -->
+    <div class="search">
+      <input v-model="teamNum" :class="{'full':!showBtn}" type="text">
+      <div v-show="showBtn" class="btn" :class="{'can-submit':teamNum}" @click="submit">SEARCH</div>
     </div>
+    <div v-show="mumberList.length>0" class="team clearfix">
+      <div v-for="(item,index) in mumberList" :key="index" class="mumber">
+        <img v-if="item.logo" :src="item.logo">
+        <img v-else src="https://cdn.startimestv.com/head/h_d.png">
+        <p v-show="item.nick_name">{{item.nick_name}}</p>
+      </div>
+      <div v-for="(add) in 3-mumberList.length" :key="add" class="mumber">
+        <span class="add">
+          <img src="@/assets/img/vote/TeamFission/bg-add.png">
+        </span>
+      </div>
+    </div>
+    <div v-show="mumberList.length>=3" class="team-btn">
+      <span>Oops,  you're a little late， form a new team.</span>
+      <div @click="create">Form A New Team</div>
+    </div>
+    <div v-show="mumberList.length>=1&&mumberList.length<3" class="team-btn">
+      <div @click="join">JOIN</div>
+    </div>
+    <alert-dialog ref="alert" />
   </div>
 </template>
 <script>
+import alertDialog from '@/components/alert'
 import mBanner from '@/pages/activity/team/banner.vue'
-// import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
+import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
 export default {
   components: {
-    mBanner
+    mBanner,
+    alertDialog
   },
   data() {
     return {
       // 页面
       appType: this.$appType,
-      isLogin: this.$isLogin,
-      user_id: this.$user.id,
-      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
-      shareTitle: 'Bongo Star Search 2019',
-      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!'
+      teamNum: '',
+      mumberList: [],
+      showBtn: true
     }
   },
   computed: {
@@ -38,89 +59,124 @@ export default {
   mounted() {
     // this.mSendEvLog("page_show", "", "");
   },
-  methods: {}
+  methods: {
+    submit() {
+      const reg = /^[0-9]+$/g
+      if (!reg.test(this.teamNum)) {
+        return
+      }
+      searchTeam.call(this, this.teamNum, data => {
+        if (data && (data.code == 1 || data.code == 0)) {
+          this.showBtn = false
+          this.mumberList = data.data.team_member_dtos
+        } else if (data.code == 2) {
+          this.$refs.alert.show('oops，no team results')
+        } else {
+          this.$refs.alert.show('Unknown error')
+        }
+      })
+    },
+    join() {
+      joinTeam.call(this, this.teamNum, data => {
+        console.log(data)
+      })
+    },
+    create() {
+      createTeam.call(this, this.teamNum, data => {
+        console.log(data)
+      })
+    }
+  }
 }
 </script>
 <style lang="less" scoped>
 @import '~@/assets/less/vote/normal.less';
 .wrapper {
-  img,
-  div,
-  li {
-    box-sizing: border-box;
-  }
-  width: 100%;
-  font-size: 0.9rem;
-  letter-spacing: -0.03rem;
-  position: static;
-  background-color: #7c003d;
-  .box {
+  .search {
+    width: 85%;
+    margin: -8% auto 2rem;
     position: relative;
-    z-index: 2;
-    width: 90%;
-    margin: 0 auto;
-    font-style: italic;
-    .title {
-      background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
-      width: 85%;
-      height: 2rem;
-      color: #ffbc00;
-      border-top-right-radius: 1rem;
-      border-top-left-radius: 1rem;
-      padding-left: 0.8rem;
-      line-height: 2rem;
-    }
-    .contant {
-      padding: 0.5rem;
-      background-image: linear-gradient(rgba(165, 3, 80, 0.5), #600165);
-      border-radius: 1rem;
-      border-top-left-radius: 0;
-      color: #fff;
-    }
-  }
-  .remaining {
-    margin: -18% auto 0;
-    height: 9rem;
-    .contant {
-      .day {
+    input {
+      color: #ffffff;
+      background: #1c003e;
+      border: none;
+      outline-style: none;
+      letter-spacing: 5px;
+      border-radius: 18px;
+      padding: 0 1rem;
+      font-size: 1.1rem;
+      box-sizing: border-box;
+      width: 66%;
+      height: 2.25rem;
+      line-height: 2.25rem;
+      &.full {
         width: 100%;
-        height: 2.5rem;
-        line-height: 2.5rem;
-        background-image: url('~@/assets/img/vote/TeamFission/bg-remain.png');
-        background-size: 100% 2.5rem;
         text-align: center;
-        font-size: 1.2rem;
-        color: #dddddd;
-        span {
-          font-size: 1.3rem;
-          font-weight: bold;
-          letter-spacing: 0.15rem;
-          color: white;
-        }
-        &:first-child {
-          margin-bottom: 0.5rem;
-        }
-        div {
-          display: inline-block;
-        }
       }
-      .count-down {
-        display: flex;
-        div {
-          flex: 1;
-        }
-        .line-vertical {
-          max-width: 1px;
-          background: url('~@/assets/img/vote/TeamFission/verline.png') no-repeat center center;
-        }
+    }
+    .btn {
+      color: #ffffff;
+      box-sizing: border-box;
+      font-weight: bold;
+      text-align: center;
+      background: rgba(153, 153, 153, 1);
+      border-radius: 20px;
+      display: inline-block;
+      width: 30%;
+      margin-left: 2%;
+      height: 2.5rem;
+      line-height: 1.9rem;
+      border: 0.25rem solid rgba(26, 1, 96, 0.63);
+      &.can-submit {
+        background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
       }
     }
   }
-  .invite {
-    height: 9rem;
+  .team {
+    width: 85%;
+    margin: 1rem auto;
+    text-align: center;
+    .mumber {
+      width: 33%;
+      float: left;
+      img {
+        width: 65%;
+        border: 2px solid #8600c8;
+        border-radius: 100%;
+        display: block;
+        margin: 0 auto;
+      }
+      p {
+        background: rgba(134, 0, 200, 1);
+        border-radius: 8px;
+        display: inline-block;
+        padding: 0 0.5rem;
+        position: relative;
+        top: -0.7rem;
+        color: #b360dd;
+        font-size: 0.9rem;
+        height: 1.1rem;
+        line-height: 1.1rem;
+      }
+    }
   }
-  .lottery {
-    height: 22rem;
+  .team-btn {
+    width: 75%;
+    margin: 1rem auto;
+    text-align: center;
+    span {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.8);
+    }
+    div {
+      background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
+      border-radius: 25px;
+      border: 0.25rem solid rgba(26, 1, 96, 0.75);
+      color: #ffffff;
+      height: 2.25rem;
+      line-height: 2.25rem;
+      margin-top: 0.5rem;
+    }
   }
 }
 </style>
