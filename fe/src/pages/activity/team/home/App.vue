@@ -34,12 +34,20 @@
         <img src="@/assets/img/vote/TeamFission/ic_forward2.png" alt />
         <div>
           <div>
-            <img v-if="team.team_recommend_dtos[0].team_member_dtos[0]" :src="team.team_recommend_dtos[0].team_member_dtos[0].logo" alt />
+            <img
+              v-if="team.team_recommend_dtos[0].team_member_dtos[0]"
+              :src="team.team_recommend_dtos[0].team_member_dtos[0].logo"
+              alt
+            />
           </div>
         </div>
         <div>
           <div>
-            <img v-if="team.team_recommend_dtos[0].team_member_dtos[1]" :src="team.team_recommend_dtos[0].team_member_dtos[1].logo" alt />
+            <img
+              v-if="team.team_recommend_dtos[0].team_member_dtos[1]"
+              :src="team.team_recommend_dtos[0].team_member_dtos[1].logo"
+              alt
+            />
           </div>
         </div>
       </div>
@@ -87,6 +95,8 @@ import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
+import { getQueryVariable } from '@/functions/app'
+import { searchTeam, joinTeam } from '@/pages/activity/team/func'
 export default {
   components: {
     mBanner,
@@ -241,7 +251,36 @@ export default {
     }, 300)
   },
   mounted() {
-    // this.mSendEvLog("page_show", "", "");
+    const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
+    if (teamno && !isNaN(teamno)) {
+      searchTeam.call(this, teamno, data => {
+        if (1 || (data.data && data.data.newcomer && data.data.team_member_dtos[0].length > 0)) {
+          // 新用户
+          const teamLeader = data.data.team_member_dtos[0].nick_name
+          this.$refs.confirm.show(
+            'Here! You are going to join ' + teamLeader + '`s team',
+            () => {
+              // 加入队伍
+              joinTeam.call(this, teamno, data => {
+                if (data.code == 0) {
+                  history.replaceState({}, '', '/activity/team/home.html')
+                } else {
+                  this.$refs.alert.show('joind error')
+                }
+              })
+            },
+            () => {
+              // 更换队伍
+            },
+            'OK',
+            'ChangeTeam'
+          )
+        } else {
+          // 老用户
+        }
+        console.log(data)
+      })
+    }
     this.getLotteryType()
     this.getMsgList()
     this.msgScroll()
@@ -280,7 +319,7 @@ export default {
                   item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
                 }
               }
-              if(item.user_id) item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
+              if (item.user_id) item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
               for (let i = 0; i < this.lotteryType.length; i++) {
                 if (item.reward_id == this.lotteryType[i].id) {
                   item.reward_name = this.lotteryType[i].name
@@ -443,7 +482,7 @@ export default {
           }
         }
         span {
-          color: #9F00EE;
+          color: #9f00ee;
           font-style: normal;
           position: absolute;
           left: 6%;
