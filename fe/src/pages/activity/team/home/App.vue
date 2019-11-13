@@ -69,7 +69,7 @@
           <li
             v-for="item in msgList"
             :key="item.key"
-          >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} umeshinda {{item.reward_name||''}}!</li>
+          >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} has won {{item.reward_name||''}}!</li>
         </ul>
       </div>
     </div>
@@ -131,10 +131,6 @@ export default {
                 nick_name: 'name1',
                 logo: 'http://cdn.startimestv.com/banner/bss-more.png'
               }
-              // {
-              //   nick_name: 'name2',
-              //   logo: 'http://cdn.startimestv.com/banner/bss-30off.png'
-              // }
             ]
           }
         ]
@@ -284,7 +280,7 @@ export default {
                   item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
                 }
               }
-              item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
+              if(item.user_id) item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
               for (let i = 0; i < this.lotteryType.length; i++) {
                 if (item.reward_id == this.lotteryType[i].id) {
                   item.reward_name = this.lotteryType[i].name
@@ -383,8 +379,7 @@ export default {
     }
   }
   .remaining {
-    margin: -18% auto 0;
-    height: 9rem;
+    margin: -18% auto 1rem;
     .contant {
       .day {
         width: 100%;
