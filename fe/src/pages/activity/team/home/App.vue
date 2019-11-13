@@ -23,7 +23,7 @@
         </div>
       </div>
     </div>
-    <div class="invite box">
+    <div v-show="!show_share" class="invite box">
       <div class="title">Invite two friends to draw a lottery:</div>
       <div class="contant">
         <div>
@@ -44,7 +44,15 @@
           </div>
         </div>
       </div>
-      <img src="@/assets/img/vote/TeamFission/btn-friends.png" @click="toSearch">
+      <img src="@/assets/img/vote/TeamFission/btn-friends.png" @click="show_share=true">
+    </div>
+    <div v-show="show_share" class="share-box">
+      <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false">
+      <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook">
+      <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp">
+      <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender">
+      <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload">
+      <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink">
     </div>
     <div class="lottery box">
       <div class="title">Draw your prize!</div>
@@ -114,6 +122,7 @@ export default {
       hour: '',
       min: '',
       sed: '',
+      show_share: false,
 
       //team
       team: {
@@ -249,6 +258,21 @@ export default {
     this.msgScroll()
   },
   methods: {
+    toFacebook() {
+
+    },
+    toWhatsApp() {
+
+    },
+    toXender() {
+
+    },
+    toDownload() {
+
+    },
+    toCopylink() {
+      
+    },
     showAwards() {
       console.log('my awards')
     },
@@ -484,6 +508,24 @@ export default {
     > img {
       width: 100%;
       margin-top: 0.5rem;
+    }
+  }
+  .share-box {
+    width: 95%;
+    margin: 0.5rem auto;
+    padding: 0.5rem;
+    background-color: #A1014B;
+    height: 10rem;
+    border-radius: 1rem;
+    > img {
+      width: 20%;
+      &:first-child {
+        display: block;
+        margin-left: 93%;
+        margin-bottom: 1rem;
+        width: 7%;
+        background-image: url("~@/assets/img/vote/TeamFission/ic_download.png");
+      }
     }
   }
   .lottery {
