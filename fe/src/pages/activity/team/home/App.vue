@@ -96,7 +96,7 @@ import mShare from '@/components/web/share.vue'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
 import { getQueryVariable } from '@/functions/app'
-import { searchTeam, joinTeam } from '@/pages/activity/team/func'
+import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
 export default {
   components: {
     mBanner,
@@ -254,7 +254,10 @@ export default {
     const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (teamno && !isNaN(teamno)) {
       searchTeam.call(this, teamno, data => {
-        if (1 || (data.data && data.data.newcomer && data.data.team_member_dtos[0].length > 0)) {
+        
+        // TODO 判断队伍是否满员
+
+        if (data.data.newcomer && data.data.team_member_dtos.length > 0) {
           // 新用户
           const teamLeader = data.data.team_member_dtos[0].nick_name
           this.$refs.confirm.show(
@@ -263,9 +266,17 @@ export default {
               // 加入队伍
               joinTeam.call(this, teamno, data => {
                 if (data.code == 0) {
-                  history.replaceState({}, '', '/activity/team/home.html')
+                  location.href = '/activity/team/home.html'
                 } else {
-                  this.$refs.alert.show('joind error')
+                  this.$refs.alert.show(
+                    data.message,
+                    () => {
+                      createTeam.call(this, () => {
+                        location.href = '/activity/team/home.html'
+                      })
+                    },
+                    'FORM A NEW TEAM'
+                  )
                 }
               })
             },
