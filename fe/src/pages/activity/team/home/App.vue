@@ -515,7 +515,7 @@ export default {
     margin: 0.5rem auto;
     padding: 0.5rem;
     background-color: #A1014B;
-    height: 9rem;
+    height: 10rem;
     border-radius: 1rem;
     > img {
       width: 20%;
