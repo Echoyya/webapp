@@ -121,7 +121,7 @@ export default {
       prize: -1, // 中奖位置
       click: true,
 
-      lotteryLeft: 0,
+      canLottery: false,
       lottery_id: 4,
       lotteryType: [],
       loaded_l: false,
@@ -239,8 +239,9 @@ export default {
           if (data.code == 0) {
             this.team = data.data.team_member_dtos
             this.teamNum = data.data.team_no
+            this.canLottery = true
             // TODO
-            // this.$refs.malert.show(this.$t('vote.team.willStartDraw'), () => {
+            // this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
             //   window.scrollTo(0, 1500)
             //   this.startLottery()
             // })
@@ -406,9 +407,16 @@ export default {
     },
     startLottery() {
       if (!this.click) return
-      this.speeds = 200
-      this.click = false
-      this.startRoll()
+      if (this.canLottery) {
+        this.speeds = 200
+        this.click = false
+        this.startRoll()
+      } else {
+        this.$refs.malert.show(this.$t('vote.team.form_noform'), () => {
+          window.scrollTo(0, 0)
+          this.show_share = true
+        })
+      }
     },
     // 开始转动
     startRoll() {
@@ -429,9 +437,7 @@ export default {
           this.speeds -= 10 // 加快转动速度
         } else if (this.times === this.cycle) {
           // 后台取得一个中奖位置
-          console.log(this.teamNum)
           this.$axios.post(`/voting/team-award/v1/user/award?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`).then(res => {
-            console.log(res.data.code)
             if (res.data.code == 0) {
               this.award_day = res.data.data.award_day
               if (this.award_day == 1 || this.award_day == 7 || this.award_day == 30) {

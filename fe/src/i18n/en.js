@@ -52,7 +52,6 @@ export default {
       shareTitle: 'Make A Team to Win Free VIPS',
       shareText: 'Join my team and send you VIP to watch it all for free',
       countdownTitle: 'Remaining',
-      willStartDraw: 'You got one draw time,click to start draw!',
       input_error: 'Incorrect TeamID number',
       network_error: 'Network Error',
       full_team: 'Sorry,the team is already full',
