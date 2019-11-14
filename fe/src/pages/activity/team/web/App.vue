@@ -1,8 +1,8 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div v-if="mumberList.length<3" class="text text1">{{leader_name}} invite you to join the team and win lottery!</div>
-    <div v-else class="text text1">{{leader_name}} 已满</div>
+    <div v-if="mumberList.length<3" class="text text1">{{$t('vote.team.invite_tip',[leader_name])}}</div>
+    <div v-else class="text text1">Sorry,the team is already full</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
         <div v-for="(item,index) in mumberList" :key="index" class="mumber">
@@ -15,7 +15,7 @@
           </span>
         </div>
       </div>
-      <span>{{number | formatAmount}} have already won VIP</span>
+      <span>{{$t('vote.team.invite_won',[number])}}</span>
       <div v-show="mumberList.length>=3" class="team-btn">
         <div @click="callOrDownApp">FORM A NEW TEAM</div>
       </div>
@@ -102,26 +102,19 @@
       </div>
       <div class="img"></div>
     </div>
-
-    <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
-    <toast-dialog ref="toast" />
   </div>
 </template>
 <script>
-import alertDialog from '@/components/alert'
-import confirmDialog from '@/components/confirm'
-import toastDialog from '@/components/toast'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
 import { searchTeam } from '@/pages/activity/team/func'
-import { getQueryVariable } from '@/functions/app'
+import { getQueryVariable, callApp, callMarket, downApk } from '@/functions/app'
+import confirmDialog from "@/components/confirm";
 export default {
   components: {
     mBanner,
-    alertDialog,
-    confirmDialog,
-    toastDialog
+    confirmDialog
   },
   data() {
     return {
@@ -144,20 +137,46 @@ export default {
       return formatAmount(val)
     }
   },
+  computed: {
+    platform() {
+      if (this.appType == 1) {
+        return 'Android'
+      } else if (this.appType == 2) {
+        return 'iOS'
+      } else {
+        return 'web'
+      }
+    }
+  },
   mounted() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (this.teamNum) {
       this.search()
     }
+    this.number = formatAmount(this.number)
   },
   methods: {
     // 唤醒转入活动页或下载App
     callOrDownApp() {
+      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home?teamno=${this.teamNum}`, () => {
+        callMarket.call(this, () => {
+          this.$refs.confirm.show(
+            'download?',
+            () => {
+              downApk.call(this)
+            },
+            () => {},
+            'ok',
+            'not now'
+          )
+        })
+      })
     },
     search() {
       searchTeam.call(this, this.teamNum, data => {
         if (data && (data.code == 1 || data.code == 0)) {
           this.mumberList = data.data.team_member_dtos
+          this.leader_name = this.mumberList[0].nick_name
           if (data.code == 0) {
             this.teamNum1 = data.data.team_recommend_dtos[0].team_no
             this.teamNum1 = data.data.team_recommend_dtos[1].team_no
@@ -266,7 +285,7 @@ export default {
         font-size: 0.9rem;
         color: rgba(255, 255, 255, 0.8);
       }
-      div {
+      > div {
         background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
         border-radius: 25px;
         border: 0.25rem solid rgba(26, 1, 96, 0.75);

@@ -82,6 +82,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
+import env from '@/functions/config'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable, toNativePage } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
@@ -262,7 +263,7 @@ export default {
                     this.$refs.malert.show(
                       '您已经有队伍了，暂时不能组队了',
                       () => {
-                        this.$axios.get(`/voting/team-building/v1/participating-team`).then(({ data }) => {
+                        this.$axios.get(`/voting/team-building/v1/participating-team?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
                           this.team = data.data.team_member_dtos
                           this.teamNum = data.data.team_no
                         })
@@ -323,7 +324,7 @@ export default {
     toFacebook() {
       if (this.$appType == 1) {
         shareByFacebook(
-          `${window.location.href}?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -333,7 +334,7 @@ export default {
     toWhatsApp() {
       if (this.$appType == 1) {
         shareByWhatsApp(
-          `${window.location.href}?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -347,14 +348,12 @@ export default {
     },
     toDownload() {
       if (this.$appType == 1) {
-        // TODU
-        shareByDownload()
+        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
       }
     },
     toCopylink() {
       if (this.$appType == 1) {
-        const bool = shareByCopyLink(`${window.location.href}?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`)
-        this.$refs.malert.show(bool)
+        shareByCopyLink(`${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`)
       }
     },
     toAwards() {

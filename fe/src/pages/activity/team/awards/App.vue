@@ -51,8 +51,8 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
 import env from '@/functions/config'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
 export default {
   components: {
     mBanner
@@ -64,7 +64,6 @@ export default {
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.shareText'),
-      shareUrl: '',
 
       //team
       teams: [],
@@ -95,12 +94,22 @@ export default {
   methods: {
     toFacebook() {
       if (this.$appType == 1) {
-        shareByFacebook(this.shareUrl, this.shareTitle, this.shareText, this.imgUrl)
+        shareByFacebook(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
       }
     },
     toWhatsApp() {
       if (this.$appType == 1) {
-        shareByWhatsApp(this.shareUrl, this.shareTitle, this.shareText, this.imgUrl)
+        shareByWhatsApp(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
       }
     },
     toXender() {
@@ -110,12 +119,14 @@ export default {
     },
     toDownload() {
       if (this.$appType == 1) {
-        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=1&team_no=${this.teamNum}`)
+        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
       }
     },
     toCopylink() {
       if (this.$appType == 1) {
-        shareByCopyLink(this.shareUrl)
+        shareByCopyLink(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+        )
       }
     }
   }

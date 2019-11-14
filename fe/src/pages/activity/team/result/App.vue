@@ -24,8 +24,6 @@
         <br />VIP will be effective from time 123, a total of nine days, the number of times you have won the lottery will automatically add up.
       </div>
     </div>
-    <mShare ref="share" />
-    <toast-dialog ref="toast" />
     <malert ref="malert" />
     <malert ref="findTeamAlert">
       <a slot="link" href="/activity/team/search.html">CHANGE</a>
@@ -34,17 +32,14 @@
 </template>
 <script>
 import { formatAmount } from '@/functions/utils'
-import toastDialog from '@/components/toast'
-import mShare from '@/components/web/share.vue'
 import mBanner from '@/pages/activity/team/banner.vue'
+import env from '@/functions/config'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
 import countdown from '@/pages/activity/team/countdown'
 export default {
   components: {
     mBanner,
-    mShare,
-    toastDialog,
     malert,
     countdown
   },
@@ -64,7 +59,11 @@ export default {
       days: '1000000',
       hour: '',
       min: '',
-      sed: ''
+      sed: '',
+
+      //team
+      teamNum: '',
+      team_activity_id: 1
     }
   },
   filters: {
@@ -83,57 +82,6 @@ export default {
       }
     }
   },
-  created() {
-    const during = this.activityEnd - this.activityStart
-    const stage1 = Math.round(during * 0.25)
-    const stage2 = Math.round(during * 0.5)
-    const stage3 = Math.round(during * 0.75)
-    const px1 = 0.7
-    const px2 = 0.85
-    const px3 = 0.95
-
-    // 计算减小倍率
-    const speed = Math.floor(((100 * 10000) / during) * 1000 * 100) / 100
-    // 计算活动开始的时间
-    const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
-
-    if (period < stage1) {
-      this.days = 100 * 10000 - Math.ceil(period * speed * px1)
-    } else if ((period < stage2) & (period > stage1)) {
-      this.days = 100 * 10000 - Math.ceil((period - stage1) * speed * px2) + stage1 * speed * px1
-    } else if ((period < stage3) & (period > stage2)) {
-      this.days = 100 * 10000 - Math.ceil((period - stage2) * speed * px3) + stage2 * speed * px2 + stage1 * speed * px1
-    } else {
-      this.days = 100 * 10000 - Math.ceil((period - stage3) * speed * 1.2) + stage3 * speed * px3 + stage2 * speed * px2 + stage1 * speed * px1
-    }
-
-    // 倒计时
-    let page_init_time = new Date().getTime()
-    let last_client_time = page_init_time
-    let serverTime = parseInt(this.$serverTime)
-
-    setInterval(() => {
-      const now_time = new Date().getTime()
-
-      if (now_time - last_client_time < 1000 * 60) {
-        serverTime = serverTime + (now_time - last_client_time)
-      } else {
-        page_init_time = now_time
-        serverTime = this.$serverTime + now_time - page_init_time
-      }
-      last_client_time = now_time
-
-      const remainTime = Math.floor((this.activityEnd - serverTime) / 1000)
-
-      const hour = Math.floor(remainTime / 60 / 60)
-      const min = Math.floor((remainTime - hour * 60 * 60) / 60)
-      const sed = remainTime - hour * 60 * 60 - min * 60
-
-      this.hour = hour > 0 ? hour : '00'
-      this.min = min < 10 ? '0' + min : min
-      this.sed = sed < 10 ? '0' + sed : sed
-    }, 300)
-  },
   mounted() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.award_day = getQueryVariable(location.search.replace('?', ''), 'prize')
@@ -146,29 +94,38 @@ export default {
       window.location.href = '/activity/team/home'
     },
     toFacebook() {
-      if (this.appType == 1) {
-        shareByFacebook('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      if (this.$appType == 1) {
+        shareByFacebook(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
       }
     },
     toWhatsApp() {
-      if (this.appType == 1) {
-        shareByWhatsApp('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      if (this.$appType == 1) {
+        shareByWhatsApp(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
       }
     },
     toXender() {
-      if (this.appType == 1) {
+      if (this.$appType == 1) {
         shareByXender(this.teamNum)
       }
     },
     toDownload() {
-      if (this.appType == 1) {
-        shareByDownload()
+      if (this.$appType == 1) {
+        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
       }
     },
     toCopylink() {
-      if (this.appType == 1) {
-        const bool = shareByCopyLink('https://www.taobao.com/')
-        this.$refs.alert.show(bool)
+      if (this.$appType == 1) {
+        shareByCopyLink(`${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`)
       }
     },
     showAwards() {
