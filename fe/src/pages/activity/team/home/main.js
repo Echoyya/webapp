@@ -156,8 +156,7 @@ axios
   .get('/cms/users/me')
   .then(res => {
     Vue.prototype.$serverTime = res.headers.server_time
-
-    if (res && res.id) {
+    if (res.data && res.data.id) {
       // 有用户信息
       const role = res.data.roleName
       deviceId = res.data.deviceID
