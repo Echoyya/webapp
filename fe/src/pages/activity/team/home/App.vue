@@ -479,7 +479,7 @@ export default {
           this.speeds -= 10 // 加快转动速度
         } else if (this.times === this.cycle) {
           // 后台取得一个中奖位置
-          this.$axios.post(`/voting/team-award/v1/user/award?team_activity_id=1&team_no=${this.teamNum}`).then((res)=>{
+          this.$axios.post(`/voting/team-award/v1/user/award?team_activity_id=1&team_no=${this.teamNum}`).then(res => {
             console.log(res.data)
           })
           const code = 0
@@ -498,7 +498,7 @@ export default {
               }
               console.log(`中奖位置${this.prize + 1}`)
             }
-          } else if(code != 1) {
+          } else if (code != 1) {
             setTimeout(() => {
               clearTimeout(this.timers)
               this.times = 0
