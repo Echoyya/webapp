@@ -5,9 +5,7 @@ import env from '@/functions/config'
 import { getCookie, setCookie, randomString } from '@/functions/utils'
 import errorPage from '@/components/error.vue'
 import i18n from '@/i18n/'
-
 Vue.config.productionTip = false
-
 const countlyServer = env.countlyServer
 const countlyAppKey = env.countlyAppKey
 const gaIosKey = env.gaIosKey
@@ -32,7 +30,6 @@ const gaAndroidKey = env.gaAndroidKey
   a.src = g
   m.parentNode.insertBefore(a, m)
 })(window, document, 'script', 'https://www.google-analytics.com/analytics.js', 'ga')
-
 // countly
 function sendMsg(url) {
   const s = document.createElement('img')
@@ -47,9 +44,9 @@ let appInfo = window.getChannelId && window.getChannelId.jsGetHeadInfo && window
 let token = tokenMap['NG'] // 默认尼日匿名用户
 let language = 'en' // 默认英语
 if (appInfo) {
-  appInfo = JSON.parse(appType)
-  token = appType.token
-  language = appType.lnCode
+  appInfo = JSON.parse(appInfo)
+  token = appInfo.token
+  language = appInfo.lnCode
   appType = 1
 } else {
   appInfo = {}
@@ -74,6 +71,7 @@ if (language.indexOf('fr') >= 0) {
 } else {
   langObj = i18n.en
 }
+alert(36565)
 
 // 多语言函数
 Vue.prototype.$t = function(str, arr) {
