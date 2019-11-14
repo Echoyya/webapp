@@ -2,7 +2,7 @@
   <div class="wrapper">
     <mBanner />
     <div v-if="!show_share" class="invite">
-      <div class="title">WON: {{allDays}} Days VIP</div>
+      <div class="title">{{$t('vote.team.my_won',[allDays])}}</div>
       <div class="contant">
         <div v-show="teams.length>0" v-for="(item,index) in teams" :key="index" class="items">
           <div>
@@ -28,7 +28,7 @@
       </div>
       <div class="friends" @click="show_share=true">
         <img src="@/assets/img/vote/TeamFission/ic_share.png" />
-        <p>Tell Friends</p>
+        <p>{{$t('vote.team.invite_btn',[allDays])}}</p>
       </div>
       <!-- <img src="@/assets/img/vote/TeamFission/ic_share.png" @click="show_share=true" /> -->
     </div>

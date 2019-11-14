@@ -3,7 +3,7 @@
     <mBanner />
     <div class="search">
       <input v-model="teamNum" :class="{'full':!showBtn}" type="number" />
-      <div v-show="showBtn" class="btn" :class="{'can-submit':teamNum}" @click="submit">SEARCH</div>
+      <div v-show="showBtn" class="btn" :class="{'can-submit':teamNum}" @click="submit">{{$t('vote.team.search')}}</div>
     </div>
     <div v-show="mumberList.length>0" class="team clearfix">
       <div v-for="(item,index) in mumberList" :key="index" class="mumber">
@@ -18,11 +18,11 @@
       </div>
     </div>
     <div v-show="mumberList.length>=3" class="team-btn">
-      <span>Oops, you're a little late， form a new team.</span>
-      <div @click="create">Form A New Team</div>
+      <span>{{$t('vote.team.form_late')}}</span>
+      <div @click="create">{{$t('vote.team.form_newbtn')}}</div>
     </div>
     <div v-show="mumberList.length>=1&&mumberList.length<3" class="team-btn">
-      <div @click="join">JOIN</div>
+      <div @click="join">{{$t('vote.team.join_s')}}</div>
     </div>
     <alert-dialog ref="alert" />
   </div>
@@ -71,7 +71,7 @@ export default {
           this.showBtn = false
           this.mumberList = data.data.team_member_dtos
         } else if (data.code == 2) {
-          this.$refs.alert.show('oops，no team results')
+          this.$refs.alert.show(this.$t('vote.team.search_nores'))
         } else {
           this.$refs.alert.show('Unknown error')
         }

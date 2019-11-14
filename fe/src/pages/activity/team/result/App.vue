@@ -29,7 +29,7 @@
     </div>
     <div class="share-box">
       <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
-      <div class="text">SHOW MY LUCKY</div>
+      <div class="text">{{$t('vote.team.show_lucky')}}</div>
       <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
       <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
       <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
@@ -37,18 +37,14 @@
       <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
     </div>
     <div class="team-btn">
-      <div @click="create">FORM A NEW TEAM</div>
+      <div @click="create">{{$t('vote.team.form_newbtn')}}</div>
     </div>
     <div class="tip">
       <div class="text">
         Tips:
-        <br />VIP will be effective from time 123, a total of nine days, the number of times you have won the lottery will automatically add up.
+        <br />VIP将于XXX时间开始生效，共{{award_day}}天，您多次中奖的天数会自动进行累计.
       </div>
     </div>
-    <malert ref="malert" />
-    <malert ref="findTeamAlert">
-      <a slot="link" href="/activity/team/search.html">CHANGE</a>
-    </malert>
   </div>
 </template>
 <script>
@@ -57,11 +53,9 @@ import { formatAmount } from '@/functions/utils'
 import mBanner from '@/pages/activity/team/banner.vue'
 import env from '@/functions/config'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
-import malert from '@/pages/activity/team/malert'
 export default {
   components: {
     mBanner,
-    malert
   },
   data() {
     return {
@@ -70,7 +64,7 @@ export default {
       shareTitle: 'Bongo Star Search 2019',
       shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
       prize: 1,
-      text: ['好运降临，获得VIP啦！', '	这一周的精彩内容不要错过！', '哇！简直天降好运！'],
+      text: [this.$t('vote.team.congrats'), this.$t('vote.team.solucky'), this.$t('vote.team.jackpot')],
       award_day: '',
 
       activityStart: new Date('2019-11-05 00:00:00').getTime(),

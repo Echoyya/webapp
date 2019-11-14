@@ -17,11 +17,11 @@
       </div>
       <span>{{$t('vote.team.invite_won',[number])}}</span>
       <div v-show="mumberList.length>=3" class="team-btn">
-        <div @click="callOrDownApp">FORM A NEW TEAM</div>
+        <div @click="callOrDownApp">{{$t('vote.team.form_newbtn')}}</div>
       </div>
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="team-btn">
         <div @click="callOrDownApp">
-          <div>JOIN TEAM</div>
+          <div>{{$t('vote.team.join_s')}}</div>
         </div>
       </div>
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="copy">
@@ -33,7 +33,7 @@
     <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">The following team still have one position, join now</div>
     <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
       <div class="team1 clearfix">
-        <div class="team-id">Team ID: {{teamNum1}}</div>
+        <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
         <div class="team-box">
           <div class="team clearfix">
             <div v-for="(item,index) in moreList1" :key="index" class="mumber">
@@ -47,12 +47,12 @@
             </div>
           </div>
           <div class="join">
-            <div>JOIN</div>
+            <div>{{$t('vote.team.join_s')}}</div>
           </div>
         </div>
       </div>
       <div class="team2 clearfix">
-        <div class="team-id">Team ID: {{teamNum2}}</div>
+        <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum2}}</div>
         <div class="team-box">
           <div class="team clearfix">
             <div v-for="(item,index) in moreList2" :key="index" class="mumber">
@@ -66,12 +66,12 @@
             </div>
           </div>
           <div class="join">
-            <div>JOIN</div>
+            <div>{{$t('vote.team.join_s')}}</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="text text3">Meet the Best video in StarTimes ON!</div>
+    <div class="text text3">{{$t('vote.team.invite_infotit')}}</div>
     <div class="video">
       <div class="item">
         <div class="video-item">
@@ -161,13 +161,13 @@ export default {
       callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home?teamno=${this.teamNum}`, () => {
         callMarket.call(this, () => {
           this.$refs.confirm.show(
-            'download?',
+            'Start downloading apk now? (12M)',
             () => {
               downApk.call(this)
             },
             () => {},
-            'ok',
-            'not now'
+            'OK',
+            'NOT NOW'
           )
         })
       })
@@ -179,12 +179,12 @@ export default {
           this.leader_name = this.mumberList[0].nick_name
           if (data.code == 0) {
             this.teamNum1 = data.data.team_recommend_dtos[0].team_no
-            this.teamNum1 = data.data.team_recommend_dtos[1].team_no
+            this.teamNum2 = data.data.team_recommend_dtos[1].team_no
             this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
             this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
           }
         } else if (data.code == 2) {
-          this.$refs.alert.show('oops，no team results')
+          this.$refs.alert.show(this.$t('vote.team.search_nores'))
         } else {
           this.$refs.alert.show('Unknown error')
         }
