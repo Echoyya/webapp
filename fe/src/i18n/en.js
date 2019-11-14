@@ -54,7 +54,10 @@ export default {
       countdownTitle: 'Remaining',
       willStartDraw: 'You got one draw time,click to start draw!',
       input_error: 'Incorrect TeamID number',
-      network_error:'Network Error'
+      network_error: 'Network Error',
+      full_team: 'Sorry,the team is already full',
+      follow_team: 'The following team still have one position, join now',
+      tips: `Tips: <br/>VIP will be effective from now, a total of {0} days, the number of times you have won the lottery will automatically add up`
     }
   }
 }

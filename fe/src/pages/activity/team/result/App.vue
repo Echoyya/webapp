@@ -19,10 +19,7 @@
       <div @click="create">{{$t('vote.team.form_newbtn')}}</div>
     </div>
     <div class="tip">
-      <div class="text">
-        Tips:
-        <br />VIP将于XXX时间开始生效，共{{award_day}}天，您多次中奖的天数会自动进行累计.
-      </div>
+      <div class="text" v-html="$t('vote.team.tips',[award_day])"></div>
     </div>
   </div>
 </template>
@@ -40,8 +37,8 @@ export default {
     return {
       // 页面
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
-      shareTitle: 'Bongo Star Search 2019',
-      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
+      shareTitle: this.$t('vote.team.shareTitle'),
+      shareText: this.$t('vote.team.invite_con'),
       prize: 1,
       text: [this.$t('vote.team.congrats'), this.$t('vote.team.solucky'), this.$t('vote.team.jackpot')],
       award_day: '',

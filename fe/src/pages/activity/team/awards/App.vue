@@ -62,7 +62,7 @@ export default {
       show_share: false,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
-      shareText: this.$t('vote.team.shareText'),
+      shareText: this.$t('vote.team.invite_con'),
 
       //team
       teams: [],
