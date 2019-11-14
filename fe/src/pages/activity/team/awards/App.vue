@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div v-if="!show_share" class="invite">
+    <div v-if="have_no_result" class="no-result">{{$t('vote.team.no_awards')}}</div>
+    <div v-if="!have_no_result" v-show="!show_share" class="invite">
       <div class="title">{{$t('vote.team.my_won',[allDays])}}</div>
       <div class="contant">
         <div v-show="teams.length>0" v-for="(item,index) in teams" :key="index" class="items">
@@ -38,7 +39,7 @@
         <p>{{$t('vote.team.invite_btn',[allDays])}}</p>
       </div>
     </div>
-    <div v-show="show_share" class="share-box">
+    <div v-if="!have_no_result" v-show="show_share" class="share-box">
       <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false" />
       <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
       <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
@@ -68,7 +69,8 @@ export default {
       teams: [],
       team_activity_id: 1,
       allDays: 0,
-      teamNum: ''
+      teamNum: '',
+      have_no_result: false
     }
   },
   computed: {
@@ -85,10 +87,13 @@ export default {
   created() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
-      this.teams = data.data.my_award_team_dtos ? data.data.my_award_team_dtos : []
-      this.allDays = data.data.all_award_days ? data.data.all_award_days : 0
+      if (data.data && data.data.all_award_days) {
+        this.teams = data.data.my_award_team_dtos ? data.data.my_award_team_dtos : []
+        this.allDays = data.data.all_award_days ? data.data.all_award_days : 0
+      } else {
+        this.have_no_result = true
+      }
     })
-    this.shareUrl = `${location.host}/activity/team/web?teamno=${this.teamNum}`
   },
   methods: {
     toFacebook() {
@@ -132,6 +137,18 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+.no-result {
+  width: 93%;
+  margin: 0 auto;
+  background: linear-gradient(rgba(234, 4, 123, 0.3), rgba(57, 3, 157, 0.43));
+  min-height: 20rem;
+  border-radius: 5px;
+  margin-top: -4rem;
+  color: rgba(255, 117, 0, 1);
+  font-size: 1.2rem;
+  text-align: center;
+  line-height: 20rem;
+}
 .wrapper {
   img,
   div,
