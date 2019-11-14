@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <countdown @toAwards="toAwards" :activityStart="activityStart" :activityEnd="activityEnd" />
+    <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
     <div class="prize">
       <div class="text">{{text[prize-1]}}</div>
       <div class="vip">VIP {{award_day}} DAY</div>
@@ -31,7 +31,6 @@
   </div>
 </template>
 <script>
-import { formatAmount } from '@/functions/utils'
 import mBanner from '@/pages/activity/team/banner.vue'
 import env from '@/functions/config'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
@@ -64,11 +63,6 @@ export default {
       //team
       teamNum: '',
       team_activity_id: 1
-    }
-  },
-  filters: {
-    formatAmount(val) {
-      return formatAmount(val)
     }
   },
   computed: {
@@ -125,7 +119,9 @@ export default {
     },
     toCopylink() {
       if (this.$appType == 1) {
-        shareByCopyLink(`${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`)
+        shareByCopyLink(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+        )
       }
     },
     showAwards() {
