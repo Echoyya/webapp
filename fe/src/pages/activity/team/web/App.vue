@@ -159,8 +159,8 @@ export default {
       this.search()
     }
   },
-  mounted(){
-    this.$nextTick(()=>{
+  mounted() {
+    this.$nextTick(() => {
       new ClipboardJS('#copy')
     })
   },
@@ -168,7 +168,7 @@ export default {
     callOrDownApp() {
       callApp.call(
         this,
-        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home?teamno=${this.teamNum}`,
+        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?teamno=${this.teamNum}`,
         () => {
           callMarket.call(this, () => {
             this.$refs.confirm.show(

@@ -94,7 +94,7 @@ export default {
   methods: {
     toAwards() {
       if (this.$isLogin) {
-        window.location.href = '/activity/team/awards?teamno=' + this.teamNo
+        window.location.href = '/activity/team/awards.html?teamno=' + this.teamNo
       } else {
         toNativePage('com.star.mobile.video.account.LoginActivity')
       }

@@ -148,7 +148,7 @@ export const callMarket = function(failback) {
   // 对组队活动特殊处理teamno
   const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
   if (teamno) {
-    source = source + encodeURIComponent('&utm_term=' + encodeURIComponent(location.origin + '/activity/team/home?teamno=' + teamno))
+    source = source + encodeURIComponent('&utm_term=' + encodeURIComponent(location.origin + '/activity/team/home.html?teamno=' + teamno))
   }
   this.$sendEvLog(
     Object.assign(

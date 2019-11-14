@@ -86,7 +86,7 @@ export default {
     join() {
       joinTeam.call(this, this.teamNum, data => {
         if (data.code == 0) {
-          window.location.href = '/activity/team/home'
+          window.location.href = '/activity/team/home.html'
         } else {
           this.$refs.alert.show(data.message)
         }
@@ -95,7 +95,7 @@ export default {
     create() {
       createTeam.call(this, data => {
         if (data.code == 0) {
-          window.location.href = '/activity/team/home'
+          window.location.href = '/activity/team/home.html'
         } else {
           this.$refs.alert.show(data.message)
         }
