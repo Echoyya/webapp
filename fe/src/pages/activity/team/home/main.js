@@ -70,13 +70,13 @@ if (appInfo) {
 }
 
 if (language.indexOf('fr') >= 0) {
-    Vue.prototype.t = i18n.fy
+    Vue.prototype.$t = i18n.fy
 } else if (language.indexOf('sw') >= 0) {
-    Vue.prototype.t = i18n.sy
+    Vue.prototype.$t = i18n.sy
 } else if (language.indexOf('pt') >= 0) {
-    Vue.prototype.t = i18n.py
+    Vue.prototype.$t = i18n.py
 } else {
-    Vue.prototype.t = i18n.en
+    Vue.prototype.$t = i18n.en
 }
 
 setCookie('token', token)
