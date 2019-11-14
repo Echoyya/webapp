@@ -4,18 +4,13 @@
       <div class="img">
         <img src="@/assets/img/vote/TeamFission/bg-banner.png" alt="bg-img" class="bg-img" />
       </div>
-      <div class="about" @click="showRule">About</div>
+      <div class="about" @click="showRule">{{$t('vote.team.about_title')}}</div>
     </div>
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/TeamFission/ic_close.png" alt @click="closeShadow" />
       <div class="rule-text">
         <p>Rules</p>
-        1. The team leader can call 2 friends and form a team to enter the lucky draw.<br/>
-        2. Prizes include 1 Day VIP, 7 Days VIP and 30  Days VIP.<br/>
-        3. Only new devices and accounts are identified as new users can join the team.<br/>
-        4. Each user have up to 10 chances to win. <br/>
-        5. Activity valid until Dec 25, 2019<br/>
-        6. StarTimes ON reserves the right of final decision and interpretation.<br/>
+        <div v-html="$t('vote.team.about_con')"></div>
       </div>
     </div>
     <div v-show="show_rules" class="shadow-box" @click="closeShadow"></div>
@@ -67,7 +62,7 @@ export default {
     box-sizing: border-box;
   }
   width: 100%;
-  background-image: linear-gradient(#a90828, #930537, #7C003D);
+  background-image: linear-gradient(#a90828, #930537, #7c003d);
   overflow: hidden;
   .top {
     width: 100%;
@@ -92,7 +87,7 @@ export default {
     .about {
       width: 4rem;
       height: 1.5rem;
-      line-height:1.3rem;
+      line-height: 1.35rem;
       position: absolute;
       color: #fff;
       border: 1px solid #fff;
@@ -114,16 +109,16 @@ export default {
     margin-left: -8.5rem;
     margin-top: -11rem;
     z-index: 999;
-    background-image: linear-gradient(#A40020,#6B004A);
+    background-image: linear-gradient(#a40020, #6b004a);
     border-radius: 0.3rem;
-    color: #Fff;
+    color: #fff;
     img {
-        width: 1.5rem;
-        height: 1.5rem;
-        position: absolute;
-        top: 0.5rem;
-        right: 0.5rem;
-        z-index: 1000;
+      width: 1.5rem;
+      height: 1.5rem;
+      position: absolute;
+      top: 0.5rem;
+      right: 0.5rem;
+      z-index: 1000;
     }
     .rule-text {
       p {
@@ -133,6 +128,11 @@ export default {
         margin: 0 auto;
         font-size: 1.2rem;
         line-height: 2rem;
+      }
+      div {
+        p {
+          margin: 0.5rem 0;
+        }
       }
       width: 16rem;
       position: absolute;
