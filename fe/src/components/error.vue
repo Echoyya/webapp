@@ -6,14 +6,6 @@
     <a href>try again</a>.
   </div>
 </template>
-<script>
-export default {
-  layout: "base",
-  mounted() {
-    this.$nextTick(() => this.$nuxt.$loading.finish());
-  }
-};
-</script>
 <style lang="less" scoped>
 .error {
   width: 100%;
