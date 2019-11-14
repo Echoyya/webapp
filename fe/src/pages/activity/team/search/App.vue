@@ -64,13 +64,14 @@ export default {
   },
   methods: {
     submit() {
-      if (this.teamNum) {
+      const teamno = ('' + this.teamNum).trim()
+      if (teamno) {
         const reg = /^[0-9]+$/g
-        if (!reg.test(this.teamNum)) {
+        if (!reg.test(teamno)) {
           this.$refs.alert.show(this.$t('vote.team.input_error'))
           return
         }
-        searchTeam.call(this, this.teamNum, data => {
+        searchTeam.call(this, teamno, data => {
           if (data && (data.code == 1 || data.code == 0)) {
             // this.showBtn = false
             this.mumberList = data.data.team_member_dtos

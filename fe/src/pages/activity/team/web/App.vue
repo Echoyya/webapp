@@ -26,8 +26,8 @@
       </div>
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="copy">
         <div>Team ID:</div>
-        <div>{{teamNum}}</div>
-        <div>COPY</div>
+        <div id="teamno">{{teamNum}}</div>
+        <div id="copy" data-clipboard-target="#teamno">COPY</div>
       </div>
     </div>
     <div
@@ -114,6 +114,7 @@ import { formatAmount } from '@/functions/utils'
 import { searchTeam } from '@/pages/activity/team/func'
 import { getQueryVariable, callApp, callMarket, downApk } from '@/functions/app'
 import confirmDialog from '@/components/confirm'
+import ClipboardJS from 'clipboard'
 export default {
   components: {
     mBanner,
@@ -157,6 +158,11 @@ export default {
     if (this.teamNum) {
       this.search()
     }
+  },
+  mounted(){
+    this.$nextTick(()=>{
+      new ClipboardJS('#copy')
+    })
   },
   methods: {
     callOrDownApp() {
