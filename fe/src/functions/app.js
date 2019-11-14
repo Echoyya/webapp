@@ -151,7 +151,7 @@ export const callMarket = function(failback) {
       {
         category: 'callup_app',
         action: 'to_googleplay',
-        label: this.$route.path,
+        label: location.pathname,
         value: 1
       },
       utmParam.map

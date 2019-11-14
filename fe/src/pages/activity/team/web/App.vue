@@ -30,7 +30,10 @@
         <div>COPY</div>
       </div>
     </div>
-    <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
+    <div
+      v-show="moreList1.length>0&&moreList2.length>0"
+      class="text text2"
+    >{{$t('vote.team.follow_team')}}</div>
     <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
       <div class="team1 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
@@ -110,7 +113,7 @@ import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
 import { searchTeam } from '@/pages/activity/team/func'
 import { getQueryVariable, callApp, callMarket, downApk } from '@/functions/app'
-import confirmDialog from "@/components/confirm";
+import confirmDialog from '@/components/confirm'
 export default {
   components: {
     mBanner,
@@ -128,13 +131,8 @@ export default {
       teamNum: '',
       teamNum1: '',
       teamNum2: '',
-      number: '13243245',
+      number: '',
       leader_name: 'leader_name'
-    }
-  },
-  filters: {
-    formatAmount(val) {
-      return formatAmount(val)
     }
   },
   computed: {
@@ -148,29 +146,37 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
+    const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
+    const max = 27 * 10000
+    const speed = Math.floor((max / during) * 100) / 100
+    const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
+    this.number = formatAmount(Math.floor(period * speed))
+
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (this.teamNum) {
       this.search()
     }
-    this.number = formatAmount(this.number)
   },
   methods: {
-    // 唤醒转入活动页或下载App
     callOrDownApp() {
-      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home?teamno=${this.teamNum}`, () => {
-        callMarket.call(this, () => {
-          this.$refs.confirm.show(
-            'Start downloading apk now? (12M)',
-            () => {
-              downApk.call(this)
-            },
-            () => {},
-            'OK',
-            'NOT NOW'
-          )
-        })
-      })
+      callApp.call(
+        this,
+        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home?teamno=${this.teamNum}`,
+        () => {
+          callMarket.call(this, () => {
+            this.$refs.confirm.show(
+              this.$t('vote.team.download_tip'),
+              () => {
+                downApk.call(this)
+              },
+              () => {},
+              'OK',
+              'NOT NOW'
+            )
+          })
+        }
+      )
     },
     search() {
       searchTeam.call(this, this.teamNum, data => {
@@ -210,9 +216,9 @@ export default {
   .text {
     width: 95%;
     position: relative;
-    height: 1.5rem;
-    line-height: 1.5rem;
-    font-size: 0.75rem;
+    height: 1.7rem;
+    line-height: 1.7rem;
+    font-size: 0.8rem;
     padding-left: 0.5rem;
     color: #fff;
     border-top-right-radius: 1rem;

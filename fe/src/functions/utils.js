@@ -78,7 +78,6 @@ export const animateCSS = function(element, animationName, callback) {
 }
 
 export const getBrowser = function() {
-  if (!process.client) return {}
   const ua = window.navigator.userAgent || ''
   const isAndroid = /android/i.test(ua)
   const isIos = /iphone|ipad|ipod/i.test(ua)
