@@ -9,7 +9,7 @@
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/TeamFission/ic_close.png" alt @click="closeShadow" />
       <div class="rule-text">
-        <p>Rules</p>
+        <p>{{$t('vote.team.about_title')}}</p>
         <div v-html="$t('vote.team.about_con')"></div>
       </div>
     </div>
@@ -130,6 +130,11 @@ export default {
         line-height: 2rem;
       }
       div {
+        height: 16rem;
+        overflow-y: scroll;
+        &::-webkit-scrollbar {
+          display: none;
+        }
         p {
           margin: 0.5rem 0;
         }
@@ -139,10 +144,6 @@ export default {
       left: 0.5rem;
       top: 1rem;
       padding: 0.5rem;
-      overflow: hidden;
-      &::-webkit-scrollbar {
-        display: none;
-      }
     }
   }
   .shadow-box {
