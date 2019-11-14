@@ -225,5 +225,7 @@ export const initPage = function(page) {
         value: appType
       })
       // TODO 登录状态失效
+      
+
     })
 }

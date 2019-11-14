@@ -293,7 +293,6 @@ export const getQueryVariable = function(query, key) {
 }
 
 export const addTicketByDownload = function(vote_id) {
-  // TODO 环境变量
   const user = getQueryVariable(location.search.replace('?', ''), 'pin')
   if (user) {
     this.$axios.get('/hybrid/api/sign').then(({ data }) => {

@@ -57,7 +57,8 @@ export default {
       full_team: 'Sorry,the team is already full',
       follow_team: 'The following team still have one position, join now',
       tips: `Tips: <br/>VIP will be effective from now, a total of {0} days, the number of times you have won the lottery will automatically add up`,
-      no_awards: "You don't have a reward yet"
+      no_awards: "You don't have a reward yet",
+      
     }
   }
 }
