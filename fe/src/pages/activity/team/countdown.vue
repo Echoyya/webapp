@@ -1,7 +1,7 @@
 <template>
   <div class="remaining box1">
     <img src="@/assets/img/vote/TeamFission/ic-awards.png" @click="toAwards" />
-    <div class="title">Remaining:</div>
+    <div class="title">{{$t('vote.team.countdownTitle')}}</div>
     <div class="contant">
       <div class="day">
         <span>{{days | formatAmount}}</span> days
@@ -24,6 +24,7 @@
 </template>
 <script>
 import { toNativePage } from '@/functions/app'
+import { formatAmount } from '@/functions/utils'
 export default {
   props: ['activityStart', 'activityEnd', 'teamNo'],
   data() {
@@ -32,6 +33,11 @@ export default {
       hour: '',
       min: '',
       sed: ''
+    }
+  },
+  filters: {
+    formatAmount(val) {
+      return formatAmount(val)
     }
   },
   created() {
@@ -112,6 +118,7 @@ export default {
     border-top-left-radius: 1rem;
     padding-left: 0.8rem;
     line-height: 2rem;
+    font-size: 0.9rem;
   }
   .contant {
     padding: 0.5rem;

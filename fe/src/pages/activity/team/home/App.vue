@@ -3,7 +3,7 @@
     <mBanner />
     <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
     <div v-if="team.length>0" v-show="!show_share" class="invite box">
-      <div v-show="!hasFinish" class="title">Invite two friends to draw a lottery:</div>
+      <div v-show="!hasFinish" class="title">{{$t('vote.team.invite_tips')}}</div>
       <div v-show="!hasFinish" class="contant">
         <div>
           <div>
@@ -82,7 +82,6 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import { formatAmount } from '@/functions/utils'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable, toNativePage } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
@@ -158,11 +157,6 @@ export default {
       } else {
         return 'web'
       }
-    }
-  },
-  filters: {
-    formatAmount(val) {
-      return formatAmount(val)
     }
   },
   created() {
@@ -294,11 +288,17 @@ export default {
           if (data.code == 0) {
             this.team = data.data.team_member_dtos
             this.teamNum = data.data.team_no
+            this.$refs.malert.show(this.$t('vote.team.willStartDraw'), () => {
+              window.scrollTo(0, 1500)
+              this.startLottery()
+            })
           } else {
             createTeam.call(this, () => {
               if (data.code == 0) {
                 this.team = data.data.team_member_dtos
                 this.teamNum = data.data.team_no
+              } else if (data.code == 2) {
+                this.hasFinish = true
               } else {
                 this.$refs.malert.show(data.message)
               }
@@ -559,6 +559,7 @@ export default {
       border-top-left-radius: 1rem;
       padding-left: 0.8rem;
       line-height: 2rem;
+      font-size: 0.9rem;
     }
     .contant {
       padding: 0.5rem;

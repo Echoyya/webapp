@@ -45,7 +45,13 @@ export default {
       solucky: 'So lucky!',
       jackpot: 'Hit the jackpot!',
       show_lucky: 'SHOW MY LUCKY',
-      download_join: 'Download to join now'
+      download_join: 'Download to join now',
+
+      //add
+      shareTitle: 'Make A Team to Win Free VIPS',
+      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
+      countdownTitle: 'Remaining',
+      willStartDraw: 'You got one draw time,click to start draw!'
     }
   }
 }

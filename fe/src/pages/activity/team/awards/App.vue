@@ -50,9 +50,9 @@
   </div>
 </template>
 <script>
-// import qs from "qs";
 import mBanner from '@/pages/activity/team/banner.vue'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import env from '@/functions/config'
 export default {
   components: {
     mBanner
@@ -62,8 +62,9 @@ export default {
       // 页面
       show_share: false,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
-      shareTitle: 'Bongo Star Search 2019',
-      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
+      shareTitle: this.$t('vote.team.shareTitle'),
+      shareText: this.$t('vote.team.shareText'),
+      shareUrl: '',
 
       //team
       teams: [],
@@ -83,39 +84,38 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
       this.teams = data.data.my_award_team_dtos ? data.data.my_award_team_dtos : []
       this.allDays = data.data.all_award_days ? data.data.all_award_days : 0
-      console.log(data.data.all_award_days ? data.data.all_award_days : 0)
     })
+    this.shareUrl = `${location.host}/activity/team/web?teamno=${this.teamNum}`
   },
   methods: {
     toFacebook() {
-      if (this.appType == 1) {
-        shareByFacebook('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      if (this.$appType == 1) {
+        shareByFacebook(this.shareUrl, this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     toWhatsApp() {
-      if (this.appType == 1) {
-        shareByWhatsApp('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      if (this.$appType == 1) {
+        shareByWhatsApp(this.shareUrl, this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     toXender() {
-      if (this.appType == 1) {
+      if (this.$appType == 1) {
         shareByXender(this.teamNum)
       }
     },
     toDownload() {
-      if (this.appType == 1) {
-        shareByDownload()
+      if (this.$appType == 1) {
+        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=1&team_no=${this.teamNum}`)
       }
     },
     toCopylink() {
-      if (this.appType == 1) {
-        const bool = shareByCopyLink('https://www.taobao.com/')
-        this.$refs.alert.show(bool)
+      if (this.$appType == 1) {
+        shareByCopyLink(this.shareUrl)
       }
     }
   }
