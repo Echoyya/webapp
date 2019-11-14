@@ -45,12 +45,13 @@ function sendMsg(url) {
 let appType = 0
 
 let appInfo = window.getChannelId && window.getChannelId.jsGetHeadInfo && window.getChannelId.jsGetHeadInfo()
+
 let token = tokenMap['NG'] // 默认尼日匿名用户
 let language = 'en' // 默认英语
 if (appInfo) {
-  appInfo = JSON.parse(appType)
-  token = appType.token
-  language = appType.lnCode
+  appInfo = JSON.parse(appInfo)
+  token = appInfo.token
+  language = appInfo.lnCode
   appType = 1
 } else {
   appInfo = {}
@@ -64,7 +65,7 @@ if (appInfo) {
     token = getCookie('token') || tokenMap['NG']
   }
 }
-
+alert(token)
 if (language.indexOf('fr') >= 0) {
   Vue.prototype.t = i18n.fy
 } else if (language.indexOf('sw') >= 0) {
@@ -78,7 +79,6 @@ if (language.indexOf('fr') >= 0) {
 setCookie('token', token)
 Vue.prototype.$appType = appType
 Vue.prototype.$token = token
-
 let deviceId = appInfo.deviceId || getCookie('_stdid') || randomString(32)
 const ua = navigator.userAgent
 const os = (appType === 1 && 'Android') || (appType === 2 && 'IOS') || (ua.includes('iPhone') && 'IOS') || (ua.includes('iPad') && 'IOS') || 'Android'
