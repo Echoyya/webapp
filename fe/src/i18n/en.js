@@ -26,7 +26,6 @@ export default {
             search: 'SEARCH',
             search_nores: 'oops, no team results',
             join: 'JOIN TEAM',
-            join_s: 'JOIN',
             reserves: 'Prize will be effective immediately in ME.',
             form_late: "Oops,  you're a little late, form a new team",
             form_newbtn: 'FORM A NEW',
@@ -45,7 +44,14 @@ export default {
             solucky: 'So lucky!',
             jackpot: 'Hit the jackpot!',
             show_lucky: 'SHOW MY LUCKY',
-            download_join: 'Download to join now'
+            download_join: 'Download to join now',
+
+            //add
+            join_s: 'JOIN',
+            shareTitle: 'Make A Team to Win Free VIPS',
+            shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
+            countdownTitle: 'Remaining',
+            willStartDraw: 'You got one draw time,click to start draw!'
         }
     }
 }

@@ -1,28 +1,7 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div class="remaining box">
-      <img src="@/assets/img/vote/TeamFission/ic-awards.png" @click="showAwards" />
-      <div class="title">Remaining:</div>
-      <div class="contant">
-        <div class="day">
-          <span>{{days | formatAmount}}</span> days
-        </div>
-        <div class="day count-down">
-          <div>
-            <span>{{hour}}</span> h
-          </div>
-          <div class="line-vertical"></div>
-          <div>
-            <span>{{min}}</span> m
-          </div>
-          <div class="line-vertical"></div>
-          <div>
-            <span>{{sed}}</span> s
-          </div>
-        </div>
-      </div>
-    </div>
+    <countdown @toAwards="toAwards" :activityStart="activityStart" :activityEnd="activityEnd" />
     <div class="prize">
       <div class="text">{{text[prize-1]}}</div>
       <div class="vip">VIP {{award_day}} DAY</div>
@@ -48,14 +27,15 @@
   </div>
 </template>
 <script>
-// import qs from "qs";
 import { formatAmount } from '@/functions/utils'
 import mBanner from '@/pages/activity/team/banner.vue'
 import env from '@/functions/config'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import countdown from '@/pages/activity/team/countdown'
 export default {
   components: {
     mBanner,
+    countdown
   },
   data() {
     return {
@@ -95,57 +75,6 @@ export default {
         return 'web'
       }
     }
-  },
-  created() {
-    const during = this.activityEnd - this.activityStart
-    const stage1 = Math.round(during * 0.25)
-    const stage2 = Math.round(during * 0.5)
-    const stage3 = Math.round(during * 0.75)
-    const px1 = 0.7
-    const px2 = 0.85
-    const px3 = 0.95
-
-    // 计算减小倍率
-    const speed = Math.floor(((100 * 10000) / during) * 1000 * 100) / 100
-    // 计算活动开始的时间
-    const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
-
-    if (period < stage1) {
-      this.days = 100 * 10000 - Math.ceil(period * speed * px1)
-    } else if ((period < stage2) & (period > stage1)) {
-      this.days = 100 * 10000 - Math.ceil((period - stage1) * speed * px2) + stage1 * speed * px1
-    } else if ((period < stage3) & (period > stage2)) {
-      this.days = 100 * 10000 - Math.ceil((period - stage2) * speed * px3) + stage2 * speed * px2 + stage1 * speed * px1
-    } else {
-      this.days = 100 * 10000 - Math.ceil((period - stage3) * speed * 1.2) + stage3 * speed * px3 + stage2 * speed * px2 + stage1 * speed * px1
-    }
-
-    // 倒计时
-    let page_init_time = new Date().getTime()
-    let last_client_time = page_init_time
-    let serverTime = parseInt(this.$serverTime)
-
-    setInterval(() => {
-      const now_time = new Date().getTime()
-
-      if (now_time - last_client_time < 1000 * 60) {
-        serverTime = serverTime + (now_time - last_client_time)
-      } else {
-        page_init_time = now_time
-        serverTime = this.$serverTime + now_time - page_init_time
-      }
-      last_client_time = now_time
-
-      const remainTime = Math.floor((this.activityEnd - serverTime) / 1000)
-
-      const hour = Math.floor(remainTime / 60 / 60)
-      const min = Math.floor((remainTime - hour * 60 * 60) / 60)
-      const sed = remainTime - hour * 60 * 60 - min * 60
-
-      this.hour = hour > 0 ? hour : '00'
-      this.min = min < 10 ? '0' + min : min
-      this.sed = sed < 10 ? '0' + sed : sed
-    }, 300)
   },
   mounted() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
@@ -234,49 +163,6 @@ export default {
       border-radius: 1rem;
       border-top-left-radius: 0;
       color: #fff;
-    }
-  }
-  .remaining {
-    margin: -18% auto 0.5rem;
-    > img {
-      position: absolute;
-      width: 20%;
-      top: -2.5rem;
-      right: -0.5rem;
-    }
-    .contant {
-      .day {
-        width: 100%;
-        height: 2.5rem;
-        line-height: 2.5rem;
-        background-image: url('~@/assets/img/vote/TeamFission/bg-remain.png');
-        background-size: 100% 2.5rem;
-        text-align: center;
-        font-size: 1.2rem;
-        color: #dddddd;
-        span {
-          font-size: 1.3rem;
-          font-weight: bold;
-          letter-spacing: 0.15rem;
-          color: white;
-        }
-        &:first-child {
-          margin-bottom: 0.5rem;
-        }
-        div {
-          display: inline-block;
-        }
-      }
-      .count-down {
-        display: flex;
-        div {
-          flex: 1;
-        }
-        .line-vertical {
-          max-width: 1px;
-          background: url('~@/assets/img/vote/TeamFission/verline.png') no-repeat center center;
-        }
-      }
     }
   }
   .prize {

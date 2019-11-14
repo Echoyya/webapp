@@ -7,20 +7,27 @@
         <div v-show="teams.length>0" v-for="(item,index) in teams" :key="index" class="items">
           <div>
             <div>
-              <img :src="item.team_member_dtos[0].logo" alt />
+              <img v-if="item.team_member_dtos[0].logo" :src="item.team_member_dtos[0].logo" alt />
+              <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <img src="@/assets/img/vote/TeamFission/ic_forward2.png" />
           <div>
             <div>
-              <img v-if="item.team_member_dtos[1]" :src="item.team_member_dtos[1].logo" />
-              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+              <img
+                v-if="item.team_member_dtos[1]&&item.team_member_dtos[1].logo"
+                :src="item.team_member_dtos[1].logo"
+              />
+              <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <div>
             <div>
-              <img v-if="item.team_member_dtos[2]" :src="item.team_member_dtos[2].logo" />
-              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+              <img
+                v-if="item.team_member_dtos[2]&&item.team_member_dtos[2].logo"
+                :src="item.team_member_dtos[2].logo"
+              />
+              <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <div class="vip">VIP {{item.my_award_day}} DAYS</div>
@@ -43,21 +50,20 @@
   </div>
 </template>
 <script>
-// import qs from "qs";
 import mBanner from '@/pages/activity/team/banner.vue'
 import env from '@/functions/config'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
 export default {
   components: {
-    mBanner,
+    mBanner
   },
   data() {
     return {
       // 页面
       show_share: false,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
-      shareTitle: 'Bongo Star Search 2019',
-      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
+      shareTitle: this.$t('vote.team.shareTitle'),
+      shareText: this.$t('vote.team.shareText'),
 
       //team
       teams: [],
@@ -77,13 +83,13 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
       this.teams = data.data.my_award_team_dtos ? data.data.my_award_team_dtos : []
       this.allDays = data.data.all_award_days ? data.data.all_award_days : 0
-      console.log(data.data.all_award_days ? data.data.all_award_days : 0)
     })
+    this.shareUrl = `${location.host}/activity/team/web?teamno=${this.teamNum}`
   },
   methods: {
     toFacebook() {
@@ -118,9 +124,11 @@ export default {
     },
     toCopylink() {
       if (this.$appType == 1) {
-        shareByCopyLink(`${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`)
+        shareByCopyLink(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+        )
       }
-    },
+    }
   }
 }
 </script>
