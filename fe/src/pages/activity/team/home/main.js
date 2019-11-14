@@ -160,8 +160,7 @@ axios
     .get('/cms/users/me')
     .then(res => {
         Vue.prototype.$serverTime = res.headers.server_time
-
-        if (res && res.id) {
+        if (res.data && res.data.id) {
             // 有用户信息
             const role = res.data.roleName
             deviceId = res.data.deviceID
@@ -193,15 +192,26 @@ axios
         })
     })
     .catch(() => {
-        new Vue({
-            render: h => h(errorPage)
-        }).$mount('#app')
-        deviceId = 'h5diviceidpageiniterrorunder52000'
-        sendEvLog({
-                category: 'h5_open',
-                action: 'get_me_error',
-                label: location.pathname,
-                value: appType
-            })
-            // TODO 登录状态失效
-    })
+            new Vue({
+                render: h => h(errorPage)
+            }).$mount('#app')
+            deviceId = 'h5diviceidpageiniterrorunder52000'
+            sendEvLog({
+                    category: 'h5_open',
+                    action: 'get_me_error',
+                    label: location.pathname,
+                    value: appType
+                })
+                .catch(() => {
+                    new Vue({
+                        render: h => h(errorPage)
+                    }).$mount('#app')
+                    deviceId = 'h5diviceidpageiniterrorunder52000'
+                    sendEvLog({
+                            category: 'h5_open',
+                            action: 'get_me_error',
+                            label: location.pathname,
+                            value: appType
+                        })
+                        // TODO 登录状态失效
+                })

@@ -301,10 +301,20 @@ export default {
       })
     } else {
       if (this.$isLogin) {
-        // 获取当前所在队伍 TODO 无法跨域问题
-        this.$axios.get(`/voting/team-building/v1/participating-team`).then(({ data }) => {
-          this.team = data.data.team_member_dtos
-          this.teamNum = data.data.team_no
+        this.$axios.get(`/voting/team-building/v1/participating-team?team_activity_id=1`).then(({ data }) => {
+          if (data.code == 0) {
+            this.team = data.data.team_member_dtos
+            this.teamNum = data.data.team_no
+          } else {
+            createTeam.call(this, () => {
+              if (data.code == 0) {
+                this.team = data.data.team_member_dtos
+                this.teamNum = data.data.team_no
+              } else {
+                this.$refs.malert.show(data.message)
+              }
+            })
+          }
         })
       } else {
         // 创建假的队伍
