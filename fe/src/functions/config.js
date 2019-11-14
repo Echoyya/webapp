@@ -1,5 +1,5 @@
 let env
-if (location.hostname.indexOf('localhost') >= 0) {
+if (location.hostname.indexOf('localhost') >= 0||location.hostname.indexOf('10.0') >= 0) {
   env = {
     gaWapKey: 'UA-55969660-8',
     gaAndroidKey: 'UA-55969660-8',
