@@ -144,8 +144,12 @@ export const downApk = function(callback) {
 
 export const callMarket = function(failback) {
   const utmParam = getUtmParam.call(this)
-  const source = utmParam.str
-
+  let source = utmParam.str
+  // 对组队活动特殊处理teamno
+  const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
+  if (teamno) {
+    source = source + encodeURIComponent('&utm_term=' + encodeURIComponent(location.origin + '/activity/team/home?teamno=' + teamno))
+  }
   this.$sendEvLog(
     Object.assign(
       {

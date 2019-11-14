@@ -148,10 +148,10 @@ export default {
   },
   created() {
     const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
-    const max = 27 * 10000
+    const max = 10 * 10000
     const speed = Math.floor((max / during) * 100) / 100
     const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
-    this.number = formatAmount(Math.floor(period * speed))
+    this.number = formatAmount(10 + Math.floor(period * speed))
 
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (this.teamNum) {
