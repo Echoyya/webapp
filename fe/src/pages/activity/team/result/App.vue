@@ -1,28 +1,7 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div class="remaining box">
-      <img src="@/assets/img/vote/TeamFission/ic-awards.png" @click="showAwards" />
-      <div class="title">Remaining:</div>
-      <div class="contant">
-        <div class="day">
-          <span>{{days | formatAmount}}</span> days
-        </div>
-        <div class="day count-down">
-          <div>
-            <span>{{hour}}</span> h
-          </div>
-          <div class="line-vertical"></div>
-          <div>
-            <span>{{min}}</span> m
-          </div>
-          <div class="line-vertical"></div>
-          <div>
-            <span>{{sed}}</span> s
-          </div>
-        </div>
-      </div>
-    </div>
+    <countdown @toAwards="toAwards" :activityStart="activityStart" :activityEnd="activityEnd" />
     <div class="prize">
       <div class="text">{{text[prize-1]}}</div>
       <div class="vip">VIP {{award_day}} DAY</div>
@@ -54,19 +33,20 @@
   </div>
 </template>
 <script>
-// import qs from "qs";
 import { formatAmount } from '@/functions/utils'
 import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
+import countdown from '@/pages/activity/team/countdown'
 export default {
   components: {
     mBanner,
     mShare,
     toastDialog,
-    malert
+    malert,
+    countdown
   },
   data() {
     return {
@@ -232,49 +212,6 @@ export default {
       border-radius: 1rem;
       border-top-left-radius: 0;
       color: #fff;
-    }
-  }
-  .remaining {
-    margin: -18% auto 0.5rem;
-    > img {
-      position: absolute;
-      width: 20%;
-      top: -2.5rem;
-      right: -0.5rem;
-    }
-    .contant {
-      .day {
-        width: 100%;
-        height: 2.5rem;
-        line-height: 2.5rem;
-        background-image: url('~@/assets/img/vote/TeamFission/bg-remain.png');
-        background-size: 100% 2.5rem;
-        text-align: center;
-        font-size: 1.2rem;
-        color: #dddddd;
-        span {
-          font-size: 1.3rem;
-          font-weight: bold;
-          letter-spacing: 0.15rem;
-          color: white;
-        }
-        &:first-child {
-          margin-bottom: 0.5rem;
-        }
-        div {
-          display: inline-block;
-        }
-      }
-      .count-down {
-        display: flex;
-        div {
-          flex: 1;
-        }
-        .line-vertical {
-          max-width: 1px;
-          background: url('~@/assets/img/vote/TeamFission/verline.png') no-repeat center center;
-        }
-      }
     }
   }
   .prize {

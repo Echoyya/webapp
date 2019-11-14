@@ -1,28 +1,7 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div class="remaining box">
-      <img src="@/assets/img/vote/TeamFission/ic-awards.png" @click="toAwards" />
-      <div class="title">Remaining:</div>
-      <div class="contant">
-        <div class="day">
-          <span>{{days | formatAmount}}</span> days
-        </div>
-        <div class="day count-down">
-          <div>
-            <span>{{hour}}</span> h
-          </div>
-          <div class="line-vertical"></div>
-          <div>
-            <span>{{min}}</span> m
-          </div>
-          <div class="line-vertical"></div>
-          <div>
-            <span>{{sed}}</span> s
-          </div>
-        </div>
-      </div>
-    </div>
+    <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
     <div v-if="team.length>0" v-show="!show_share" class="invite box">
       <div v-show="!hasFinish" class="title">Invite two friends to draw a lottery:</div>
       <div v-show="!hasFinish" class="contant">
@@ -107,10 +86,12 @@ import { formatAmount } from '@/functions/utils'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable, toNativePage } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
+import countdown from '@/pages/activity/team/countdown'
 export default {
   components: {
     mBanner,
-    malert
+    malert,
+    countdown
   },
   data() {
     return {
@@ -119,13 +100,8 @@ export default {
       shareTitle: 'Bongo Star Search 2019',
       shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
 
-      activityStart: new Date('2019-11-05 00:00:00').getTime(),
+      activityStart: new Date('2019-11-11 00:00:00').getTime(),
       activityEnd: new Date('2019-11-18 04:00:00').getTime(),
-      // remaining
-      days: '1000000',
-      hour: '',
-      min: '',
-      sed: '',
       show_share: false,
       hasFinish: false,
 
@@ -590,49 +566,6 @@ export default {
       border-radius: 1rem;
       border-top-left-radius: 0;
       color: #fff;
-    }
-  }
-  .remaining {
-    margin: -18% auto 0.5rem;
-    > img {
-      position: absolute;
-      width: 20%;
-      top: -2.5rem;
-      right: -0.5rem;
-    }
-    .contant {
-      .day {
-        width: 100%;
-        height: 2.5rem;
-        line-height: 2.5rem;
-        background-image: url('~@/assets/img/vote/TeamFission/bg-remain.png');
-        background-size: 100% 2.5rem;
-        text-align: center;
-        font-size: 1.2rem;
-        color: #dddddd;
-        span {
-          font-size: 1.3rem;
-          font-weight: bold;
-          letter-spacing: 0.15rem;
-          color: white;
-        }
-        &:first-child {
-          margin-bottom: 0.5rem;
-        }
-        div {
-          display: inline-block;
-        }
-      }
-      .count-down {
-        display: flex;
-        div {
-          flex: 1;
-        }
-        .line-vertical {
-          max-width: 1px;
-          background: url('~@/assets/img/vote/TeamFission/verline.png') no-repeat center center;
-        }
-      }
     }
   }
   .invite {

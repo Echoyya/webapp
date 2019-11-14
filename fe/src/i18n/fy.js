@@ -3,12 +3,12 @@ export default {
     team: {
       about_title: 'Rules',
       about_con:
-        '1. The team number can call 2 friends and form a team to enter the lucky draw. <br/>\
-        2.Prizes include 1 Day VIP, 7 Days VIP and 30  Days VIP.  <br/>\
-        3.Only new devices and accounts are identified as new users can join the team. <br/>\
-        4.Each user have up to 10 chances to win.  <br/>\
-        5.Activity valid until Dec 25, 2019 <br/>\
-        6.StarTimes ON reserves the right of final decision and interpretation.',
+        '<p>1. The team number can call 2 friends and form a team to enter the lucky draw. </p>\
+        <p>2.Prizes include 1 Day VIP, 7 Days VIP and 30  Days VIP.  </p>\
+        <p>3.Only new devices and accounts are identified as new users can join the team. </p>\
+        <p>4.Each user have up to 10 chances to win.  </p>\
+        <p>5.Activity valid until Dec 25, 2019 </p>\
+        <p>6.StarTimes ON reserves the right of final decision and interpretation.',
       my_prizes: 'My Prizes',
       my_won: 'WON: {0} Days VIP',
       day_vip_1: '1 DAY VIP',

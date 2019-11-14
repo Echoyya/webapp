@@ -2,25 +2,32 @@
   <div class="wrapper">
     <mBanner />
     <div v-if="!show_share" class="invite">
-      <div class="title">WON: {{allDays}} Days VIP</div>
+      <div class="title">{{$t('vote.team.my_won',[allDays])}}</div>
       <div class="contant">
         <div v-show="teams.length>0" v-for="(item,index) in teams" :key="index" class="items">
           <div>
             <div>
-              <img :src="item.team_member_dtos[0].logo" alt />
+              <img v-if="item.team_member_dtos[0].logo" :src="item.team_member_dtos[0].logo" alt />
+              <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <img src="@/assets/img/vote/TeamFission/ic_forward2.png" />
           <div>
             <div>
-              <img v-if="item.team_member_dtos[1]" :src="item.team_member_dtos[1].logo" />
-              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+              <img
+                v-if="item.team_member_dtos[1]&&item.team_member_dtos[1].logo"
+                :src="item.team_member_dtos[1].logo"
+              />
+              <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <div>
             <div>
-              <img v-if="item.team_member_dtos[2]" :src="item.team_member_dtos[2].logo" />
-              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+              <img
+                v-if="item.team_member_dtos[2]&&item.team_member_dtos[2].logo"
+                :src="item.team_member_dtos[2].logo"
+              />
+              <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <div class="vip">VIP {{item.my_award_day}} DAYS</div>
