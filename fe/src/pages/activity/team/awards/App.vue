@@ -45,10 +45,11 @@
 <script>
 // import qs from "qs";
 import mBanner from '@/pages/activity/team/banner.vue'
+import env from '@/functions/config'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
 export default {
   components: {
-    mBanner
+    mBanner,
   },
   data() {
     return {
@@ -86,31 +87,40 @@ export default {
   },
   methods: {
     toFacebook() {
-      if (this.appType == 1) {
-        shareByFacebook('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      if (this.$appType == 1) {
+        shareByFacebook(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
       }
     },
     toWhatsApp() {
-      if (this.appType == 1) {
-        shareByWhatsApp('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      if (this.$appType == 1) {
+        shareByWhatsApp(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
       }
     },
     toXender() {
-      if (this.appType == 1) {
+      if (this.$appType == 1) {
         shareByXender(this.teamNum)
       }
     },
     toDownload() {
-      if (this.appType == 1) {
-        shareByDownload()
+      if (this.$appType == 1) {
+        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
       }
     },
     toCopylink() {
-      if (this.appType == 1) {
-        const bool = shareByCopyLink('https://www.taobao.com/')
-        this.$refs.alert.show(bool)
+      if (this.$appType == 1) {
+        shareByCopyLink(`${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`)
       }
-    }
+    },
   }
 }
 </script>
