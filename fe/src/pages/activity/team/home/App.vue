@@ -24,8 +24,8 @@
       </div>
     </div>
     <div v-if="team.length>0" v-show="!show_share" class="invite box">
-      <div class="title">Invite two friends to draw a lottery:</div>
-      <div class="contant">
+      <div v-show="!hasFinish" class="title">Invite two friends to draw a lottery:</div>
+      <div v-show="!hasFinish" class="contant">
         <div>
           <div>
             <img :src="team[0].logo" alt />
@@ -46,7 +46,17 @@
           </div>
         </div>
       </div>
-      <img src="@/assets/img/vote/TeamFission/btn-friends.png" @click="show_share=true" />
+      <div v-show="hasFinish" class="finish">
+        Well Done!
+        <br />You have formed 10 teams
+      </div>
+      <div class="firends-box clearfix">
+        <div class="img" @click="toSearch"></div>
+        <div class="friends" @click="show_share=true">
+          <img src="@/assets/img/vote/TeamFission/ic_share.png" />
+          <p>Tell Friends</p>
+        </div>
+      </div>
     </div>
     <div v-show="show_share" class="share-box">
       <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false" />
@@ -77,7 +87,7 @@
     <div class="msg-box">
       <div class="msg">
         <ul ref="msgul" :class="{anim:animates==true}">
-          <img src="@/assets/img/vote/BSSRegister/sound.png" alt />
+          <img src="@/assets/img/vote/TeamFission/ic-msg.png" alt />
           <li
             v-for="item in msgList"
             :key="item.key"
@@ -117,10 +127,12 @@ export default {
       min: '',
       sed: '',
       show_share: false,
+      hasFinish: false,
 
       //team
       team: [],
       teamNum: '',
+      team_activity_id: 1,
 
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
@@ -229,7 +241,6 @@ export default {
     }, 300)
   },
   mounted() {
-    console.log(this.$isLogin)
     const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (teamno && !isNaN(teamno)) {
       // history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
@@ -288,6 +299,8 @@ export default {
                       },
                       '查看我所在的队伍'
                     )
+                  } else if (data.code == 2) {
+                    this.hasFinish = true
                   }
                 })
               } else if (this.$appType === 1) {
@@ -301,7 +314,7 @@ export default {
       })
     } else {
       if (this.$isLogin) {
-        this.$axios.get(`/voting/team-building/v1/participating-team?team_activity_id=1`).then(({ data }) => {
+        this.$axios.get(`/voting/team-building/v1/participating-team?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
           if (data.code == 0) {
             this.team = data.data.team_member_dtos
             this.teamNum = data.data.team_no
@@ -333,12 +346,22 @@ export default {
   methods: {
     toFacebook() {
       if (this.$appType == 1) {
-        shareByFacebook('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+        shareByFacebook(
+          `${window.location.href}?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
       }
     },
     toWhatsApp() {
       if (this.$appType == 1) {
-        shareByWhatsApp('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+        shareByWhatsApp(
+          `${window.location.href}?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
       }
     },
     toXender() {
@@ -348,17 +371,18 @@ export default {
     },
     toDownload() {
       if (this.$appType == 1) {
+        // TODU
         shareByDownload()
       }
     },
     toCopylink() {
       if (this.$appType == 1) {
-        const bool = shareByCopyLink('https://www.taobao.com/')
-        this.$refs.alert.show(bool)
+        const bool = shareByCopyLink(`${window.location.href}?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`)
+        this.$refs.malert.show(bool)
       }
     },
     toAwards() {
-      window.location.href = '/activity/team/awards'
+      window.location.href = '/activity/team/awards?teamno=' + this.teamNum
     },
     toSearch() {
       window.location.href = '/activity/team/search'
@@ -407,12 +431,12 @@ export default {
             }
           } else {
             this.items = [] // 服务器端计算数据错误时
-            this.$refs.alert.show('Get winnings error!')
+            this.$refs.malert.show('Get winnings error!')
           }
         })
         .catch(err => {
           this.items = []
-          this.$refs.alert.show('Get winnings error!! ' + err)
+          this.$refs.malert.show('Get winnings error!! ' + err)
         })
     },
     msgScroll() {
@@ -444,14 +468,14 @@ export default {
             }
           } else {
             this.lotteryType = [] // 服务器端计算数据错误时
-            this.$refs.alert.show('Get rewards error!')
+            this.$refs.malert.show('Get rewards error!')
           }
           this.loaded_l = true
           // this.getMsgList();
         })
         .catch(err => {
           this.lotteryType = []
-          this.$refs.alert.show('Get rewards error!! ' + err)
+          this.$refs.malert.show('Get rewards error!! ' + err)
         })
     },
     startLottery() {
@@ -472,39 +496,40 @@ export default {
         this.times = 0
         console.log('你已经中奖了，位置' + (this.indexs + 1))
         console.log('你已经中奖了，奖品' + this.lotteryType[this.indexs].name)
-        // window.location.href = "/activity/team/result?teamno="+this.teamNum+"&prize="+this.award_day
+        window.location.href = '/activity/team/result?teamno=' + this.teamNum + '&prize=' + this.award_day
         this.click = true
       } else {
         if (this.times < this.cycle) {
           this.speeds -= 10 // 加快转动速度
         } else if (this.times === this.cycle) {
           // 后台取得一个中奖位置
-          this.$axios.post(`/voting/team-award/v1/user/award?team_activity_id=1&team_no=${this.teamNum}`).then(res => {
-            console.log(res.data)
-          })
-          const code = 0
-          const str = {
-            user_id: 345623,
-            award_day: 7
-          }
-          this.award_day = str.award_day
-          if (code == 0) {
-            if (str.award_day == 1 || str.award_day == 7 || str.award_day == 30) {
-              const prizeDay = str.award_day
-              for (let i = 0; i < this.lotteryType.length; i++) {
-                if (prizeDay == this.lotteryType[i].name.split(' ')[1]) {
-                  this.prize = i
+          console.log(this.teamNum)
+          this.$axios.post(`/voting/team-award/v1/user/award?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`).then(res => {
+            console.log(res.data.code)
+            if (res.data.code == 0) {
+              this.award_day = res.data.data.award_day
+              if (this.award_day == 1 || this.award_day == 7 || this.award_day == 30) {
+                for (let i = 0; i < this.lotteryType.length; i++) {
+                  if (this.award_day == this.lotteryType[i].name.split(' ')[1]) {
+                    this.prize = i
+                  }
                 }
+                console.log(`中奖位置${this.prize + 1}`)
               }
-              console.log(`中奖位置${this.prize + 1}`)
+            } else if (res.data.code == 1) {
+              setTimeout(() => {
+                clearTimeout(this.timers)
+                this.times = 0
+                this.$refs.malert.show('没中奖，sorry!')
+              }, 1000)
+            } else {
+              setTimeout(() => {
+                clearTimeout(this.timers)
+                this.times = 0
+                this.$refs.malert.show('lottery error code: ' + res.data.code)
+              }, 3000)
             }
-          } else if (code != 1) {
-            setTimeout(() => {
-              clearTimeout(this.timers)
-              this.times = 0
-              this.$refs.alert.show('Lottery error!' + code)
-            }, 3000)
-          }
+          })
         } else if (this.times > this.cycle + 10 && ((this.prize === 0 && this.indexs === 5) || this.prize === this.indexs + 1)) {
           this.speeds += 110
         } else {
@@ -662,9 +687,54 @@ export default {
         top: -1.4rem;
       }
     }
-    > img {
+    .finish {
+      color: #ffbc00;
+      height: 8rem;
+      line-height: 2rem;
+      font-size: 1.2rem;
+      padding: 2rem 0.5rem;
+      margin: 0.5rem auto;
+      border-radius: 1rem;
+      background-color: #a1014b;
+      text-align: center;
+      font-style: normal;
+      font-weight: bold;
+    }
+    .firends-box {
       width: 100%;
       margin-top: 0.5rem;
+      height: 3rem;
+      .img {
+        float: left;
+        width: 17%;
+        height: 3rem;
+        background-image: url('~@/assets/img/vote/TeamFission/btn-search.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+      .friends {
+        float: left;
+        width: 83%;
+        height: 3rem;
+        position: relative;
+        background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
+        border-radius: 25px;
+        border: 0.2rem solid rgba(26, 1, 96, 0.75);
+        color: #ffffff;
+        height: 3rem;
+        line-height: 2.6rem;
+        img {
+          height: 1.2rem;
+          position: absolute;
+          left: 15%;
+          top: 0.7rem;
+        }
+        p {
+          text-align: center;
+          font-style: normal;
+          font-weight: bold;
+        }
+      }
     }
   }
   .share-box {
@@ -818,8 +888,8 @@ export default {
       img {
         position: absolute;
         display: block;
-        width: 1.23rem;
-        height: 1rem;
+        width: 1.1rem;
+        height: 1.1rem;
         left: 0.8rem;
         top: 0.5rem;
       }

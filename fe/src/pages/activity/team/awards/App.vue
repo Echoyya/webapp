@@ -26,7 +26,11 @@
           <div class="vip">VIP {{item.my_award_day}} DAYS</div>
         </div>
       </div>
-      <img src="@/assets/img/vote/TeamFission/btn-friends.png" @click="show_share=true" />
+      <div class="friends" @click="show_share=true">
+        <img src="@/assets/img/vote/TeamFission/ic_share.png" />
+        <p>Tell Friends</p>
+      </div>
+      <!-- <img src="@/assets/img/vote/TeamFission/ic_share.png" @click="show_share=true" /> -->
     </div>
     <div v-show="show_share" class="share-box">
       <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false" />
@@ -41,10 +45,10 @@
 <script>
 // import qs from "qs";
 import mBanner from '@/pages/activity/team/banner.vue'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
 export default {
   components: {
-    mBanner,
+    mBanner
   },
   data() {
     return {
@@ -58,7 +62,7 @@ export default {
       teams: [],
       team_activity_id: 1,
       allDays: 0,
-      
+      teamNum: ''
     }
   },
   computed: {
@@ -73,6 +77,7 @@ export default {
     }
   },
   mounted() {
+    this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
       this.teams = data.data.my_award_team_dtos ? data.data.my_award_team_dtos : []
       this.allDays = data.data.all_award_days ? data.data.all_award_days : 0
@@ -118,7 +123,7 @@ export default {
     box-sizing: border-box;
   }
   width: 100%;
-  height:100vh;
+  height: 100vh;
   font-size: 0.9rem;
   letter-spacing: -0.03rem;
   position: static;
@@ -207,17 +212,36 @@ export default {
           line-height: 2.1rem;
           font-style: normal;
           font-size: 0.75rem;
-          color: #FFBC00;
+          color: #ffbc00;
           text-align: center;
           background-color: #000;
-          border: 0.05rem solid #FFBC00;
+          border: 0.05rem solid #ffbc00;
           border-radius: 1.1rem;
         }
       }
     }
-    > img {
+    .friends {
       width: 100%;
+      height: 3rem;
+      position: relative;
+      background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
+      border-radius: 25px;
+      border: 0.2rem solid rgba(26, 1, 96, 0.75);
+      color: #ffffff;
+      height: 3rem;
+      line-height: 2.6rem;
       margin-top: 0.5rem;
+      img {
+        height: 1.2rem;
+        position: absolute;
+        left: 15%;
+        top: 0.7rem;
+      }
+      p {
+        text-align: center;
+        font-style: normal;
+        font-weight: bold;
+      }
     }
   }
   .share-box {
