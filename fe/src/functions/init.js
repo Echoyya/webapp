@@ -71,7 +71,6 @@ if (language.indexOf('fr') >= 0) {
 } else {
   langObj = i18n.en
 }
-alert(36565)
 
 // 多语言函数
 Vue.prototype.$t = function(str, arr) {
