@@ -92,6 +92,7 @@ export default {
     .about {
       width: 4rem;
       height: 1.5rem;
+      line-height:1.3rem;
       position: absolute;
       color: #fff;
       border: 1px solid #fff;

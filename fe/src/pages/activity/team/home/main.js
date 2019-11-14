@@ -5,7 +5,7 @@ import env from '@/functions/config'
 import { getCookie, setCookie, randomString } from '@/functions/utils'
 import App from './App.vue'
 import errorPage from '@/components/error.vue'
-import i18n from '~/i18n/'
+import i18n from '@/i18n/'
 
 Vue.config.productionTip = false
 
@@ -153,7 +153,7 @@ Vue.prototype.$axios = axios
 Vue.prototype.$sendEvLog = sendEvLog
 
 axios
-  .get('/cms/users/me1')
+  .get('/cms/users/me')
   .then(res => {
     Vue.prototype.$serverTime = res.headers.server_time
 
@@ -167,7 +167,6 @@ axios
       Vue.prototype.$user = res.data
     } else {
       // 无用户信息 本地匿名token
-
       Vue.prototype.$deviceId = deviceId
       Vue.prototype.$countryCode = 'NG'
       Vue.prototype.$isLogin = false
