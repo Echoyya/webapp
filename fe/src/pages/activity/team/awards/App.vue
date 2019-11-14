@@ -132,7 +132,6 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@import '~@/assets/less/vote/normal.less';
 .wrapper {
   img,
   div,
@@ -140,11 +139,9 @@ export default {
     box-sizing: border-box;
   }
   width: 100%;
-  height: 100vh;
   font-size: 0.9rem;
   letter-spacing: -0.03rem;
   position: static;
-  background-image: linear-gradient(#7c003d, #6c0049);
   .invite {
     position: relative;
     z-index: 2;
