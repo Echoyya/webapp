@@ -311,7 +311,7 @@ export default {
       }
     },
     toSearch() {
-      window.location.href = '/activity/team/search'
+      window.location.href = '/activity/team/search.html'
     },
     // 获取消息列表
     getMsgList() {
