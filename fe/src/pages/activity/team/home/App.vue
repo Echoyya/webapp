@@ -109,7 +109,7 @@ export default {
       //team
       team: [],
       teamNum: '',
-      team_activity_id: 1,
+      team_activity_id: 1, // TODO 活动id抽离
 
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
@@ -240,11 +240,10 @@ export default {
             this.team = data.data.team_member_dtos
             this.teamNum = data.data.team_no
             this.canLottery = true
-            // TODO
-            // this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
-            //   window.scrollTo(0, 1500)
-            //   this.startLottery()
-            // })
+            this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
+              window.scrollTo(0, 1500)
+              this.startLottery()
+            })
           } else {
             createTeam.call(this, ({ data2 }) => {
               if (data2.code == 0) {
