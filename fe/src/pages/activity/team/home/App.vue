@@ -26,14 +26,15 @@
         </div>
       </div>
       <div v-show="hasFinish" class="finish">
-        Well Done!
-        <br />You have formed 10 teams
+        {{$t('vote.team.share10_1')}}
+        <br />
+        {{$t('vote.team.share10_2')}}
       </div>
       <div class="firends-box clearfix">
         <div class="img" @click="toSearch"></div>
         <div class="friends" @click="show_share=true">
           <img src="@/assets/img/vote/TeamFission/ic_share.png" />
-          <p>Tell Friends</p>
+          <p>{{$t('vote.team.invite_btn')}}</p>
         </div>
       </div>
     </div>
@@ -97,8 +98,8 @@ export default {
     return {
       // 页面
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
-      shareTitle: 'Bongo Star Search 2019',
-      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
+      shareTitle: this.$t('vote.team.shareTitle'),
+      shareText: this.$t('vote.team.shareText'),
 
       activityStart: new Date('2019-11-11 00:00:00').getTime(),
       activityEnd: new Date('2019-11-18 04:00:00').getTime(),
@@ -159,57 +160,6 @@ export default {
         return 'web'
       }
     }
-  },
-  created() {
-    const during = this.activityEnd - this.activityStart
-    const stage1 = Math.round(during * 0.25)
-    const stage2 = Math.round(during * 0.5)
-    const stage3 = Math.round(during * 0.75)
-    const px1 = 0.7
-    const px2 = 0.85
-    const px3 = 0.95
-
-    // 计算减小倍率
-    const speed = Math.floor(((100 * 10000) / during) * 1000 * 100) / 100
-    // 计算活动开始的时间
-    const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
-
-    if (period < stage1) {
-      this.days = 100 * 10000 - Math.ceil(period * speed * px1)
-    } else if ((period < stage2) & (period > stage1)) {
-      this.days = 100 * 10000 - Math.ceil((period - stage1) * speed * px2) + stage1 * speed * px1
-    } else if ((period < stage3) & (period > stage2)) {
-      this.days = 100 * 10000 - Math.ceil((period - stage2) * speed * px3) + stage2 * speed * px2 + stage1 * speed * px1
-    } else {
-      this.days = 100 * 10000 - Math.ceil((period - stage3) * speed * 1.2) + stage3 * speed * px3 + stage2 * speed * px2 + stage1 * speed * px1
-    }
-
-    // 倒计时
-    let page_init_time = new Date().getTime()
-    let last_client_time = page_init_time
-    let serverTime = parseInt(this.$serverTime)
-
-    setInterval(() => {
-      const now_time = new Date().getTime()
-
-      if (now_time - last_client_time < 1000 * 60) {
-        serverTime = serverTime + (now_time - last_client_time)
-      } else {
-        page_init_time = now_time
-        serverTime = this.$serverTime + now_time - page_init_time
-      }
-      last_client_time = now_time
-
-      const remainTime = Math.floor((this.activityEnd - serverTime) / 1000)
-
-      const hour = Math.floor(remainTime / 60 / 60)
-      const min = Math.floor((remainTime - hour * 60 * 60) / 60)
-      const sed = remainTime - hour * 60 * 60 - min * 60
-
-      this.hour = hour > 0 ? hour : '00'
-      this.min = min < 10 ? '0' + min : min
-      this.sed = sed < 10 ? '0' + sed : sed
-    }, 300)
   },
   mounted() {
     const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
@@ -289,19 +239,21 @@ export default {
           if (data.code == 0) {
             this.team = data.data.team_member_dtos
             this.teamNum = data.data.team_no
-            this.$refs.malert.show(this.$t('vote.team.willStartDraw'), () => {
-              window.scrollTo(0, 1500)
-              this.startLottery()
-            })
+            // TODO
+            // this.$refs.malert.show(this.$t('vote.team.willStartDraw'), () => {
+            //   window.scrollTo(0, 1500)
+            //   this.startLottery()
+            // })
           } else {
-            createTeam.call(this, () => {
-              if (data.code == 0) {
-                this.team = data.data.team_member_dtos
-                this.teamNum = data.data.team_no
-              } else if (data.code == 2) {
+            createTeam.call(this, ({ data2 }) => {
+              if (data2.code == 0) {
+                this.team = data2.data.team_member_dtos
+                this.teamNum = data2.data.team_no
+              } else if (data2.code == 2) {
                 this.hasFinish = true
+                // TODO 分享确定
               } else {
-                this.$refs.malert.show(data.message)
+                this.$refs.malert.show(data2.message)
               }
             })
           }
@@ -353,11 +305,10 @@ export default {
     },
     toCopylink() {
       if (this.$appType == 1) {
-        shareByCopyLink(`${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`)
+        shareByCopyLink(
+          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+        )
       }
-    },
-    toAwards() {
-      window.location.href = '/activity/team/awards?teamno=' + this.teamNum
     },
     toSearch() {
       window.location.href = '/activity/team/search'

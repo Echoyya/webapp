@@ -37,7 +37,6 @@
         <img src="@/assets/img/vote/TeamFission/ic_share.png" />
         <p>{{$t('vote.team.invite_btn',[allDays])}}</p>
       </div>
-      <!-- <img src="@/assets/img/vote/TeamFission/ic_share.png" @click="show_share=true" /> -->
     </div>
     <div v-show="show_share" class="share-box">
       <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false" />

@@ -53,8 +53,7 @@ export default {
 }
 </script>
 
-<style lang="less" scoped>
-@import '~@/assets/less/vote/normal.less';
+<style lang="less">
 .banner {
   img,
   div,
@@ -123,9 +122,7 @@ export default {
     .rule-text {
       p {
         width: 100%;
-        height: 3rem;
         text-align: center;
-        margin: 0 auto;
         font-size: 1.2rem;
         line-height: 2rem;
       }
@@ -136,7 +133,10 @@ export default {
           display: none;
         }
         p {
-          margin: 0.5rem 0;
+          font-size: 0.9rem;
+          text-align: left;
+          line-height: 1rem;
+          padding: 0.5rem 0;
         }
       }
       width: 16rem;
