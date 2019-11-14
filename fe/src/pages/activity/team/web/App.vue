@@ -1,7 +1,8 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div class="text text1">{{leader_name}} invite you to join the team and win lottery!</div>
+    <div v-if="mumberList.length<3" class="text text1">{{leader_name}} invite you to join the team and win lottery!</div>
+    <div v-else class="text text1">{{leader_name}} 已满</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
         <div v-for="(item,index) in mumberList" :key="index" class="mumber">
@@ -16,10 +17,10 @@
       </div>
       <span>{{number | formatAmount}} have already won VIP</span>
       <div v-show="mumberList.length>=3" class="team-btn">
-        <div @click="create">FORM A NEW TEAM</div>
+        <div @click="callOrDownApp">FORM A NEW TEAM</div>
       </div>
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="team-btn">
-        <div @click="join">
+        <div @click="callOrDownApp">
           <div>JOIN TEAM</div>
         </div>
       </div>
@@ -29,7 +30,7 @@
         <div>COPY</div>
       </div>
     </div>
-    <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{leader_name}} invite you to join the team and win lottery!</div>
+    <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">The following team still have one position, join now</div>
     <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
       <div class="team1 clearfix">
         <div class="team-id">Team ID: {{teamNum1}}</div>
@@ -113,7 +114,7 @@ import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
-import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
+import { searchTeam } from '@/pages/activity/team/func'
 import { getQueryVariable } from '@/functions/app'
 export default {
   components: {
@@ -150,11 +151,14 @@ export default {
     }
   },
   methods: {
+    // 唤醒转入活动页或下载App
+    callOrDownApp() {
+    },
     search() {
       searchTeam.call(this, this.teamNum, data => {
         if (data && (data.code == 1 || data.code == 0)) {
           this.mumberList = data.data.team_member_dtos
-          if(data.code == 0) {
+          if (data.code == 0) {
             this.teamNum1 = data.data.team_recommend_dtos[0].team_no
             this.teamNum1 = data.data.team_recommend_dtos[1].team_no
             this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
@@ -165,16 +169,6 @@ export default {
         } else {
           this.$refs.alert.show('Unknown error')
         }
-      })
-    },
-    join() {
-      joinTeam.call(this, this.teamNum, data => {
-        console.log(data)
-      })
-    },
-    create() {
-      createTeam.call(this, this.teamNum, data => {
-        console.log(data)
       })
     }
   }
