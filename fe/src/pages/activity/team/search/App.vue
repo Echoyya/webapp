@@ -62,9 +62,6 @@ export default {
       }
     }
   },
-  mounted() {
-    // this.mSendEvLog("page_show", "", "");
-  },
   methods: {
     submit() {
       if (this.teamNum) {
@@ -95,7 +92,7 @@ export default {
       })
     },
     create() {
-      createTeam.call(this, this.teamNum, data => {
+      createTeam.call(this, data => {
         if (data.code == 0) {
           window.location.href = '/activity/team/home'
         } else {
