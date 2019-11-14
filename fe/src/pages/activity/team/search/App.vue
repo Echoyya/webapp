@@ -2,23 +2,23 @@
   <div class="wrapper">
     <mBanner />
     <div class="search">
-      <input v-model="teamNum" :class="{'full':!showBtn}" type="text">
+      <input v-model="teamNum" :class="{'full':!showBtn}" type="number" />
       <div v-show="showBtn" class="btn" :class="{'can-submit':teamNum}" @click="submit">SEARCH</div>
     </div>
     <div v-show="mumberList.length>0" class="team clearfix">
       <div v-for="(item,index) in mumberList" :key="index" class="mumber">
-        <img v-if="item.logo" :src="item.logo">
-        <img v-else src="https://cdn.startimestv.com/head/h_d.png">
+        <img v-if="item.logo" :src="item.logo" />
+        <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
         <p v-show="item.nick_name">{{item.nick_name}}</p>
       </div>
       <div v-for="(add) in 3-mumberList.length" :key="add" class="mumber">
         <span class="add">
-          <img src="@/assets/img/vote/TeamFission/bg-add.png">
+          <img src="@/assets/img/vote/TeamFission/bg-add.png" />
         </span>
       </div>
     </div>
     <div v-show="mumberList.length>=3" class="team-btn">
-      <span>Oops,  you're a little late， form a new team.</span>
+      <span>Oops, you're a little late， form a new team.</span>
       <div @click="create">Form A New Team</div>
     </div>
     <div v-show="mumberList.length>=1&&mumberList.length<3" class="team-btn">
@@ -63,6 +63,7 @@ export default {
     submit() {
       const reg = /^[0-9]+$/g
       if (!reg.test(this.teamNum)) {
+        this.$refs.alert.show('Input error')
         return
       }
       searchTeam.call(this, this.teamNum, data => {
