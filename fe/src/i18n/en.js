@@ -47,4 +47,5 @@ export default {
       show_lucky: 'SHOW MY LUCKY',
       download_join: 'Download to join now'
     }
+  }
 }
