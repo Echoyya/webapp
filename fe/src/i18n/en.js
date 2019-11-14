@@ -49,9 +49,11 @@ export default {
             //add
             join_s: 'JOIN',
             shareTitle: 'Make A Team to Win Free VIPS',
-            shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
             countdownTitle: 'Remaining',
-            willStartDraw: 'You got one draw time,click to start draw!'
+            willStartDraw: 'You got one draw time,click to start draw!',
+            full_team: 'Sorry,the team is already full',
+            follow_team: 'The following team still have one position, join now',
+            tips: `Tips: <br/>VIP will be effective from now, a total of {0} days, the number of times you have won the lottery will automatically add up`,
         }
     }
 }

@@ -2,7 +2,7 @@
   <div class="wrapper">
     <mBanner />
     <div v-if="mumberList.length<3" class="text text1">{{$t('vote.team.invite_tip',[leader_name])}}</div>
-    <div v-else class="text text1">Sorry,the team is already full</div>
+    <div v-else class="text text1">{{$t('vote.team.full_team')}}</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
         <div v-for="(item,index) in mumberList" :key="index" class="mumber">
@@ -30,7 +30,7 @@
         <div>COPY</div>
       </div>
     </div>
-    <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">The following team still have one position, join now</div>
+    <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
     <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
       <div class="team1 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
