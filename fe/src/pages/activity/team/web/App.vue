@@ -8,7 +8,7 @@
           <img v-if="item.logo" :src="item.logo" />
           <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
         </div>
-        <div v-for="(add) in 3-mumberList.length" :key="add" class="mumber">
+        <div v-for="(add) in (3-mumberList.length)" :key="add+3" class="mumber">
           <span class="add">
             <img src="@/assets/img/vote/TeamFission/bg-add.png" />
           </span>
@@ -29,17 +29,17 @@
         <div>COPY</div>
       </div>
     </div>
-    <div class="text text2">{{leader_name}} invite you to join the team and win lottery!</div>
-    <div class="more-team">
+    <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{leader_name}} invite you to join the team and win lottery!</div>
+    <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
       <div class="team1 clearfix">
         <div class="team-id">Team ID: {{teamNum1}}</div>
         <div class="team-box">
-          <div v-show="mumberList.length>0" class="team clearfix">
-            <div v-for="(item,index) in mumberList" :key="index" class="mumber">
+          <div class="team clearfix">
+            <div v-for="(item,index) in moreList1" :key="index" class="mumber">
               <img v-if="item.logo" :src="item.logo" />
               <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
             </div>
-            <div v-for="(add) in 3-mumberList.length" :key="add" class="mumber">
+            <div v-for="(add) in (3-moreList1.length)" :key="add+3" class="mumber">
               <span class="add">
                 <img src="@/assets/img/vote/TeamFission/bg-add.png" />
               </span>
@@ -51,14 +51,14 @@
         </div>
       </div>
       <div class="team2 clearfix">
-        <div class="team-id">Team ID: {{teamNum1}}</div>
+        <div class="team-id">Team ID: {{teamNum2}}</div>
         <div class="team-box">
-          <div v-show="mumberList.length>0" class="team clearfix">
-            <div v-for="(item,index) in mumberList" :key="index" class="mumber">
+          <div class="team clearfix">
+            <div v-for="(item,index) in moreList2" :key="index" class="mumber">
               <img v-if="item.logo" :src="item.logo" />
               <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
             </div>
-            <div v-for="(add) in 3-mumberList.length" :key="add" class="mumber">
+            <div v-for="(add) in (3-moreList2.length)" :key="add+3" class="mumber">
               <span class="add">
                 <img src="@/assets/img/vote/TeamFission/bg-add.png" />
               </span>
@@ -114,6 +114,7 @@ import toastDialog from '@/components/toast'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
+import { getQueryVariable } from '@/functions/app'
 export default {
   components: {
     mBanner,
@@ -124,28 +125,17 @@ export default {
   data() {
     return {
       // 页面
-      appType: this.$appType,
-
       activityStart: new Date('2019-11-05 00:00:00').getTime(),
       activityEnd: new Date('2019-11-18 04:00:00').getTime(),
 
       mumberList: [],
+      moreList1: [],
+      moreList2: [],
       teamNum: '',
-      teamNum1: '123456',
-      teamNum2: '234567',
+      teamNum1: '',
+      teamNum2: '',
       number: '13243245',
       leader_name: 'leader_name'
-    }
-  },
-  computed: {
-    platform() {
-      if (this.appType == 1) {
-        return 'Android'
-      } else if (this.appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
     }
   },
   filters: {
@@ -154,9 +144,8 @@ export default {
     }
   },
   mounted() {
-    this.teamNum = window.location.href.split('=')[1]
+    this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (this.teamNum) {
-      console.log(this.teamNum)
       this.search()
     }
   },
@@ -165,7 +154,12 @@ export default {
       searchTeam.call(this, this.teamNum, data => {
         if (data && (data.code == 1 || data.code == 0)) {
           this.mumberList = data.data.team_member_dtos
-          console.log(data.data)
+          if(data.code == 0) {
+            this.teamNum1 = data.data.team_recommend_dtos[0].team_no
+            this.teamNum1 = data.data.team_recommend_dtos[1].team_no
+            this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
+            this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
+          }
         } else if (data.code == 2) {
           this.$refs.alert.show('oops，no team results')
         } else {

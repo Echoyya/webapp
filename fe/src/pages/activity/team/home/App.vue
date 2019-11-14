@@ -2,7 +2,7 @@
   <div class="wrapper">
     <mBanner />
     <div class="remaining box">
-      <img src="@/assets/img/vote/TeamFission/ic-awards.png" @click="showAwards" />
+      <img src="@/assets/img/vote/TeamFission/ic-awards.png" @click="toAwards" />
       <div class="title">Remaining:</div>
       <div class="contant">
         <div class="day">
@@ -85,9 +85,6 @@
         </ul>
       </div>
     </div>
-
-    <mShare ref="share" />
-    <toast-dialog ref="toast" />
     <malert ref="malert" />
     <malert ref="findTeamAlert">
       <a slot="link" href="/activity/team/search.html">CHANGE</a>
@@ -95,8 +92,6 @@
   </div>
 </template>
 <script>
-import toastDialog from '@/components/toast'
-import mShare from '@/components/web/share.vue'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
@@ -105,16 +100,11 @@ import malert from '@/pages/activity/team/malert'
 export default {
   components: {
     mBanner,
-    mShare,
-    toastDialog,
     malert
   },
   data() {
     return {
       // 页面
-      appType: this.$appType,
-      isLogin: this.$isLogin,
-      user_id: this.$user.id,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: 'Bongo Star Search 2019',
       shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
@@ -130,7 +120,8 @@ export default {
 
       //team
       team: [],
-      teamNum: 999898,
+      teamNum: '',
+
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
       counts: 8, // 总共有多少个位置
@@ -145,6 +136,7 @@ export default {
       lottery_id: 4,
       lotteryType: [],
       loaded_l: false,
+      award_day: '',
 
       // 消息轮播
       animates: false,
@@ -171,9 +163,9 @@ export default {
       }
     },
     platform() {
-      if (this.appType == 1) {
+      if (this.$appType == 1) {
         return 'Android'
-      } else if (this.appType == 2) {
+      } else if (this.$appType == 2) {
         return 'iOS'
       } else {
         return 'web'
@@ -237,6 +229,7 @@ export default {
     }, 300)
   },
   mounted() {
+    console.log(this.$isLogin)
     const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (teamno && !isNaN(teamno)) {
       // history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
@@ -257,6 +250,7 @@ export default {
                     joinTeam.call(this, teamno, data => {
                       if (data.code == 0) {
                         this.team = data.data.team_member_dtos
+                        this.teamNum = teamno
                       } else {
                         this.$refs.malert.show(data.message)
                       }
@@ -282,12 +276,14 @@ export default {
                 createTeam.call(this, () => {
                   if (data.code == 0) {
                     this.team = data.data.team_member_dtos
+                    this.teamNum = data.data.team_no
                   } else if (data.code == 1) {
                     this.$refs.malert.show(
                       '您已经有队伍了，暂时不能组队了',
                       () => {
                         this.$axios.get(`/voting/team-building/v1/participating-team`).then(({ data }) => {
                           this.team = data.data.team_member_dtos
+                          this.teamNum = data.data.team_no
                         })
                       },
                       '查看我所在的队伍'
@@ -308,6 +304,7 @@ export default {
         // 获取当前所在队伍 TODO 无法跨域问题
         this.$axios.get(`/voting/team-building/v1/participating-team`).then(({ data }) => {
           this.team = data.data.team_member_dtos
+          this.teamNum = data.data.team_no
         })
       } else {
         // 创建假的队伍
@@ -325,33 +322,33 @@ export default {
   },
   methods: {
     toFacebook() {
-      if (this.appType == 1) {
+      if (this.$appType == 1) {
         shareByFacebook('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     toWhatsApp() {
-      if (this.appType == 1) {
+      if (this.$appType == 1) {
         shareByWhatsApp('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     toXender() {
-      if (this.appType == 1) {
-        shareByXender(this.teamNum + '')
+      if (this.$appType == 1) {
+        shareByXender(this.teamNum)
       }
     },
     toDownload() {
-      if (this.appType == 1) {
+      if (this.$appType == 1) {
         shareByDownload()
       }
     },
     toCopylink() {
-      if (this.appType == 1) {
+      if (this.$appType == 1) {
         const bool = shareByCopyLink('https://www.taobao.com/')
         this.$refs.alert.show(bool)
       }
     },
-    showAwards() {
-      console.log('my awards')
+    toAwards() {
+      window.location.href = '/activity/team/awards'
     },
     toSearch() {
       window.location.href = '/activity/team/search'
@@ -362,42 +359,42 @@ export default {
         .get(`/voting/lottery/v1/winnings?lottery_id=${this.lottery_id}`)
         .then(res => {
           if (res.data.code === 0) {
-            // if (this.$serverTime <= this.startTime) {
-            //   this.items = [];
-            // } else {
-            this.items = res.data.data
-            this.items.forEach(item => {
-              if (item.user_name) {
-                if (new RegExp(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[a-z0-9]*[a-z0-9]+\.){1,63}[a-z0-9]+$/).test(item.user_name)) {
-                  // 邮箱用户
-                  const arr = item.user_name.split('@')
-                  if (arr[0].length > 3) {
-                    item.user_name =
-                      arr[0].substr(0, 2) + arr[0].slice(2, -1).replace(/[^\s]/g, '*') + arr[0].substring(arr[0].length - 1) + '@' + arr[1]
+            if (this.$serverTime <= this.activityStart) {
+              this.items = []
+            } else {
+              this.items = res.data.data
+              this.items.forEach(item => {
+                if (item.user_name) {
+                  if (new RegExp(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[a-z0-9]*[a-z0-9]+\.){1,63}[a-z0-9]+$/).test(item.user_name)) {
+                    // 邮箱用户
+                    const arr = item.user_name.split('@')
+                    if (arr[0].length > 3) {
+                      item.user_name =
+                        arr[0].substr(0, 2) + arr[0].slice(2, -1).replace(/[^\s]/g, '*') + arr[0].substring(arr[0].length - 1) + '@' + arr[1]
+                    }
+                    if (arr[0].length == 3) {
+                      item.user_name = arr[0].replace(/(\w{1})\w{1}(\w{1})/, '$1*$2') + '@' + arr[1]
+                    }
+                    if (arr[0].length == 2) {
+                      item.user_name = arr[0].replace(/\w{1}(\w{1})/, '*$1') + '@' + arr[1]
+                    }
+                    if (arr[0].length == 1) {
+                      item.user_name = arr[0].replace(/\w{1}/, '*') + '@' + arr[1]
+                    }
+                  } else if (new RegExp(/^\d{1,}$/).test(item.user_name)) {
+                    // 手机用户
+                    item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
                   }
-                  if (arr[0].length == 3) {
-                    item.user_name = arr[0].replace(/(\w{1})\w{1}(\w{1})/, '$1*$2') + '@' + arr[1]
-                  }
-                  if (arr[0].length == 2) {
-                    item.user_name = arr[0].replace(/\w{1}(\w{1})/, '*$1') + '@' + arr[1]
-                  }
-                  if (arr[0].length == 1) {
-                    item.user_name = arr[0].replace(/\w{1}/, '*') + '@' + arr[1]
-                  }
-                } else if (new RegExp(/^\d{1,}$/).test(item.user_name)) {
-                  // 手机用户
-                  item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
                 }
-              }
-              if (item.user_id) item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
-              for (let i = 0; i < this.lotteryType.length; i++) {
-                if (item.reward_id == this.lotteryType[i].id) {
-                  item.reward_name = this.lotteryType[i].name
+                if (item.user_id) item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
+                for (let i = 0; i < this.lotteryType.length; i++) {
+                  if (item.reward_id == this.lotteryType[i].id) {
+                    item.reward_name = this.lotteryType[i].name
+                  }
                 }
-              }
-            })
-            this.loaded_m = true
-            // }
+              })
+              this.loaded_m = true
+            }
           } else {
             this.items = [] // 服务器端计算数据错误时
             this.$refs.alert.show('Get winnings error!')
@@ -410,7 +407,7 @@ export default {
     },
     msgScroll() {
       this.tmsg = setInterval(() => {
-        // if (this.$serverTime > this.endTime) clearInterval(this.tmsg)
+        if (this.$serverTime > this.activityEnd) clearInterval(this.tmsg)
         this.getMsgList()
       }, 60000)
       const msgul = this.$refs.msgul
@@ -432,6 +429,9 @@ export default {
         .then(res => {
           if (res.data.code === 0) {
             this.lotteryType = res.data.data
+            for (let i = 0; i < this.lotteryType.length; i++) {
+              if (this.lotteryType[i].name == 'Thanks') this.prize = 3
+            }
           } else {
             this.lotteryType = [] // 服务器端计算数据错误时
             this.$refs.alert.show('Get rewards error!')
@@ -445,7 +445,77 @@ export default {
         })
     },
     startLottery() {
-      console.log('start')
+      if (!this.click) return
+      this.speeds = 200
+      this.click = false
+      this.startRoll()
+    },
+    // 开始转动
+    startRoll() {
+      this.times += 1 // 转动次数
+      this.oneRoll() // 转动过程调用的每一次转动方法，这里是第一次调用初始化
+
+      // 如果当前转动次数达到要求 && 目前转到的位置是中奖位置
+      if (this.times > this.cycle + 10 && this.prize === this.indexs) {
+        clearTimeout(this.timers) // 清除转动定时器，停止转动
+        // this.prize = -1
+        this.times = 0
+        console.log('你已经中奖了，位置' + (this.indexs + 1))
+        console.log('你已经中奖了，奖品' + this.lotteryType[this.indexs].name)
+        // window.location.href = "/activity/team/result?teamno="+this.teamNum+"&prize="+this.award_day
+        this.click = true
+      } else {
+        if (this.times < this.cycle) {
+          this.speeds -= 10 // 加快转动速度
+        } else if (this.times === this.cycle) {
+          // 后台取得一个中奖位置
+          this.$axios.post(`/voting/team-award/v1/user/award?team_activity_id=1&team_no=${this.teamNum}`).then((res)=>{
+            console.log(res.data)
+          })
+          const code = 0
+          const str = {
+            user_id: 345623,
+            award_day: 7
+          }
+          this.award_day = str.award_day
+          if (code == 0) {
+            if (str.award_day == 1 || str.award_day == 7 || str.award_day == 30) {
+              const prizeDay = str.award_day
+              for (let i = 0; i < this.lotteryType.length; i++) {
+                if (prizeDay == this.lotteryType[i].name.split(' ')[1]) {
+                  this.prize = i
+                }
+              }
+              console.log(`中奖位置${this.prize + 1}`)
+            }
+          } else if(code != 1) {
+            setTimeout(() => {
+              clearTimeout(this.timers)
+              this.times = 0
+              this.$refs.alert.show('Lottery error!' + code)
+            }, 3000)
+          }
+        } else if (this.times > this.cycle + 10 && ((this.prize === 0 && this.indexs === 5) || this.prize === this.indexs + 1)) {
+          this.speeds += 110
+        } else {
+          this.speeds += 20
+        }
+
+        if (this.speeds < 80) {
+          this.speeds = 80
+        }
+        this.timers = setTimeout(this.startRoll, this.speeds)
+      }
+    },
+    // 每一次转动
+    oneRoll() {
+      let indexs = this.indexs // 当前转动到哪个位置
+      const counts = this.counts // 总共有多少个位置
+      indexs += 1
+      if (indexs > counts - 1) {
+        indexs = 0
+      }
+      this.indexs = indexs
     }
   }
 }

@@ -1,0 +1,244 @@
+<template>
+  <div class="wrapper">
+    <mBanner />
+    <div v-if="!show_share" class="invite">
+      <div class="title">WON: {{allDays}} Days VIP</div>
+      <div class="contant">
+        <div v-show="teams.length>0" v-for="(item,index) in teams" :key="index" class="items">
+          <div>
+            <div>
+              <img :src="item.team_member_dtos[0].logo" alt />
+            </div>
+          </div>
+          <img src="@/assets/img/vote/TeamFission/ic_forward2.png" />
+          <div>
+            <div>
+              <img v-if="item.team_member_dtos[1]" :src="item.team_member_dtos[1].logo" />
+              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+            </div>
+          </div>
+          <div>
+            <div>
+              <img v-if="item.team_member_dtos[2]" :src="item.team_member_dtos[2].logo" />
+              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+            </div>
+          </div>
+          <div class="vip">VIP {{item.my_award_day}} DAYS</div>
+        </div>
+      </div>
+      <img src="@/assets/img/vote/TeamFission/btn-friends.png" @click="show_share=true" />
+    </div>
+    <div v-show="show_share" class="share-box">
+      <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false" />
+      <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
+      <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
+      <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
+      <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
+      <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
+    </div>
+  </div>
+</template>
+<script>
+// import qs from "qs";
+import mBanner from '@/pages/activity/team/banner.vue'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink } from '@/functions/app'
+export default {
+  components: {
+    mBanner,
+  },
+  data() {
+    return {
+      // 页面
+      show_share: false,
+      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
+      shareTitle: 'Bongo Star Search 2019',
+      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
+
+      //team
+      teams: [],
+      team_activity_id: 1,
+      allDays: 0,
+      
+    }
+  },
+  computed: {
+    platform() {
+      if (this.$appType == 1) {
+        return 'Android'
+      } else if (this.$appType == 2) {
+        return 'iOS'
+      } else {
+        return 'web'
+      }
+    }
+  },
+  mounted() {
+    this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
+      this.teams = data.data.my_award_team_dtos ? data.data.my_award_team_dtos : []
+      this.allDays = data.data.all_award_days ? data.data.all_award_days : 0
+      console.log(data.data.all_award_days ? data.data.all_award_days : 0)
+    })
+  },
+  methods: {
+    toFacebook() {
+      if (this.appType == 1) {
+        shareByFacebook('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      }
+    },
+    toWhatsApp() {
+      if (this.appType == 1) {
+        shareByWhatsApp('http://www.baidu.com', this.shareTitle, this.shareText, this.imgUrl)
+      }
+    },
+    toXender() {
+      if (this.appType == 1) {
+        shareByXender(this.teamNum)
+      }
+    },
+    toDownload() {
+      if (this.appType == 1) {
+        shareByDownload()
+      }
+    },
+    toCopylink() {
+      if (this.appType == 1) {
+        const bool = shareByCopyLink('https://www.taobao.com/')
+        this.$refs.alert.show(bool)
+      }
+    }
+  }
+}
+</script>
+<style lang="less" scoped>
+@import '~@/assets/less/vote/normal.less';
+.wrapper {
+  img,
+  div,
+  li {
+    box-sizing: border-box;
+  }
+  width: 100%;
+  height:100vh;
+  font-size: 0.9rem;
+  letter-spacing: -0.03rem;
+  position: static;
+  background-image: linear-gradient(#7c003d, #6c0049);
+  .invite {
+    position: relative;
+    z-index: 2;
+    width: 95%;
+    margin: -18% auto 0;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+    .title {
+      background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80));
+      width: 80%;
+      height: 2rem;
+      color: #ffbc00;
+      border-top-right-radius: 1rem;
+      border-top-left-radius: 1rem;
+      padding-left: 0.8rem;
+      line-height: 2rem;
+    }
+    .contant {
+      background-image: linear-gradient(rgba(165, 3, 80), #600165);
+      border-radius: 1rem;
+      border-top-left-radius: 0;
+      padding: 0.5rem 0.5rem 1.5rem;
+      color: #fff;
+      padding-top: 1rem;
+      .items {
+        position: relative;
+        width: 65%;
+        margin-left: 5%;
+        margin-bottom: 0.5rem;
+        > div {
+          display: inline-block;
+          width: 20%;
+          > div {
+            width: 100%;
+            position: relative;
+            border: 2px solid #8700b1;
+            border-radius: 50%;
+            overflow: hidden;
+            background-image: url('~@/assets/img/vote/TeamFission/bg-add.png');
+            background-size: 100% 100%;
+            img {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              top: 0;
+            }
+            &:before {
+              content: '';
+              display: inline-block;
+              padding-bottom: 100%;
+              width: 0;
+              vertical-align: middle;
+            }
+          }
+          span {
+            color: #9f00ee;
+            font-style: normal;
+            position: absolute;
+            left: 6%;
+          }
+        }
+        :nth-child(1) {
+          margin-right: 3%;
+        }
+        :nth-child(2) {
+          margin-right: 3%;
+        }
+        :nth-child(3) {
+          margin-right: 5%;
+        }
+        > img {
+          width: 15%;
+          position: relative;
+          top: -1.4rem;
+        }
+        .vip {
+          position: absolute;
+          right: -37%;
+          top: 0.1rem;
+          width: 5.5rem;
+          height: 2.2rem;
+          line-height: 2.1rem;
+          font-style: normal;
+          font-size: 0.75rem;
+          color: #FFBC00;
+          text-align: center;
+          background-color: #000;
+          border: 0.05rem solid #FFBC00;
+          border-radius: 1.1rem;
+        }
+      }
+    }
+    > img {
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+  }
+  .share-box {
+    width: 95%;
+    margin: -18% auto 0;
+    padding: 0.5rem;
+    background-color: #a1014b;
+    height: 10rem;
+    border-radius: 1rem;
+    position: relative;
+    z-index: 2;
+    > img {
+      width: 20%;
+      &:first-child {
+        display: block;
+        margin-left: 93%;
+        margin-bottom: 1rem;
+        width: 7%;
+        background-image: url('~@/assets/img/vote/TeamFission/ic_download.png');
+      }
+    }
+  }
+}
+</style>

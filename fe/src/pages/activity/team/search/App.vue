@@ -11,7 +11,7 @@
         <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
         <p v-show="item.nick_name">{{item.nick_name}}</p>
       </div>
-      <div v-for="(add) in 3-mumberList.length" :key="add" class="mumber">
+      <div v-for="(add) in 3-mumberList.length" :key="add+3" class="mumber">
         <span class="add">
           <img src="@/assets/img/vote/TeamFission/bg-add.png" />
         </span>
