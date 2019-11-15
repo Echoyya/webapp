@@ -283,7 +283,7 @@ export default {
     toFacebook() {
       if (this.$appType == 1) {
         shareByFacebook(
-          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -293,7 +293,7 @@ export default {
     toWhatsApp() {
       if (this.$appType == 1) {
         shareByWhatsApp(
-          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -313,7 +313,7 @@ export default {
     toCopylink() {
       if (this.$appType == 1) {
         shareByCopyLink(
-          `${window.location.origin}/activity/team/web?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
         )
       }
     },

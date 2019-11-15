@@ -83,7 +83,7 @@ export default {
     callOrDownApp() {
       callApp.call(
         this,
-        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home`,
+        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html`,
         () => {
           callMarket.call(this, () => {
             this.$refs.confirm.show(
