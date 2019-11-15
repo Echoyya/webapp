@@ -47,7 +47,7 @@
       <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
     </div>
     <div class="lottery box">
-      <div class="title">Draw your prize!</div>
+      <div class="title">{{$t('vote.team.draw_title')}}</div>
       <div class="contant">
         <div class="lottery-type">
           <ul class="clearfix">
@@ -59,7 +59,7 @@
                 </div>
               </div>
             </li>
-            <div class="getLuck" @click="startLottery">DRAW</div>
+            <div class="getLuck" @click="startLottery">{{$t('vote.team.draw_button')}}</div>
           </ul>
         </div>
       </div>
@@ -204,31 +204,29 @@ export default {
             }
           } else {
             // 老用户
-            this.$refs.malert.show('老用户提示文案', () => {
+            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
               if (this.$isLogin) {
                 createTeam.call(this, () => {
                   if (data.code == 0) {
                     this.team = data.data.team_member_dtos
                     this.teamNum = data.data.team_no
                   } else if (data.code == 1) {
-                    this.$refs.malert.show(
-                      '您已经有队伍了，暂时不能组队了',
-                      () => {
-                        this.$axios.get(`/voting/team-building/v1/participating-team?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
-                          this.team = data.data.team_member_dtos
-                          this.teamNum = data.data.team_no
-                        })
-                      },
-                      '查看我所在的队伍'
-                    )
+                    this.$axios.get(`/voting/team-building/v1/participating-team?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
+                      this.team = data.data.team_member_dtos
+                      this.teamNum = data.data.team_no
+                    })
                   } else if (data.code == 2) {
                     this.hasFinish = true
                   }
                 })
-              } else if (this.$appType === 1) {
-                toNativePage('com.star.mobile.video.account.LoginActivity')
               } else {
-                toNativePage('startimes://login')
+                // 创建假的队伍
+                this.team = [
+                  {
+                    nick_name: this.$user.nickName,
+                    logo: this.$user.head || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
+                  }
+                ]
               }
             })
           }
