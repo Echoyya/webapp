@@ -32,7 +32,7 @@
       </div>
       <div class="firends-box clearfix">
         <div class="img" @click="toSearch"></div>
-        <div class="friends" @click="show_share=true">
+        <div class="friends" @click="showShare">
           <img src="@/assets/img/vote/TeamFission/ic_share.png" />
           <p>{{$t('vote.team.invite_btn')}}</p>
         </div>
@@ -313,6 +313,13 @@ export default {
     toSearch() {
       window.location.href = '/activity/team/search.html'
     },
+    showShare() {
+      if (this.$isLogin) {
+        this.show_share = true
+      } else {
+        toNativePage('com.star.mobile.video.account.LoginActivity')
+      }
+    },
     // 获取消息列表
     getMsgList() {
       this.$axios
@@ -405,16 +412,20 @@ export default {
         })
     },
     startLottery() {
-      if (!this.click) return
-      if (this.canLottery) {
-        this.speeds = 200
-        this.click = false
-        this.startRoll()
+      if (this.$isLogin) {
+        if (!this.click) return
+        if (this.canLottery) {
+          this.speeds = 200
+          this.click = false
+          this.startRoll()
+        } else {
+          this.$refs.malert.show(this.$t('vote.team.form_noform'), () => {
+            window.scrollTo(0, 0)
+            this.showShare()
+          })
+        }
       } else {
-        this.$refs.malert.show(this.$t('vote.team.form_noform'), () => {
-          window.scrollTo(0, 0)
-          this.show_share = true
-        })
+        toNativePage('com.star.mobile.video.account.LoginActivity')
       }
     },
     // 开始转动
