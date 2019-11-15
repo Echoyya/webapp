@@ -178,7 +178,7 @@ export default {
     margin: 0.5rem auto;
     padding: 0.5rem;
     background-color: #a1014b;
-    height: 10rem;
+    // height: 10rem;
     border-radius: 1rem;
     position: relative;
     > img {
