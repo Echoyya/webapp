@@ -205,12 +205,14 @@ export const shareInvite = (link, shareTitle, shareContent, shareImg) => {
 
 export const shareByFacebook = (link, shareTitle, shareContent, shareImg) => {
   if (window.getChannelId && window.getChannelId.shareFacebook) {
-    window.getChannelId.shareFacebook(shareTitle, shareContent, link, shareImg, '')
+    // window.getChannelId.shareFacebook(shareTitle + ' ', shareContent + ' ', link, shareImg, '')
+    window.getChannelId.shareFacebook(shareTitle + ' ', ' ', link, shareImg, '')
   }
 }
 export const shareByWhatsApp = (link, shareTitle, shareContent, shareImg) => {
   if (window.getChannelId && window.getChannelId.shareWhatsApp) {
-    window.getChannelId.shareWhatsApp(shareTitle, shareContent, link, shareImg, '')
+    // window.getChannelId.shareWhatsApp(shareTitle + ' ', shareContent + ' ', link, shareImg, '')
+    window.getChannelId.shareWhatsApp(shareTitle + ' ', ' ', link, shareImg, '')
   }
 }
 export const shareByCopyLink = link => {
@@ -218,9 +220,9 @@ export const shareByCopyLink = link => {
     window.getChannelId.shareCopyLink(link)
   }
 }
-export const shareByDownload = link => {
+export const shareByDownload = () => {
   if (window.getChannelId && window.getChannelId.shareDownload) {
-    window.getChannelId.shareDownload(link)
+    window.getChannelId.shareDownload('https://cdn.startimestv.com/head/h_d.png')
   }
 }
 export const shareByXender = () => {

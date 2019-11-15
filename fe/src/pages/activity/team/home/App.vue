@@ -162,7 +162,7 @@ export default {
       }
     }
   },
-  mounted() {
+  created() {
     const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (teamno && !isNaN(teamno)) {
       // history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
@@ -206,7 +206,7 @@ export default {
             // 老用户
             this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
               if (this.$isLogin) {
-                createTeam.call(this, () => {
+                createTeam.call(this, data => {
                   if (data.code == 0) {
                     this.team = data.data.team_member_dtos
                     this.teamNum = data.data.team_no
@@ -247,9 +247,14 @@ export default {
               })
             }
           } else {
-            createTeam.call(this, ({ data2 }) => {
+            createTeam.call(this, data2 => {
               if (data2.code == 0) {
-                this.team = data2.data.team_member_dtos
+                this.team = [
+                  {
+                    nick_name: data2.data.leader_nick_name,
+                    logo: data2.data.leader_logo || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
+                  }
+                ]
                 this.teamNum = data2.data.team_no
               } else if (data2.code == 2) {
                 this.hasFinish = true
@@ -434,6 +439,7 @@ export default {
     startRoll() {
       this.times += 1 // 转动次数
       this.oneRoll() // 转动过程调用的每一次转动方法，这里是第一次调用初始化
+      const tmpTeamId = this.teamNum
 
       // 如果当前转动次数达到要求 && 目前转到的位置是中奖位置
       if (this.times > this.cycle + 10 && this.prize === this.indexs) {
@@ -445,7 +451,7 @@ export default {
         if (this.prize < 3) {
           setTimeout(() => {
             // this.$refs.malert.show(`你已经中奖了，奖品'${this.lotteryType[this.indexs].name}`, () => {
-            window.location.href = '/activity/team/result?teamno=' + this.teamNum + '&prize=' + this.award_day
+            location.replace('/activity/team/result.html?teamno=' + tmpTeamId + '&prize=' + this.award_day)
             // })
           }, 1000)
         } else if (this.prize == 3) {
@@ -455,7 +461,7 @@ export default {
             }, 1000)
           }
           setTimeout(() => {
-            this.$refs.malert.show('vote.team.draw_none')
+            this.$refs.malert.show(this.$t('vote.team.draw_none'))
           }, 1000)
         }
       } else {
@@ -476,8 +482,28 @@ export default {
                   }
                   console.log(`中奖位置${this.prize + 1}`)
                 }
+                // createTeam.call(this, data => {
+                //   if (data.code == 0) {
+                //     this.team = data.data.team_member_dtos
+                //     this.teamNum = data.data.team_no
+                //   } else if (data.code == 1) {
+                //     // 有为抽奖队伍
+                //   } else if (data.code == 2) {
+                //     this.hasFinish = true
+                //   }
+                // })
               } else if (res.data.code == 1) {
                 this.prize = 3
+                // createTeam.call(this, data => {
+                //   if (data.code == 0) {
+                //     this.team = data.data.team_member_dtos
+                //     this.teamNum = data.data.team_no
+                //   } else if (data.code == 1) {
+                //     // 有为抽奖队伍
+                //   } else if (data.code == 2) {
+                //     this.hasFinish = true
+                //   }
+                // })
               } else {
                 this.fail = true
                 this.prize = 3

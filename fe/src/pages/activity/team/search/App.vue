@@ -37,6 +37,7 @@
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
+import { toNativePage } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
 export default {
   components: {
@@ -84,22 +85,32 @@ export default {
       }
     },
     join() {
-      joinTeam.call(this, this.teamNum, data => {
-        if (data.code == 0) {
-          window.location.href = '/activity/team/home.html'
-        } else {
-          this.$refs.malert.show(data.message)
-        }
-      })
+      if (this.$isLogin) {
+        joinTeam.call(this, this.teamNum, data => {
+          if (data.code == 0) {
+            window.location.href = '/activity/team/home.html'
+          } else if (data.code == 1) {
+            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
+          } else {
+            this.$refs.malert.show(data.message)
+          }
+        })
+      } else {
+        toNativePage('com.star.mobile.video.account.LoginActivity')
+      }
     },
     create() {
-      createTeam.call(this, data => {
-        if (data.code == 0) {
-          window.location.href = '/activity/team/home.html'
-        } else {
-          this.$refs.malert.show(data.message)
-        }
-      })
+      if (this.$isLogin) {
+        createTeam.call(this, data => {
+          if (data.code == 0) {
+            window.location.href = '/activity/team/home.html'
+          } else {
+            this.$refs.malert.show(data.message)
+          }
+        })
+      } else {
+        toNativePage('com.star.mobile.video.account.LoginActivity')
+      }
     }
   }
 }
