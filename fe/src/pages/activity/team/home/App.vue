@@ -464,24 +464,30 @@ export default {
           this.speeds -= 10 // 加快转动速度
         } else if (this.times === this.cycle) {
           // 后台取得一个中奖位置
-          this.$axios.post(`/voting/team-award/v1/user/award?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`).then(res => {
-            if (res.data.code == 0) {
-              this.award_day = res.data.data.award_day
-              if (this.award_day == 1 || this.award_day == 7 || this.award_day == 30) {
-                for (let i = 0; i < this.lotteryType.length; i++) {
-                  if (this.award_day == this.lotteryType[i].name.split(' ')[1]) {
-                    this.prize = i
+          this.$axios
+            .post(`/voting/team-award/v1/user/award?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
+            .then(res => {
+              if (res.data.code == 0) {
+                this.award_day = res.data.data.award_day
+                if (this.award_day == 1 || this.award_day == 7 || this.award_day == 30) {
+                  for (let i = 0; i < this.lotteryType.length; i++) {
+                    if (this.award_day == this.lotteryType[i].name.split(' ')[1]) {
+                      this.prize = i
+                    }
                   }
+                  console.log(`中奖位置${this.prize + 1}`)
                 }
-                console.log(`中奖位置${this.prize + 1}`)
+              } else if (res.data.code == 1) {
+                this.prize = 3
+              } else {
+                this.fail = true
+                this.prize = 3
               }
-            } else if (res.data.code == 1) {
-              this.prize = 3
-            } else {
+            })
+            .catch(() => {
               this.fail = true
               this.prize = 3
-            }
-          })
+            })
         } else if (this.times > this.cycle + 10 && ((this.prize === 0 && this.indexs === 5) || this.prize === this.indexs + 1)) {
           this.speeds += 110
         } else {
