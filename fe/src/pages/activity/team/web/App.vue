@@ -49,7 +49,7 @@
               </span>
             </div>
           </div>
-          <div class="join">
+          <div class="join" @click="callOrDownApp">
             <div>{{$t('vote.team.join_s')}}</div>
           </div>
         </div>
@@ -68,7 +68,7 @@
               </span>
             </div>
           </div>
-          <div class="join">
+          <div class="join" @click="callOrDownApp">
             <div>{{$t('vote.team.join_s')}}</div>
           </div>
         </div>

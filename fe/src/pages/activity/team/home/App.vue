@@ -126,6 +126,7 @@ export default {
       lotteryType: [],
       loaded_l: false,
       award_day: '',
+      fail: false,
 
       // 消息轮播
       animates: false,
@@ -239,11 +240,14 @@ export default {
           if (data.code == 0) {
             this.team = data.data.team_member_dtos
             this.teamNum = data.data.team_no
-            this.canLottery = true
-            this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
-              window.scrollTo(0, 1500)
-              this.startLottery()
-            })
+            // 判断队伍是否满队
+            if (this.team.length >= 3) {
+              this.canLottery = true
+              this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
+                window.scrollTo(0, 1500)
+                this.startLottery()
+              })
+            }
           } else {
             createTeam.call(this, ({ data2 }) => {
               if (data2.code == 0) {
@@ -317,6 +321,7 @@ export default {
       if (this.$isLogin) {
         this.show_share = true
       } else {
+        this.show_share = true
         toNativePage('com.star.mobile.video.account.LoginActivity')
       }
     },
@@ -396,9 +401,9 @@ export default {
         .then(res => {
           if (res.data.code === 0) {
             this.lotteryType = res.data.data
-            for (let i = 0; i < this.lotteryType.length; i++) {
-              if (this.lotteryType[i].name == 'Thanks') this.prize = 3
-            }
+            // for (let i = 0; i < this.lotteryType.length; i++) {
+            //   if (this.lotteryType[i].name == 'Thanks') this.prize = 3
+            // }
           } else {
             this.lotteryType = [] // 服务器端计算数据错误时
             this.$refs.malert.show('Get rewards error!')
@@ -440,8 +445,22 @@ export default {
         this.times = 0
         console.log('你已经中奖了，位置' + (this.indexs + 1))
         console.log('你已经中奖了，奖品' + this.lotteryType[this.indexs].name)
-        window.location.href = '/activity/team/result?teamno=' + this.teamNum + '&prize=' + this.award_day
-        this.click = true
+        if (this.prize < 3) {
+          setTimeout(() => {
+            this.$refs.malert.show(`你已经中奖了，奖品'${this.lotteryType[this.indexs].name}`, () => {
+              window.location.href = '/activity/team/result?teamno=' + this.teamNum + '&prize=' + this.award_day
+            })
+          }, 1000)
+        } else if (this.prize == 3) {
+          if (this.fail) {
+            setTimeout(() => {
+              this.$refs.malert.show('lottery error!!')
+            }, 3000)
+          }
+          setTimeout(() => {
+            this.$refs.malert.show('没中奖！sorry')
+          }, 1000)
+        }
       } else {
         if (this.times < this.cycle) {
           this.speeds -= 10 // 加快转动速度
@@ -459,17 +478,10 @@ export default {
                 console.log(`中奖位置${this.prize + 1}`)
               }
             } else if (res.data.code == 1) {
-              setTimeout(() => {
-                clearTimeout(this.timers)
-                this.times = 0
-                this.$refs.malert.show('没中奖，sorry!')
-              }, 1000)
+              this.prize = 3
             } else {
-              setTimeout(() => {
-                clearTimeout(this.timers)
-                this.times = 0
-                this.$refs.malert.show('lottery error code: ' + res.data.code)
-              }, 3000)
+              this.prize = 3
+              this.fail = true
             }
           })
         } else if (this.times > this.cycle + 10 && ((this.prize === 0 && this.indexs === 5) || this.prize === this.indexs + 1)) {
