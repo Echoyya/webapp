@@ -453,7 +453,7 @@ export default {
           if (this.fail) {
             setTimeout(() => {
               this.$refs.malert.show('lottery error!!')
-            }, 3000)
+            }, 1000)
           }
           setTimeout(() => {
             this.$refs.malert.show('没中奖！sorry')
@@ -478,8 +478,8 @@ export default {
             } else if (res.data.code == 1) {
               this.prize = 3
             } else {
-              this.prize = 3
               this.fail = true
+              this.prize = 3
             }
           })
         } else if (this.times > this.cycle + 10 && ((this.prize === 0 && this.indexs === 5) || this.prize === this.indexs + 1)) {

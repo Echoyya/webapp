@@ -12,7 +12,6 @@
       <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
       <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
       <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
-      <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
       <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
     </div>
     <div class="team-btn">
@@ -25,8 +24,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import env from '@/functions/config'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable } from '@/functions/app'
 import countdown from '@/pages/activity/team/countdown'
 export default {
   components: {
@@ -75,7 +73,7 @@ export default {
     toFacebook() {
       if (this.$appType == 1) {
         shareByFacebook(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -85,7 +83,7 @@ export default {
     toWhatsApp() {
       if (this.$appType == 1) {
         shareByWhatsApp(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -97,15 +95,10 @@ export default {
         shareByXender(this.teamNum)
       }
     },
-    toDownload() {
-      if (this.$appType == 1) {
-        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
-      }
-    },
     toCopylink() {
       if (this.$appType == 1) {
         shareByCopyLink(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+          `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
         )
       }
     },
@@ -189,7 +182,7 @@ export default {
     border-radius: 1rem;
     position: relative;
     > img {
-      width: 20%;
+      width: 25%;
       &:nth-child(1) {
         width: 2rem;
         height: 2rem;
