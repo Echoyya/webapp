@@ -1,19 +1,9 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
     <div class="prize">
       <div class="text">{{text[prize-1]}}</div>
       <div class="vip">VIP {{award_day}} DAY</div>
-    </div>
-    <div class="share-box">
-      <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
-      <div class="text">{{$t('vote.team.show_lucky')}}</div>
-      <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
-      <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
-      <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
-      <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
-      <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
     </div>
     <div class="team-btn">
       <div @click="create">{{$t('vote.team.form_newbtn')}}</div>
@@ -25,13 +15,10 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import env from '@/functions/config'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
-import countdown from '@/pages/activity/team/countdown'
+import { getQueryVariable } from '@/functions/app'
 export default {
   components: {
-    mBanner,
-    countdown
+    mBanner
   },
   data() {
     return {
@@ -62,7 +49,6 @@ export default {
     }
   },
   mounted() {
-    this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.award_day = getQueryVariable(location.search.replace('?', ''), 'prize')
     if (this.award_day == 1) this.prize = 1
     else if (this.award_day == 7) this.prize = 2
@@ -71,46 +57,6 @@ export default {
   methods: {
     create() {
       window.location.href = '/activity/team/home.html'
-    },
-    toFacebook() {
-      if (this.$appType == 1) {
-        shareByFacebook(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
-      }
-    },
-    toWhatsApp() {
-      if (this.$appType == 1) {
-        shareByWhatsApp(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
-      }
-    },
-    toXender() {
-      if (this.$appType == 1) {
-        shareByXender(this.teamNum)
-      }
-    },
-    toDownload() {
-      if (this.$appType == 1) {
-        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
-      }
-    },
-    toCopylink() {
-      if (this.$appType == 1) {
-        shareByCopyLink(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
-        )
-      }
-    },
-    showAwards() {
-      console.log('my awards')
     }
   }
 }

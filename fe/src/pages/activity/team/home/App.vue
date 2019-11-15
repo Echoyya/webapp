@@ -218,10 +218,14 @@ export default {
                     this.hasFinish = true
                   }
                 })
-              } else if (this.$appType === 1) {
-                toNativePage('com.star.mobile.video.account.LoginActivity')
               } else {
-                toNativePage('startimes://login')
+                // 创建假的队伍
+                this.team = [
+                  {
+                    nick_name: this.$user.nickName,
+                    logo: this.$user.head || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
+                  }
+                ]
               }
             })
           }

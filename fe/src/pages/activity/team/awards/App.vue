@@ -141,13 +141,13 @@ export default {
   width: 93%;
   margin: 0 auto;
   background: linear-gradient(rgba(234, 4, 123, 0.3), rgba(57, 3, 157, 0.43));
-  min-height: 20rem;
+  min-height: 18rem;
   border-radius: 5px;
   margin-top: -4rem;
   color: rgba(255, 117, 0, 1);
   font-size: 1.2rem;
   text-align: center;
-  line-height: 20rem;
+  line-height: 18rem;
 }
 .wrapper {
   img,
