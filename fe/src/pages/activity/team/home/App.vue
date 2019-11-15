@@ -319,7 +319,6 @@ export default {
       if (this.$isLogin) {
         this.show_share = true
       } else {
-        this.show_share = true
         toNativePage('com.star.mobile.video.account.LoginActivity')
       }
     },
@@ -445,9 +444,9 @@ export default {
         console.log('你已经中奖了，奖品' + this.lotteryType[this.indexs].name)
         if (this.prize < 3) {
           setTimeout(() => {
-            this.$refs.malert.show(`你已经中奖了，奖品'${this.lotteryType[this.indexs].name}`, () => {
-              window.location.href = '/activity/team/result?teamno=' + this.teamNum + '&prize=' + this.award_day
-            })
+            // this.$refs.malert.show(`你已经中奖了，奖品'${this.lotteryType[this.indexs].name}`, () => {
+            window.location.href = '/activity/team/result?teamno=' + this.teamNum + '&prize=' + this.award_day
+            // })
           }, 1000)
         } else if (this.prize == 3) {
           if (this.fail) {
@@ -456,7 +455,7 @@ export default {
             }, 1000)
           }
           setTimeout(() => {
-            this.$refs.malert.show('没中奖！sorry')
+            this.$refs.malert.show('vote.team.draw_none')
           }, 1000)
         }
       } else {

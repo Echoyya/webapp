@@ -58,10 +58,9 @@ export default {
       follow_team: 'The following team still have one position, join now',
       tips: `Tips: <br/>VIP will be effective from now, a total of {0} days, the number of times you have won the lottery will automatically add up`,
       no_awards: "You don't have a reward yet",
-      draw_title: "Draw your prize!",
-      draw_button: "DRAW",
-      draw_none:'Sorry,you have not won'
-      
+      draw_title: 'Draw your prize!',
+      draw_button: 'DRAW',
+      draw_none: 'Sorry,you have not won'
     }
   }
 }
