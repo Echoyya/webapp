@@ -92,7 +92,7 @@ export default {
     },
     toXender() {
       if (this.$appType == 1) {
-        shareByXender(this.teamNum)
+        shareByXender()
       }
     },
     toCopylink() {
