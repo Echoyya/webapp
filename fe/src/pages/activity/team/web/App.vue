@@ -106,6 +106,7 @@
       <div class="img"></div>
     </div>
     <confirm-dialog ref="confirm" />
+    <malert ref="malert" />
   </div>
 </template>
 <script>
@@ -114,11 +115,13 @@ import { formatAmount } from '@/functions/utils'
 import { searchTeam } from '@/pages/activity/team/func'
 import { getQueryVariable, callApp, callMarket, downApk } from '@/functions/app'
 import confirmDialog from '@/components/confirm'
+import malert from '@/pages/activity/team/malert'
 import ClipboardJS from 'clipboard'
 export default {
   components: {
     mBanner,
-    confirmDialog
+    confirmDialog,
+    malert
   },
   data() {
     return {
@@ -196,9 +199,9 @@ export default {
             this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
           }
         } else if (data.code == 2) {
-          this.$refs.alert.show(this.$t('vote.team.search_nores'))
+          this.$refs.malert.show(this.$t('vote.team.search_nores'))
         } else {
-          this.$refs.alert.show('Unknown error')
+          this.$refs.malert.show('Unknown error')
         }
       })
     }

@@ -31,17 +31,17 @@
         <div @click="join">{{$t('vote.team.join_s')}}</div>
       </div>
     </div>
-    <alert-dialog ref="alert" />
+    <malert ref="malert" />
   </div>
 </template>
 <script>
-import alertDialog from '@/pages/activity/team/malert'
 import mBanner from '@/pages/activity/team/banner.vue'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
+import malert from '@/pages/activity/team/malert'
 export default {
   components: {
     mBanner,
-    alertDialog
+    malert
   },
   data() {
     return {
@@ -68,7 +68,7 @@ export default {
       if (teamno) {
         const reg = /^[0-9]+$/g
         if (!reg.test(teamno)) {
-          this.$refs.alert.show(this.$t('vote.team.input_error'))
+          this.$refs.malert.show(this.$t('vote.team.input_error'))
           return
         }
         searchTeam.call(this, teamno, data => {
@@ -76,9 +76,9 @@ export default {
             // this.showBtn = false
             this.mumberList = data.data.team_member_dtos
           } else if (data.code == 2) {
-            this.$refs.alert.show(this.$t('vote.team.search_nores'))
+            this.$refs.malert.show(this.$t('vote.team.search_nores'))
           } else {
-            this.$refs.alert.show(this.$t('vote.team.network_error'))
+            this.$refs.malert.show(this.$t('vote.team.network_error'))
           }
         })
       }
@@ -88,7 +88,7 @@ export default {
         if (data.code == 0) {
           window.location.href = '/activity/team/home.html'
         } else {
-          this.$refs.alert.show(data.message)
+          this.$refs.malert.show(data.message)
         }
       })
     },
@@ -97,7 +97,7 @@ export default {
         if (data.code == 0) {
           window.location.href = '/activity/team/home.html'
         } else {
-          this.$refs.alert.show(data.message)
+          this.$refs.malert.show(data.message)
         }
       })
     }
