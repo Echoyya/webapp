@@ -159,13 +159,14 @@ const sendEvLog = msg => {
   sendMsg(countlyServer + '/i?logtype=event&app_key=' + countlyAppKey + '&events=' + result + '&device_id=' + deviceId + '&timestamp=' + now)
 
   // eslint-disable-next-line no-undef
-  ga('send', {
-    hitType: 'event',
-    eventCategory: msg.category,
-    eventAction: msg.action,
-    eventLabel: msg.label,
-    eventValue: 1
-  })
+  // 在未迁firebase之前暂时不用ga
+  // ga('send', {
+  //   hitType: 'event',
+  //   eventCategory: msg.category,
+  //   eventAction: msg.action,
+  //   eventLabel: msg.label,
+  //   eventValue: 1
+  // })
 }
 
 axios.defaults.baseURL = env.apiUrl
@@ -222,7 +223,5 @@ export const initPage = function(page) {
         value: appType
       })
       // TODO 登录状态失效
-      
-
     })
 }
