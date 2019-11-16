@@ -41,8 +41,8 @@ function sendMsg(url) {
 let appType = 0
 
 let appInfo = window.getChannelId && window.getChannelId.jsGetHeadInfo && window.getChannelId.jsGetHeadInfo()
-let token = tokenMap['NG'] // 默认尼日匿名用户
-let language = 'en' // 默认英语
+let token = tokenMap['NG']
+let language = 'en' // default language en
 if (appInfo) {
   appInfo = JSON.parse(appInfo)
   token = appInfo.token
@@ -56,9 +56,27 @@ if (appInfo) {
     appType = 1
     setCookie('token', token)
   } else {
-    appType = 0 // 暂时没有ios，用户活跃不会计入ios的统计数据中
+    const ua = navigator.userAgent
+    if (ua.indexOf('iPhone') >= 0) {
+      const uaArr = ua.split(' ')
+      if (uaArr[uaArr.length - 1].indexOf('Mobile/') >= 0) {
+        appType = 2
+      } else {
+        appType = 0
+      }
+    } else {
+      appType = 0
+    }
     token = getCookie('token') || tokenMap['NG']
   }
+}
+
+if (appType == 1) {
+  Vue.prototype.$platform = 'Android'
+} else if (appType == 2) {
+  Vue.prototype.$platform = 'Ios'
+} else {
+  Vue.prototype.$platform = 'Web'
 }
 
 let langObj = i18n.en
