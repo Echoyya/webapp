@@ -119,6 +119,12 @@ Vue.prototype.$appType = appType
 Vue.prototype.$token = token
 
 let deviceId = appInfo.deviceId || getCookie('_stdid') || randomString(32)
+
+// 对deviceID 针对ios特例化
+if (appType == 2) {
+  deviceId = deviceId + '_h5ios'
+}
+
 const ua = navigator.userAgent
 const os = (appType === 1 && 'Android') || (appType === 2 && 'IOS') || (ua.includes('iPhone') && 'IOS') || (ua.includes('iPad') && 'IOS') || 'Android'
 const gaKey = (appType === 1 && gaAndroidKey) || (appType === 2 && gaIosKey) || gaWapKey
