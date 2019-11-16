@@ -419,7 +419,6 @@ export default {
         clearInterval(this.tscroll)
         if (this.firstTime) {
           this.firstTime = false
-          console.log(this.firstTime)
           this.getPagelist()
         } else {
           this.$nextTick(() => {
@@ -488,6 +487,10 @@ export default {
             this.pageList = res.data.data
             this.pageList.forEach(item => {
               this.timeList.push(new Date(item.start_time.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime())
+            })
+            this.timeList.sort(function(m, n) {
+              const r = m < n ? -1 : m > n ? 1 : 0
+              return r
             })
             this.currentPage = this.getIndexToIns(this.timeList, this.$serverTime)
             // console.log("currentPage: " + this.currentPage);
@@ -1259,7 +1262,6 @@ export default {
                 }
               })
               this.loaded_m = true
-              console.log(this.items)
             }
           } else {
             this.items = [] // 服务器端计算数据错误时
