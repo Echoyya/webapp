@@ -68,7 +68,7 @@
           </div>
         </div>
         <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
-        <img v-if="isCommentStart" src="@/assets/img/vote/BSSRegister/ic-link-comment.png" alt class="link" @click="toComment('mid')" />
+        <img src="@/assets/img/vote/BSSRegister/ic-link-comment.png" alt class="link" @click="toComment('mid')" />
         <img v-if="appType>0&&!isLogin" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login-no.png" @click="toSignIn" />
         <img v-if="!(appType>0&&!isLogin)" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login.png" alt />
         <div class="lottery-box">
@@ -167,12 +167,14 @@
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
       <div class="rule-text">
-        1. Kutoka tarehe 8th Oct hadi 30th Oct, una kura 5 kila siku baada ya kuingia. Kura zitakuwa zinajumlishwa na kuwa halali hadi mwisho wa shughuli.
-        <br />2. Unaweza kumpigia kura mshiriki yeyote unayempenda!
-        <br />3. Washirikishe link rafiki zako na waombe wapakue app ya StarTimes ON ili kupata kura zaidi! Utapata kura 5 zaidi kwa kila mtumiaji mpya. Unavyozidi kuleta watumiaji wapya, ndivyo unavyopata kura zaidi!
-        <br />4. Kila wakati unapopiga kura, utapata nafasi moja ya kushinda, na utapata fursa ya kushinda Abreader subwoofer, yenye thamani ya Shilingi 85,000 na Aborder bluetooth speaker, yenye thamani ya Shilingi 35,000, pamoja na Max VIP ya Mwezi ya StarTimes ON na Kuponi.
-        <br />5. Zawadi zitakuwa zinatolewa siku ya pili ya kazi katika Me-> Kuponi zangu.
-        <br />6. Wagombea 10 bora wenye kura nyingi zaidi wataweza kuingia kwenye usaili wa mwisho na kupata nafasi ya kushiriki 2019BSS.
+        Matokeo ya Kura yataamua moja kwa moja safari ya washiriki 20 ambao waliaga mashindano. Watachaguliwa Washiriki 2 kati ya washiriki 16 ambao waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5 watakaokwenda kwenye fainali
+        <br /><br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
+        <br />2. Vigezo vya kupiga kura : Tafuta na pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
+        <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja.
+        <br />② Wanachama wa VIP(VIP: StarTimes On na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)).
+        <br />③ Shirikisha marafiki kwa kuwaalika kupakua APP ya StarTimes On na kupata kura 5 kwa kila mtumiaji ambae umempa mualiko na wewe kujipatia kura zaidi.
+        <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili.
+        <br />3. Matokeo ya washiriki waliopigiwa kura yatakua yakitangazwa kabla ya hatua inayofuata na matokeo ya mwisho ya kura yatatangazwa sehemu ya 10.
       </div>
       <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
@@ -185,21 +187,14 @@
   </div>
 </template>
 <script>
-import qs from "qs";
+import qs from 'qs'
 // import { Base64 } from "js-base64";
-import alertDialog from "@/components/alert";
-import confirmDialog from "@/components/confirm";
-import toastDialog from "@/components/toast";
+import alertDialog from '@/components/alert'
+import confirmDialog from '@/components/confirm'
+import toastDialog from '@/components/toast'
 // import { getCookie, setCookie } from '@/functions/utils'
-import mShare from "@/components/web/share.vue";
-import {
-  callApp,
-  downApk,
-  playVodinApp,
-  toNativePage,
-  shareInvite,
-  addTicketByDownload
-} from "@/functions/app";
+import mShare from '@/components/web/share.vue'
+import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload } from '@/functions/app'
 export default {
   components: {
     mShare,
@@ -212,16 +207,15 @@ export default {
       // 页面
       show_rules: false,
       show_pick: false,
-      appType: this.$appType,
-      isLogin: this.$isLogin,
+      // appType: this.$appType,
+      // isLogin: this.$isLogin,
+      appType: 1,
+      isLogin: true,
       firstTime: true,
-      msg: "",
+      msg: '',
       user_id: this.$user.id,
       share_num: 0,
       enroll_id: 2,
-      isCommentStart: false,
-      startTime_comment: "",
-      endTime_comment: "",
       clipsList: [],
       topicList: [],
       pageVote: true,
@@ -233,8 +227,9 @@ export default {
       loaded: false,
       advisorList: [],
       vote_id: 64,
-      startTime: "",
-      endTime: "",
+      startTime: new Date('2019-11-13 09:00:00').getTime(),
+      endTime: new Date('2019-11-18 06:00:00').getTime(),
+      endTime2: new Date('2019-12-21 09:00:00').getTime(),
       canVotes: true,
 
       // 抽奖
@@ -255,28 +250,20 @@ export default {
       // 消息轮播
       animates: false,
       items: [],
-      star: "",
+      star: '',
       loaded_m: false,
       tmsg: null,
       tscroll: null,
 
       // 弹幕
       barrage_id: 17,
-      topic: "",
+      topic: '',
       timer: null, // tab滚动定位定时器
       during: 5, // 发送弹幕后倒计时
       disabled: false, // send状态
       index: 0, // 当前所在的节目期数
       commentList: [],
-      words: [
-        "kuma",
-        "mbolo",
-        "mpumbavu",
-        "mshenzi",
-        "matako",
-        "pumbavu",
-        "msenge"
-      ],
+      words: ['kuma', 'mbolo', 'mpumbavu', 'mshenzi', 'matako', 'pumbavu', 'msenge'],
       show_in: false,
       l_show: false,
       r_show: false,
@@ -293,13 +280,13 @@ export default {
       lineSpace: 40,
       pageWidth: 0, // 页面可视区域宽度
       count: 0, // 当前完全滚入屏幕的弹幕下标
-      speed: 200, // 弹幕速度，越大越慢
-      minSp: 0.6, // 弹幕的最小速度
-      maxSp: 1, // 弹幕的最大速度
+      speed: 125, // 弹幕速度，越大越慢
+      minSp: 1.1, // 弹幕的最小速度
+      maxSp: 1.8, // 弹幕的最大速度
       minSpace: 80, // 两行弹幕的最小间隔
       maxSpace: 240, // 两行弹幕的最大间隔
       time: null, // 弹幕滚动定时器
-      commentText: "", // 发送的内容
+      commentText: '', // 发送的内容
       loaded_page: false,
       loaded_comment: false,
       number: 20, // 每次请求的弹幕数量
@@ -308,200 +295,189 @@ export default {
       canClickTab1: false,
       canClickTab2: false,
 
-      // title: "Bongo Star Search 2019",
-      imgUrl: "http://cdn.startimestv.com/banner/BSSVote2-banner.png",
-      shareTitle: "Bongo Star Search 2019",
-      shareText: "Saidia mshiriki wako unayempenda kurudi kwenye show!",
-      // content: "Saidia mshiriki wako unayempenda kurudi kwenye show!"
-    };
+      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
+      shareTitle: 'Bongo Star Search 2019',
+      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!'
+    }
   },
   computed: {
     commentListReady() {
       if (this.loaded_comment) {
-        return this.commentList;
+        return this.commentList
       } else {
-        return [];
+        return []
       }
     },
     pageListReady() {
       if (this.loaded_page) {
-        return this.pageList;
+        return this.pageList
       } else {
-        return [];
+        return []
       }
     },
     coupleList() {
       if (this.loaded) {
-        return this.advisorList;
+        return this.advisorList
       } else {
-        return [];
+        return []
       }
     },
     lotteryList() {
       if (this.loaded_l) {
-        return this.lotteryType;
+        return this.lotteryType
       } else {
-        return [];
+        return []
       }
     },
     msgList() {
       if (this.loaded_l && this.loaded_m) {
-        return this.items;
+        return this.items
       } else {
-        return [];
+        return []
       }
     },
     platform() {
       if (this.appType == 1) {
-        return "Android";
+        return 'Android'
       } else if (this.appType == 2) {
-        return "iOS";
+        return 'iOS'
       } else {
-        return "web";
+        return 'web'
       }
     }
   },
   mounted() {
-    this.mSendEvLog("page_show", "", "");
-    this.getCommentInfo();
-    this.getLotteryMsg();
-    this.getAdvisorList();
-    // this.getLotteryType()
-    this.getShareNum();
-    this.msgScroll();
-    // this.$route.query.pin && setCookie('vote_share_user', this.$route.query.pin) // 分享源用户记录
-    // !getCookie('vote_share_down') && setCookie('vote_share_down', this.vote_sign) // 是否点击过下载
-    this.pageWidth = document.body.clientWidth;
+    this.mSendEvLog('page_show', '', '')
+    this.getVoteRemain()
+    this.getLeftLottery()
+    this.getVideoMsg()
+    this.getLotteryType()
+    this.getAdvisorList()
+    this.getShareNum()
+    this.msgScroll()
+    this.pageWidth = document.body.clientWidth
   },
 
   methods: {
     msgScroll() {
       this.tmsg = setInterval(() => {
-        if (this.$serverTime > this.endTime) clearInterval(this.tmsg);
-        this.getMsgList();
-      }, 60000);
-      const msgul = this.$refs.msgul;
+        if (this.$serverTime > this.endTime) clearInterval(this.tmsg)
+        this.getMsgList()
+      }, 60000)
+      const msgul = this.$refs.msgul
       this.tscroll = setInterval(() => {
-        msgul.style.marginTop = "-30px";
-        this.animates = !this.animates;
+        msgul.style.marginTop = '-30px'
+        this.animates = !this.animates
         setTimeout(() => {
-          this.msgList.push(this.msgList[0]);
-          this.msgList.shift();
-          msgul.style.marginTop = "0";
-          this.animates = !this.animates; // 避免回滚
-        }, 500);
-      }, 2000);
+          this.msgList.push(this.msgList[0])
+          this.msgList.shift()
+          msgul.style.marginTop = '0'
+          this.animates = !this.animates // 避免回滚
+        }, 500)
+      }, 2000)
     },
     changePage(page) {
-      if (page == "vote") {
+      if (page == 'vote') {
         if (!this.canClickTab1) {
-          return;
+          return
         }
-        this.mSendEvLog("tab_click", "vote", "");
-        this.canClickTab1 = false;
-        this.show_in = false;
-        this.l_show = false;
-        this.r_show = false;
-        const addOnes = document.getElementsByClassName("add-one");
-        addOnes[0].style.visibility = "hidden";
-        addOnes[1].style.visibility = "hidden";
-        this.timeNum = 0;
-        this.last_id = 0;
-        this.count = 0;
-        if (
-          this.$serverTime >= this.startTime &&
-          this.$serverTime <= this.endTime
-        ) {
+        this.mSendEvLog('tab_click', 'vote', '')
+        this.canClickTab1 = false
+        this.show_in = false
+        this.l_show = false
+        this.r_show = false
+        const addOnes = document.getElementsByClassName('add-one')
+        addOnes[0].style.visibility = 'hidden'
+        addOnes[1].style.visibility = 'hidden'
+        this.timeNum = 0
+        this.last_id = 0
+        this.count = 0
+        if (this.$serverTime >= this.startTime && this.$serverTime <= this.endTime2) {
           for (let j = 0; j < this.number * 2; j++) {
-            document.getElementById(j).style.right = 2000 + "px";
+            document.getElementById(j).style.right = 2000 + 'px'
           }
-          const comment = document.getElementById("comment");
-          let spans = document.getElementsByClassName("new-barrage");
-          spans = Array.prototype.slice.call(spans);
+          const comment = document.getElementById('comment')
+          let spans = document.getElementsByClassName('new-barrage')
+          spans = Array.prototype.slice.call(spans)
           for (let j = 0; j < spans.length; j++) {
-            comment.removeChild(spans[j]);
+            comment.removeChild(spans[j])
           }
         }
-        this.pageVote = true;
-        this.canClickTab2 = true;
+        this.pageVote = true
+        this.canClickTab2 = true
         this.$nextTick(() => {
-          this.msgScroll();
-        });
-      } else if (page == "barrage") {
+          this.msgScroll()
+        })
+      } else if (page == 'barrage') {
         if (!this.canClickTab2) {
-          return;
+          return
         }
-        this.mSendEvLog("tab_click", "interact", "");
-        this.canClickTab2 = false;
-        this.pageVote = false;
-        clearInterval(this.tmsg);
-        clearInterval(this.tscroll);
+        this.mSendEvLog('tab_click', 'interact', '')
+        this.canClickTab2 = false
+        this.pageVote = false
+        clearInterval(this.tmsg)
+        clearInterval(this.tscroll)
         if (this.firstTime) {
-          this.firstTime = false;
-          this.getPagelist();
-          this.$nextTick(() => {
-            this.nowarp();
-          });
+          this.firstTime = false
+          console.log(this.firstTime)
+          this.getPagelist()
         } else {
           this.$nextTick(() => {
-            this.initPage();
-          });
+            this.initPage()
+          })
           setTimeout(() => {
-            this.getCommentList();
-          }, 1000);
+            this.getCommentList()
+          }, 1000)
         }
       }
     },
     nowarp() {
-      const textdom = document.getElementsByTagName("textarea")[0];
-      textdom.addEventListener("keydown", e => {
+      const textdom = document.getElementsByTagName('textarea')[0]
+      textdom.addEventListener('keydown', e => {
         if (e.keyCode == 13) {
-          e.preventDefault();
-          return false;
+          e.preventDefault()
+          return false
         }
-      });
+      })
     },
     initPage() {
       // pageList数据
       // 投票状态
       if (this.pageList[this.index].ticket_num > 0) {
-        this.picked = false;
-        this.show_in = true;
+        this.picked = false
+        this.show_in = true
       } else {
-        this.picked = true;
-        this.show_in = false;
+        this.picked = true
+        this.show_in = false
       }
       // 参与人数 百分比
-      this.allNum =
-        this.pageList[this.index].candidates[0].ballot_num +
-        this.pageList[this.index].candidates[1].ballot_num;
-      this.leftNumVal = this.pageList[this.index].candidates[0].ballot_num;
-      this.rightNumVal = this.pageList[this.index].candidates[1].ballot_num;
+      this.allNum = this.pageList[this.index].candidates[0].ballot_num + this.pageList[this.index].candidates[1].ballot_num
+      this.leftNumVal = this.pageList[this.index].candidates[0].ballot_num
+      this.rightNumVal = this.pageList[this.index].candidates[1].ballot_num
       if (this.allNum) {
-        this.leftNum = parseInt((this.leftNumVal / this.allNum) * 100);
-        this.rightNum = 100 - this.leftNum;
+        this.leftNum = parseInt((this.leftNumVal / this.allNum) * 100)
+        this.rightNum = 100 - this.leftNum
       }
-      const domLeft = document.getElementsByClassName("bar")[0];
-      const domRight = document.getElementsByClassName("bar")[1];
-      domLeft.style.width = 0.9 * this.leftNum + "%";
-      domRight.style.width = 0.9 * this.rightNum + "%";
+      const domLeft = document.getElementsByClassName('bar')[0]
+      const domRight = document.getElementsByClassName('bar')[1]
+      domLeft.style.width = 0.9 * this.leftNum + '%'
+      domRight.style.width = 0.9 * this.rightNum + '%'
       if (this.leftNum == 100) {
-        domLeft.style.borderRadius = "0.4rem";
+        domLeft.style.borderRadius = '0.4rem'
       } else if (this.rightNum == 100) {
-        domRight.style.borderRadius = "0.4rem";
+        domRight.style.borderRadius = '0.4rem'
       } else {
-        domLeft.style.borderRadius = "0.4rem 0 0 0.4rem";
-        domRight.style.borderRadius = "0 0.4rem 0.4rem 0";
+        domLeft.style.borderRadius = '0.4rem 0 0 0.4rem'
+        domRight.style.borderRadius = '0 0.4rem 0.4rem 0'
       }
+      this.nowarp()
     },
     inputFocus() {
-      document.getElementById("comment").scrollIntoView();
+      document.getElementById('comment').scrollIntoView()
     },
     getIndexToIns(arr, num) {
-      const index = arr
-        .sort((a, b) => a - b)
-        .findIndex(currentPage => num <= currentPage);
-      return index <= 0 ? 1 : index;
+      const index = arr.sort((a, b) => a - b).findIndex(currentPage => num <= currentPage)
+      return index <= 0 ? 1 : index
     },
     // 获取期数，播出时间，票数，状态，投票单元
     getPagelist() {
@@ -509,216 +485,185 @@ export default {
         .get(`/voting/v3/candidates-show?vote_id=${this.barrage_id}`)
         .then(res => {
           if (res.data.code === 0) {
-            this.pageList = res.data.data;
+            this.pageList = res.data.data
             this.pageList.forEach(item => {
-              this.timeList.push(
-                new Date(
-                  item.start_time.replace(/-/g, "/").replace("T", " ") + "+0000"
-                ).getTime()
-              );
-            });
-            this.currentPage = this.getIndexToIns(
-              this.timeList,
-              this.$serverTime
-            );
+              this.timeList.push(new Date(item.start_time.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime())
+            })
+            this.currentPage = this.getIndexToIns(this.timeList, this.$serverTime)
             // console.log("currentPage: " + this.currentPage);
-            this.topic = this.topicList[this.currentPage - 1].cover;
+            this.topic = this.topicList[this.currentPage - 1].cover
             if (this.index != this.currentPage - 1) {
-              this.index = this.currentPage - 1;
+              this.index = this.currentPage - 1
             }
           } else {
-            this.pageList = [];
-            this.$refs.alert.show(
-              "Get barrage candidates show error! " + res.data.message
-            );
+            this.pageList = []
+            this.$refs.alert.show('Get barrage candidates show error! ' + res.data.message)
           }
-          let flag = true;
+          let flag = true
           for (let i = 0; i < this.pageList.length; i++) {
             if (i <= this.index) {
               if (!this.pageList[i].candidates.length) {
-                flag = false;
-                break;
+                flag = false
+                break
               }
             }
           }
           if (flag) {
-            this.loaded_page = true;
-            this.initPage();
-            this.loaded_comment = false;
-            this.getCommentList();
+            this.loaded_page = true
+            this.initPage()
+            this.loaded_comment = false
+            this.getCommentList()
           } else {
-            this.pageList = [];
-            this.$refs.alert.show("Get barrage candidates show error!");
+            this.pageList = []
+            this.$refs.alert.show('Get barrage candidates show error!')
           }
         })
         .catch(err => {
-          this.pageList = [];
-          this.$refs.alert.show("Get barrage candidates show error!! " + err);
-        });
+          this.pageList = []
+          this.$refs.alert.show('Get barrage candidates show error!! ' + err)
+        })
     },
     getCommentList() {
       if (this.$serverTime < this.startTime) {
-        this.loaded_comment = true;
-        this.canClickTab1 = true;
-        return;
+        this.loaded_comment = true
+        this.canClickTab1 = true
+        return
       }
       this.$axios
-        .get(
-          `/voting/v1/comments?comment_activity_id=${this.index + 1}&last_id=${
-            this.last_id
-          }&num_per_page=${this.number}`
-        )
+        .get(`/voting/v1/comments?comment_activity_id=${this.index + 1}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
-            this.timeNum++;
-            this.last_id = res.data.data[res.data.data.length - 1].id;
+            this.timeNum++
+            this.last_id = res.data.data[res.data.data.length - 1].id
             if (this.timeNum == 1) {
               res.data.data.forEach((item, index) => {
-                this.commentList[index] = item;
-                this.commentList[index + this.number] = item;
-              });
+                this.commentList[index] = item
+                this.commentList[index + this.number] = item
+              })
             } else if (this.timeNum % 2 == 0) {
               res.data.data.forEach((item, index) => {
-                this.commentList[index + this.number] = item;
-              });
+                this.commentList[index + this.number] = item
+              })
             } else {
               res.data.data.forEach((item, index) => {
-                this.commentList[index] = item;
-              });
+                this.commentList[index] = item
+              })
             }
-            this.loaded_comment = true;
-            this.canClickTab1 = true;
+            this.loaded_comment = true
+            this.canClickTab1 = true
             this.$nextTick(() => {
               for (let j = 0; j < this.number * 2; j++) {
-                document.getElementById(j).style.right = -2000 + "px";
+                document.getElementById(j).style.right = -2000 + 'px'
               }
-              this.initComment();
-            });
+              this.initComment()
+            })
           } else {
-            this.commentList = [];
-            this.$refs.alert.show(
-              "Get comment list error! " + res.data.message
-            );
+            this.commentList = []
+            this.$refs.alert.show('Get comment list error! ' + res.data.message)
           }
         })
         .catch(err => {
-          this.commentList = [];
-          this.$refs.alert.show("Get comment list error!! " + err);
-        });
+          this.commentList = []
+          this.$refs.alert.show('Get comment list error!! ' + err)
+        })
     },
     initComment() {
       for (let i = 0; i < this.commentList.length; i++) {
-        const commentItem = document.getElementById(i);
-        const img = commentItem.getElementsByTagName("img")[0];
-        const p = commentItem.getElementsByTagName("p")[0];
+        const commentItem = document.getElementById(i)
+        const img = commentItem.getElementsByTagName('img')[0]
+        const p = commentItem.getElementsByTagName('p')[0]
         if (this.commentList[i].avatar) {
           img.src =
-            this.commentList[i].avatar ==
-            "http://cdn.startimestv.com/head/h_d.png"
-              ? "http://cdn.startimestv.com/banner/DD_user_icon.png"
-              : this.commentList[i].avatar;
+            this.commentList[i].avatar == 'http://cdn.startimestv.com/head/h_d.png'
+              ? 'http://cdn.startimestv.com/banner/DD_user_icon.png'
+              : this.commentList[i].avatar
         } else {
-          img.src = "http://cdn.startimestv.com/banner/DD_user_icon.png";
+          img.src = 'http://cdn.startimestv.com/banner/DD_user_icon.png'
         }
-        p.innerText = decodeURI(this.commentList[i].content);
-        const commentWidth = p.offsetWidth + 35;
-        commentItem.style.width = commentWidth + 15 + "px";
+        p.innerText = decodeURI(this.commentList[i].content)
+        const commentWidth = p.offsetWidth + 35
+        commentItem.style.width = commentWidth + 15 + 'px'
       }
       // let s = document.getElementById(this.count).offsetWidth / (this.speed * 3) + 0.3
-      let s = document.getElementById(this.count).offsetWidth / this.speed;
-      if (s < this.minSp) s = this.minSp;
-      else if (s > this.maxSp) s = this.maxSp;
-      this.animate(
-        document.getElementById(this.count),
-        -document.getElementById(this.count).offsetWidth,
-        s
-      );
+      let s = document.getElementById(this.count).offsetWidth / this.speed
+      if (s < this.minSp) s = this.minSp
+      else if (s > this.maxSp) s = this.maxSp
+      this.animate(document.getElementById(this.count), -document.getElementById(this.count).offsetWidth, s)
     },
     animate(dom, num, speed) {
-      let flag = true;
+      let flag = true
       const time = setInterval(() => {
         if (parseInt(dom.style.right) >= 2000) {
-          clearInterval(time);
-          return true;
+          clearInterval(time)
+          return true
         }
         // if (num > this.space && flag) {
-        if (
-          (dom.offsetWidth + num > this.maxSpace || num > this.minSpace) &&
-          flag
-        ) {
-          flag = false;
+        if ((dom.offsetWidth + num > this.maxSpace || num > this.minSpace) && flag) {
+          flag = false
           // console.log(this.count + ' has finished ')
-          this.count++;
-          if (
-            this.timeNum % 2 != 0
-              ? this.count >= this.number
-              : this.count >= this.number * 2
-          ) {
+          this.count++
+          if (this.timeNum % 2 != 0 ? this.count >= this.number : this.count >= this.number * 2) {
             if (this.timeNum != 0 && this.timeNum % 2 == 0) {
-              this.count = 0;
+              this.count = 0
             }
-            this.getCommentList();
-            return true;
+            this.getCommentList()
+            return true
           }
           // let s = document.getElementById(this.count).offsetWidth / (this.speed * 3) + 0.3
-          let s = document.getElementById(this.count).offsetWidth / this.speed;
-          if (s < this.minSp) s = this.minSp;
-          else if (s > this.maxSp) s = this.maxSp;
-          this.animate(
-            document.getElementById(this.count),
-            -document.getElementById(this.count).offsetWidth,
-            s
-          );
+          let s = document.getElementById(this.count).offsetWidth / this.speed
+          if (s < this.minSp) s = this.minSp
+          else if (s > this.maxSp) s = this.maxSp
+          this.animate(document.getElementById(this.count), -document.getElementById(this.count).offsetWidth, s)
         }
         if (num <= this.pageWidth + 20) {
-          dom.style.right = num + "px";
-          num += speed;
+          dom.style.right = num + 'px'
+          num += speed
         } else {
-          clearInterval(time);
+          clearInterval(time)
         }
-      }, 5);
+      }, 5)
     },
     handlePick(local, advisorList) {
       if (!this.canVote) {
-        return;
+        return
       }
-      this.canVote = false;
+      this.canVote = false
       // web引导下载
       if (this.appType == 0) {
-        this.callOrDownApp("pick");
-        this.canVote = true;
-        return;
+        this.callOrDownApp('pick')
+        this.canVote = true
+        return
       }
       // 活动未开始提示
       if (this.$serverTime < this.startTime) {
         this.$refs.alert.show(
-          "Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!",
+          'Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!',
           () => {
-            this.canVote = true;
+            this.canVote = true
           },
-          "SAWA"
-        );
-        return;
+          'SAWA'
+        )
+        return
       }
       // 活动已结束提示
-      if (this.$serverTime >= this.endTime) {
+      if (this.$serverTime >= this.endTime2) {
         this.$refs.alert.show(
-          "Samahani, kura zimekwisha.",
+          'Samahani, kura zimekwisha.',
           () => {
-            this.canVote = true;
+            this.canVote = true
           },
-          "SAWA"
-        );
-        return;
+          'SAWA'
+        )
+        return
       }
-      let num = 0;
-      local == "left" ? (num = 0) : (num = 1);
+      let num = 0
+      local == 'left' ? (num = 0) : (num = 1)
       // 投票接口
       this.$axios({
-        url: "/voting/v1/ballot",
-        method: "POST",
+        url: '/voting/v1/ballot',
+        method: 'POST',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
           candidate_id: advisorList[num].id,
@@ -727,170 +672,166 @@ export default {
       })
         .then(res => {
           if (res.data.code === 0) {
-            this.mSendEvLog("pick_click", local == "left" ? "A" : "B", "");
-            this.pageList[this.index].candidates[num].ballot_num++;
-            this.pageList[this.index].ticket_num = 0;
+            this.mSendEvLog('pick_click', local == 'left' ? 'A' : 'B', '')
+            this.pageList[this.index].candidates[num].ballot_num++
+            this.pageList[this.index].ticket_num = 0
             // 动画
-            this.allNum++;
-            local == "left" ? this.leftNumVal++ : this.rightNumVal++;
-            this.leftNum = parseInt((this.leftNumVal / this.allNum) * 100);
-            this.rightNum = 100 - this.leftNum;
-            const domLeft = document.getElementsByClassName("bar")[0];
-            const domRight = document.getElementsByClassName("bar")[1];
-            const addOnes = document.getElementsByClassName("add-one");
-            if (local == "left") {
-              addOnes[0].style.visibility = "visible";
-              this.l_show = true;
+            this.allNum++
+            local == 'left' ? this.leftNumVal++ : this.rightNumVal++
+            this.leftNum = parseInt((this.leftNumVal / this.allNum) * 100)
+            this.rightNum = 100 - this.leftNum
+            const domLeft = document.getElementsByClassName('bar')[0]
+            const domRight = document.getElementsByClassName('bar')[1]
+            const addOnes = document.getElementsByClassName('add-one')
+            if (local == 'left') {
+              addOnes[0].style.visibility = 'visible'
+              this.l_show = true
               setTimeout(() => {
-                addOnes[0].style.visibility = "hidden";
-              }, 2000);
+                addOnes[0].style.visibility = 'hidden'
+              }, 2000)
             } else {
-              addOnes[1].style.visibility = "visible";
-              this.r_show = true;
+              addOnes[1].style.visibility = 'visible'
+              this.r_show = true
               setTimeout(() => {
-                addOnes[1].style.visibility = "hidden";
-              }, 2000);
+                addOnes[1].style.visibility = 'hidden'
+              }, 2000)
             }
 
             // domLeft.style.width = 0.9 * this.leftNum + '%'
             // domRight.style.width = 0.9 * this.rightNum + '%'
-            let w = 0;
-            if (local == "left") {
-              domLeft.style.width = 0;
-              domRight.style.width = 90 + "%";
+            let w = 0
+            if (local == 'left') {
+              domLeft.style.width = 0
+              domRight.style.width = 90 + '%'
               const t = setInterval(() => {
                 if (w == this.leftNum) {
-                  clearInterval(t);
-                  domLeft.style.width = 0.9 * this.leftNum + "%";
-                  domRight.style.width = 0.9 * this.rightNum + "%";
+                  clearInterval(t)
+                  domLeft.style.width = 0.9 * this.leftNum + '%'
+                  domRight.style.width = 0.9 * this.rightNum + '%'
                 } else {
-                  domLeft.style.width = 0.9 * w + "%";
-                  domRight.style.width = 0.9 * (100 - w) + "%";
-                  w = w + 1;
+                  domLeft.style.width = 0.9 * w + '%'
+                  domRight.style.width = 0.9 * (100 - w) + '%'
+                  w = w + 1
                   if (this.leftNum == 100) {
-                    domLeft.style.borderRadius = "0.4rem";
+                    domLeft.style.borderRadius = '0.4rem'
                   } else if (this.rightNum == 100) {
-                    domRight.style.borderRadius = "0.4rem";
+                    domRight.style.borderRadius = '0.4rem'
                   } else {
-                    domLeft.style.borderRadius = "0.4rem 0 0 0.4rem";
-                    domRight.style.borderRadius = "0 0.4rem 0.4rem 0";
+                    domLeft.style.borderRadius = '0.4rem 0 0 0.4rem'
+                    domRight.style.borderRadius = '0 0.4rem 0.4rem 0'
                   }
                 }
-              }, (100 - this.leftNum) / 5);
+              }, (100 - this.leftNum) / 5)
             } else {
-              domLeft.style.width = 90 + "%";
-              domRight.style.width = 0;
+              domLeft.style.width = 90 + '%'
+              domRight.style.width = 0
               const t = setInterval(() => {
                 if (w == this.rightNum) {
-                  clearInterval(t);
-                  domLeft.style.width = 0.9 * this.leftNum + "%";
-                  domRight.style.width = 0.9 * this.rightNum + "%";
+                  clearInterval(t)
+                  domLeft.style.width = 0.9 * this.leftNum + '%'
+                  domRight.style.width = 0.9 * this.rightNum + '%'
                 } else {
-                  domLeft.style.width = 0.9 * (100 - w) + "%";
-                  domRight.style.width = 0.9 * w + "%";
-                  w = w + 1;
+                  domLeft.style.width = 0.9 * (100 - w) + '%'
+                  domRight.style.width = 0.9 * w + '%'
+                  w = w + 1
                   if (this.leftNum == 100) {
-                    domLeft.style.borderRadius = "0.4rem";
+                    domLeft.style.borderRadius = '0.4rem'
                   } else if (this.rightNum == 100) {
-                    domRight.style.borderRadius = "0.4rem";
+                    domRight.style.borderRadius = '0.4rem'
                   } else {
-                    domLeft.style.borderRadius = "0.4rem 0 0 0.4rem";
-                    domRight.style.borderRadius = "0 0.4rem 0.4rem 0";
+                    domLeft.style.borderRadius = '0.4rem 0 0 0.4rem'
+                    domRight.style.borderRadius = '0 0.4rem 0.4rem 0'
                   }
                 }
-              }, (100 - this.rightNum) / 5);
+              }, (100 - this.rightNum) / 5)
             }
-            this.picked = true;
-            this.show_in = true;
-            if (local == "left") {
-              this.show_l = true;
-            } else if (local == "right") {
-              this.show_r = true;
+            this.picked = true
+            this.show_in = true
+            if (local == 'left') {
+              this.show_l = true
+            } else if (local == 'right') {
+              this.show_r = true
             }
-            this.canVote = true;
+            this.canVote = true
           } else {
-            this.$refs.alert.show("Pick error! " + res.data.message);
-            this.canVote = true;
+            this.$refs.alert.show('Pick error! ' + res.data.message)
+            this.canVote = true
           }
         })
         .catch(err => {
-          this.$refs.alert.show("Pick error!! " + err);
-          this.canVote = true;
-        });
+          this.$refs.alert.show('Pick error!! ' + err)
+          this.canVote = true
+        })
     },
     sendComment() {
       // 防多点
       if (this.disabled) {
-        return;
+        return
       }
-      this.disabled = true;
-      this.canClickTab1 = false;
+      this.disabled = true
+      this.canClickTab1 = false
       // web引导下载
       if (this.appType == 0) {
-        this.callOrDownApp("send");
-        this.commentText = "";
-        this.disabled = false;
-        this.canClickTab1 = true;
-        return;
+        this.callOrDownApp('send')
+        this.commentText = ''
+        this.disabled = false
+        this.canClickTab1 = true
+        return
       }
       // 活动未开始提示
       if (this.$serverTime < this.startTime) {
-        this.$refs.alert.show(
-          "Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!",
-          () => {},
-          "SAWA"
-        );
-        this.commentText = "";
-        this.disabled = false;
-        this.canClickTab1 = true;
-        return;
+        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
+        this.commentText = ''
+        this.disabled = false
+        this.canClickTab1 = true
+        return
       }
       // 活动已结束提示
-      if (this.$serverTime >= this.endTime) {
-        this.commentText = "";
+      if (this.$serverTime >= this.endTime2) {
+        this.commentText = ''
         this.$refs.alert.show(
-          "Samahani, kura zimekwisha.",
+          'Samahani, kura zimekwisha.',
           () => {
-            this.disabled = false;
-            this.canClickTab1 = true;
+            this.disabled = false
+            this.canClickTab1 = true
           },
-          "SAWA"
-        );
-        return;
+          'SAWA'
+        )
+        return
       }
       // 输入为空
       if (!this.commentText) {
-        this.disabled = false;
-        this.canClickTab1 = true;
-        return;
+        this.disabled = false
+        this.canClickTab1 = true
+        return
       }
       // 屏蔽词
-      let flag = false;
+      let flag = false
       if (this.commentText.toLowerCase().match(/[a-zA-Z]+/gi)) {
         this.commentText
           .toLowerCase()
           .match(/[a-zA-Z]+/gi)
           .forEach(item => {
-            if (this.words.indexOf(item) >= 0) flag = true;
-          });
+            if (this.words.indexOf(item) >= 0) flag = true
+          })
         if (flag) {
-          this.commentText = "";
+          this.commentText = ''
           this.$refs.alert.show(
-            "Maoni yako yana maudhui yasiyofaa. Tafadhali ondoa maneno ambayo yatasababisha uvunjaji wa sheria.",
+            'Maoni yako yana maudhui yasiyofaa. Tafadhali ondoa maneno ambayo yatasababisha uvunjaji wa sheria.',
             () => {},
-            "GOT IT"
-          );
-          this.disabled = false;
-          this.canClickTab1 = true;
-          return;
+            'GOT IT'
+          )
+          this.disabled = false
+          this.canClickTab1 = true
+          return
         }
       }
       // 调用发送评论接口
       this.$axios({
-        url: "/voting/v1/comment",
-        method: "POST",
+        url: '/voting/v1/comment',
+        method: 'POST',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
           comment_activity_id: this.index + 1,
@@ -899,328 +840,295 @@ export default {
       })
         .then(res => {
           if (res.data.code === 0) {
-            this.mSendEvLog("send_click", this.commentText, "");
-            const during = this.during;
-            const item = document.createElement("span");
-            const img = document.createElement("img");
-            const p = document.createElement("p");
+            this.mSendEvLog('send_click', this.commentText, '')
+            const during = this.during
+            const item = document.createElement('span')
+            const img = document.createElement('img')
+            const p = document.createElement('p')
             if (this.$head) {
-              img.src =
-                this.$head == "http://cdn.startimestv.com/head/h_d.png"
-                  ? "http://cdn.startimestv.com/banner/DD_user_icon.png"
-                  : this.$head;
+              img.src = this.$head == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : this.$head
             } else {
-              img.src = "http://cdn.startimestv.com/banner/DD_user_icon.png";
+              img.src = 'http://cdn.startimestv.com/banner/DD_user_icon.png'
             }
-            p.innerText = this.commentText;
-            p.style.display = "inline-block";
-            p.style.color = "#fff";
-            p.style.top = -6 + "px";
-            p.style.position = "relative";
-            p.style.marginLeft = 6 + "px";
-            p.style.whiteSpace = "nowrap";
-            img.style.display = "inline-block";
-            img.style.width = "26px";
-            img.style.height = "26px";
-            img.style.backgroundColor = "#bfbfbf";
-            img.style.borderRadius = "14px";
-            img.style.position = "relative";
-            img.style.top = "2px";
-            img.style.left = "2.2px";
-            item.appendChild(img);
-            item.appendChild(p);
-            document.getElementsByClassName("comment")[0].appendChild(item);
-            const itemWidth = p.offsetWidth + 28;
-            item.style.backgroundColor = "#838d34";
-            item.style.borderRadius = 15 + "px";
-            item.style.height = 30 + "px";
-            item.style.lineHeight = 30 + "px";
-            item.style.position = "absolute";
-            item.style.right = -2000 + "px";
-            item.style.width = itemWidth + 25 + "px";
-            item.setAttribute("class", "new-barrage");
-            const lineNum =
-              this.count >= 2
-                ? this.count - 2
-                : this.count + this.commentList.length - 2;
-            item.style.top = (lineNum % 4) * this.lineSpace + 13.5 + "px";
-            let sp = itemWidth / this.speed;
-            if (sp < this.minSp) sp = this.minSp;
-            else if (sp > this.maxSp) sp = this.maxSp;
-            let num = -itemWidth;
+            p.innerText = this.commentText
+            p.style.display = 'inline-block'
+            p.style.color = '#fff'
+            p.style.top = -6 + 'px'
+            p.style.position = 'relative'
+            p.style.marginLeft = 6 + 'px'
+            p.style.whiteSpace = 'nowrap'
+            img.style.display = 'inline-block'
+            img.style.width = '26px'
+            img.style.height = '26px'
+            img.style.backgroundColor = '#bfbfbf'
+            img.style.borderRadius = '14px'
+            img.style.position = 'relative'
+            img.style.top = '2px'
+            img.style.left = '2.2px'
+            item.appendChild(img)
+            item.appendChild(p)
+            document.getElementsByClassName('comment')[0].appendChild(item)
+            const itemWidth = p.offsetWidth + 28
+            item.style.backgroundColor = '#838d34'
+            item.style.borderRadius = 15 + 'px'
+            item.style.height = 30 + 'px'
+            item.style.lineHeight = 30 + 'px'
+            item.style.position = 'absolute'
+            item.style.right = -2000 + 'px'
+            item.style.width = itemWidth + 25 + 'px'
+            item.setAttribute('class', 'new-barrage')
+            const lineNum = this.count >= 2 ? this.count - 2 : this.count + this.commentList.length - 2
+            item.style.top = (lineNum % 4) * this.lineSpace + 13.5 + 'px'
+            let sp = itemWidth / this.speed
+            if (sp < this.minSp) sp = this.minSp
+            else if (sp > this.maxSp) sp = this.maxSp
+            let num = -itemWidth
             const time = setInterval(() => {
               if (num <= this.pageWidth + 20) {
-                item.style.right = num + "px";
-                num += sp;
+                item.style.right = num + 'px'
+                num += sp
               } else {
-                clearInterval(time);
+                clearInterval(time)
               }
-            }, 5);
+            }, 5)
             // console.log('call' + lineNum)
             const duringTime = setInterval(() => {
-              this.during--;
+              this.during--
               if (this.during == 0) {
-                clearInterval(duringTime);
-                this.during = during;
-                this.disabled = false;
+                clearInterval(duringTime)
+                this.during = during
+                this.disabled = false
               }
-            }, 1000);
-            this.commentText = "";
-            this.canClickTab1 = true;
+            }, 1000)
+            this.commentText = ''
+            this.canClickTab1 = true
           } else {
-            this.$refs.alert.show("Send comment error! " + res.data.message);
-            this.disabled = false;
-            this.canClickTab1 = true;
-            this.commentText = "";
+            this.$refs.alert.show('Send comment error! ' + res.data.message)
+            this.disabled = false
+            this.canClickTab1 = true
+            this.commentText = ''
           }
         })
         .catch(err => {
-          this.$refs.alert.show("Send comment error!! " + err);
-          this.disabled = false;
-          this.canClickTab1 = true;
-          this.commentText = "";
-        });
+          this.$refs.alert.show('Send comment error!! ' + err)
+          this.disabled = false
+          this.canClickTab1 = true
+          this.commentText = ''
+        })
     },
     toVip(vip) {
       if (this.appType == 0) {
-        this.callOrDownApp(vip);
+        this.callOrDownApp(vip)
       } else if (this.appType == 1) {
         if (!this.isLogin) {
           toNativePage(
-            "com.star.mobile.video.account.LoginActivity?returnClass=com.star.mobile.video.activity.BrowserActivity?loadUrl=" +
+            'com.star.mobile.video.account.LoginActivity?returnClass=com.star.mobile.video.activity.BrowserActivity?loadUrl=' +
               encodeURIComponent(window.location.href)
-          );
+          )
         } else if (this.isLogin) {
-          if (vip == "dvbvip") {
+          if (vip == 'dvbvip') {
             // 原生DVB
-            toNativePage(
-              "com.star.mobile.video.smartcard.changebouquet.ChangeBouquetActivity"
-            );
-          } else if (vip == "ottvip") {
+            toNativePage('com.star.mobile.video.smartcard.changebouquet.ChangeBouquetActivity')
+          } else if (vip == 'ottvip') {
             // 原生OTT
-            toNativePage(
-              "com.star.mobile.video.me.product.MembershipListActivity"
-            );
+            toNativePage('com.star.mobile.video.me.product.MembershipListActivity')
           }
         }
       }
     },
     showRule() {
-      this.mSendEvLog("rule_click", "", "");
-      this.show_rules = true;
-      document.body.style.overflow = "hidden";
-      document.body.style.position = "fixed";
-      document.body.style.left = "0";
-      document.body.style.right = "0";
+      this.mSendEvLog('rule_click', '', '')
+      this.show_rules = true
+      document.body.style.overflow = 'hidden'
+      document.body.style.position = 'fixed'
+      document.body.style.left = '0'
+      document.body.style.right = '0'
     },
     toComment(label) {
-      this.mSendEvLog("audreg_click", label, "");
-      this.$router.push(`/hybrid/vote/BSSComment`);
-      // window.location.href = '/hybrid/vote/BSSComment'
+      this.mSendEvLog('audreg_click', label, '')
+      window.location.href = 'http://m.startimestv.com/hybrid/vote/BSSComment'
     },
     // 埋点方法
     mSendEvLog(action, label, value) {
       this.$sendEvLog({
-        category: "form_BSSVote2_" + this.platform,
+        category: 'form_BSSVote2_' + this.platform,
         action: action,
         label: label,
         value: value
-      });
-      console.log("form_BSSVote2_" + this.platform, action, label, value);
+      })
+      console.log('form_BSSVote2_' + this.platform, action, label, value)
     },
     // app登录方法
     toSignIn() {
-      this.mSendEvLog("signin_click", "", "");
+      this.mSendEvLog('signin_click', '', '')
       if (this.appType <= 0) {
-        this.callOrDownApp("signin");
+        this.callOrDownApp('signin')
       } else if (this.appType == 1) {
         // 原生登录，跳回活动页面
         toNativePage(
-          "com.star.mobile.video.account.LoginActivity?returnClass=com.star.mobile.video.activity.BrowserActivity?loadUrl=" +
+          'com.star.mobile.video.account.LoginActivity?returnClass=com.star.mobile.video.activity.BrowserActivity?loadUrl=' +
             encodeURIComponent(window.location.href)
-        );
+        )
       } else {
-        toNativePage("startimes://login");
+        toNativePage('startimes://login')
       }
     },
     // 调出分享弹层(app/web)
     toShare(label) {
-      if (label == "voterules") this.closeShadow();
-      this.mSendEvLog("share_click", label, "");
+      if (label == 'voterules') this.closeShadow()
+      this.mSendEvLog('share_click', label, '')
       if (this.appType >= 1) {
         shareInvite(
-          `${window.location.href}?pin=${
-            this.isLogin ? this.$user.id : ""
-          }&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
+          `${window.location.href}?pin=${this.isLogin ? this.$user.id : ''}&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
-        );
+        )
       } else {
-        this.$refs.share.show();
+        this.$refs.share.show()
         // this.$store.commit("SET_SHARE_STATE", true);
       }
     },
     // 唤醒转入活动页或下载App
     callOrDownApp(label) {
       // 唤醒App
-      callApp.call(
-        this,
-        "com.star.mobile.video.activity.BrowserActivity?loadUrl=" +
-          window.location.href,
-        () => {
-          // 下载App
-          this.mSendEvLog("downloadpopup_show", label, "");
-          this.$refs.confirm.show(
-            "Pakua Startimes ON app na shiriki BSS2019",
-            () => {
-              this.mSendEvLog("downloadpopup_clickok", label, "");
-              downApk.call(this);
-              addTicketByDownload.call(this, this.vote_id);
-            },
-            () => {
-              this.mSendEvLog("downloadpopup_clicknot", label, "");
-            },
-            "PAKUA",
-            "FUTA"
-          );
-        }
-      );
+      callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.href, () => {
+        // 下载App
+        this.mSendEvLog('downloadpopup_show', label, '')
+        this.$refs.confirm.show(
+          'Pakua Startimes ON app na shiriki BSS2019',
+          () => {
+            this.mSendEvLog('downloadpopup_clickok', label, '')
+            downApk.call(this)
+            addTicketByDownload.call(this, this.vote_id)
+          },
+          () => {
+            this.mSendEvLog('downloadpopup_clicknot', label, '')
+          },
+          'PAKUA',
+          'FUTA'
+        )
+      })
     },
     // 获取剩余票数
     getVoteRemain() {
       this.$axios({
-        method: "POST",
+        method: 'POST',
         headers: {
-          "content-type": "application/x-www-form-urlencoded"
+          'content-type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
           vote_id: this.vote_id
         }),
-        url: "/voting/v2/ticket/sign-in"
+        url: '/voting/v2/ticket/sign-in'
       })
         .then(res => {
           if (res.data.code == 0 || res.data.code == 1) {
-            if (
-              this.$serverTime >= this.startTime &&
-              this.$serverTime <= this.endTime
-            ) {
-              this.voteLeft = res.data.data.ticket;
+            if (this.$serverTime >= this.startTime && this.$serverTime <= this.endTime) {
+              this.voteLeft = res.data.data.ticket
             } else {
-              this.voteLeft = 0;
+              this.voteLeft = 0
             }
-            this.isOttVip = res.data.data.user_ott_flag;
-            this.isLinkVip = res.data.data.user_dvb_flag;
+            this.isOttVip = res.data.data.user_ott_flag
+            this.isLinkVip = res.data.data.user_dvb_flag
           } else {
-            this.voteLeft = 0; // 服务器端计算数据错误时
-            this.$refs.alert.show("Sign In Error! " + res.data.message);
+            this.voteLeft = 0 // 服务器端计算数据错误时
+            this.$refs.alert.show('Sign In Error! ' + res.data.message)
           }
         })
         .catch(err => {
-          this.voteLeft = 0;
-          this.$refs.alert.show("Sign In Error!! " + err);
-        });
+          this.voteLeft = 0
+          this.$refs.alert.show('Sign In Error!! ' + err)
+        })
     },
     // 获取投票单元数据
     getAdvisorList() {
       this.$axios
-        .get(
-          `/voting/v1/candidates-show?vote_id=${this.vote_id}&sort_type=INDEX&size=20`
-        )
+        .get(`/voting/v1/candidates-show?vote_id=${this.vote_id}&sort_type=INDEX&size=20`)
         .then(res => {
           if (res.data.code === 0) {
-            this.advisorList = res.data.data;
+            this.advisorList = res.data.data
           } else {
-            this.advisorList = [];
-            this.$refs.alert.show("Get vote candidates show error!");
+            this.advisorList = []
+            this.$refs.alert.show('Get vote candidates show error!')
           }
-          this.loaded = true;
+          this.loaded = true
         })
         .catch(err => {
-          this.advisorList = [];
-          this.$refs.alert.show("Get vote candidates show error!!" + err);
-        });
+          this.advisorList = []
+          this.$refs.alert.show('Get vote candidates show error!!' + err)
+        })
     },
     // 播放视频方法
     toPlayer(advisor, action, label) {
-      this.mSendEvLog(action, label, "");
+      this.mSendEvLog(action, label, '')
       if (this.appType == 0) {
-        this.callOrDownApp("pic");
-        return;
+        this.callOrDownApp('pic')
+        return
       }
       if (advisor.link_vod_code) {
-        playVodinApp.call(this, this.appType, advisor.link_vod_code);
+        playVodinApp.call(this, this.appType, advisor.link_vod_code)
       }
     },
     // 投票方法
     handleViceVote(advisor, key) {
       if (!this.canVotes) {
-        return;
+        return
       }
       if (this.appType == 0) {
-        this.mSendEvLog("votebtn_click", advisor.name, "");
-        this.callOrDownApp("vote");
-        return;
+        this.mSendEvLog('votebtn_click', advisor.name, '')
+        this.callOrDownApp('vote')
+        return
       }
       if (this.$serverTime < this.startTime) {
-        this.mSendEvLog("votebtn_click", advisor.name, "");
-        this.$refs.alert.show(
-          "Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!",
-          () => {},
-          "SAWA"
-        );
-        return;
+        this.mSendEvLog('votebtn_click', advisor.name, '')
+        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
+        return
       } else if (this.$serverTime > this.endTime) {
-        this.mSendEvLog("votebtn_click", advisor.name, "");
-        this.$refs.alert.show("Samahani, kura zimekwisha.", () => {}, "SAWA");
-        return;
+        this.mSendEvLog('votebtn_click', advisor.name, '')
+        this.$refs.alert.show('Samahani, kura zimekwisha.', () => {}, 'SAWA')
+        return
       }
       if (this.voteLeft <= 0) {
-        this.mSendEvLog("votebtn_click", advisor.name, "");
+        this.mSendEvLog('votebtn_click', advisor.name, '')
         this.$refs.confirm.show(
-          "Samahani, kura yako iliyobaki ni 0, shirikisha marafiki zako na upate kura zaidi.",
+          'Samahani, kura yako iliyobaki ni 0, shirikisha marafiki zako na upate kura zaidi.',
           () => {
-            this.toShare("votefail");
+            this.toShare('votefail')
           },
           () => {},
-          "SHIRIKI",
-          "FUTA"
-        );
+          'SHIRIKI',
+          'FUTA'
+        )
       } else {
-        const box = document.getElementsByClassName("handle-pick-box")[key];
-        box.style.display = "block";
-        this.show_pick = true;
+        const box = document.getElementsByClassName('handle-pick-box')[key]
+        box.style.display = 'block'
+        this.show_pick = true
       }
     },
     closeShadow() {
-      document.body.style.overflow = "auto";
-      document.body.style.position = "static";
-      let box = document.getElementsByClassName("handle-pick-box");
-      box = Array.prototype.slice.call(box);
+      document.body.style.overflow = 'auto'
+      document.body.style.position = 'static'
+      let box = document.getElementsByClassName('handle-pick-box')
+      box = Array.prototype.slice.call(box)
       box.forEach(item => {
-        item.style.display = "none";
-      });
-      this.show_rules = false;
-      this.show_pick = false;
+        item.style.display = 'none'
+      })
+      this.show_rules = false
+      this.show_pick = false
     },
     // 投票1，5，10
     handleVote(advisor, value) {
-      if (
-        (value == 1 && this.voteLeft < 1) ||
-        (value == 5 && this.voteLeft < 5) ||
-        (value == 10 && this.voteLeft < 10)
-      ) {
-        this.$refs.toast.show(
-          "Kura imeshindikana. Hakuna kura za kutosha zilizobaki."
-        );
-        return;
+      if ((value == 1 && this.voteLeft < 1) || (value == 5 && this.voteLeft < 5) || (value == 10 && this.voteLeft < 10)) {
+        this.$refs.toast.show('Kura imeshindikana. Hakuna kura za kutosha zilizobaki.')
+        return
       }
-      this.canVotes = false;
+      this.canVotes = false
       this.$axios({
-        url: "/voting/v1/ballot",
-        method: "POST",
+        url: '/voting/v1/ballot',
+        method: 'POST',
         headers: {
-          "Content-Type": "application/x-www-form-urlencoded"
+          'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
           candidate_id: advisor.id,
@@ -1230,125 +1138,65 @@ export default {
       })
         .then(res => {
           if (res.data.code === 0) {
-            this.mSendEvLog("votecnt_click", "", value);
-            this.voteLeft -= value;
-            this.getLeftLottery();
+            this.mSendEvLog('votecnt_click', '', value)
+            this.voteLeft -= value
+            this.getLeftLottery()
             if (this.voteLeft > 0) {
-              this.$refs.toast.show(
-                "Upigaji umefanikiwa! Umepata nafasi ya kucheza bahati nasibu."
-              );
+              this.$refs.toast.show('Upigaji umefanikiwa! Umepata nafasi ya kucheza bahati nasibu.')
             } else {
               this.$refs.confirm.show(
-                "Upigaji umefanikiwa! Shirikisha marafiki kupata kura zaidi.",
+                'Upigaji umefanikiwa! Shirikisha marafiki kupata kura zaidi.',
                 () => {
-                  this.toShare("0leftvote");
+                  this.toShare('0leftvote')
                 },
                 () => {},
-                "SHIRIKI",
-                "FUTA"
-              );
+                'SHIRIKI',
+                'FUTA'
+              )
             }
-            this.canVotes = true;
+            this.canVotes = true
           } else {
-            this.$refs.alert.show("Vote error! " + res.data.message);
-            this.canVotes = true;
+            this.$refs.alert.show('Vote error! ' + res.data.message)
+            this.canVotes = true
           }
         })
         .catch(err => {
-          this.$refs.alert.show("Vote error!! " + err);
-          this.canVotes = true;
-        });
-    },
-    // 获取大众评审活动信息
-    getCommentInfo() {
-      this.$axios
-        .get(`/voting/enroll/v1/info?enroll_id=${this.enroll_id}`)
-        .then(res => {
-          if (res.data.code === 200) {
-            this.startTime_comment = new Date(
-              res.data.data.start_time.replace(/-/g, "/").replace("T", " ") +
-                "+0000"
-            ).getTime();
-            this.endTime_comment = new Date(
-              res.data.data.end_time.replace(/-/g, "/").replace("T", " ") +
-                "+0000"
-            ).getTime();
-            if (this.$serverTime > this.startTime_comment) {
-              this.isCommentStart = true;
-            }
-          } else {
-            this.$refs.alert.show("Get enroll info error!");
-          }
+          this.$refs.alert.show('Vote error!! ' + err)
+          this.canVotes = true
         })
-        .catch(err => {
-          this.$refs.alert.show("Get enroll info error!!" + err);
-        });
     },
     // 获取邀请个数信息
     getShareNum() {
       this.$axios
-        .get(
-          `/voting/v1/action/count?vote_id=${this.vote_id}&action=SHARE_DOWNLOAD`
-        )
+        .get(`/voting/v1/action/count?vote_id=${this.vote_id}&action=SHARE_DOWNLOAD`)
         .then(res => {
           if (res.data.code == 0) {
-            this.share_num = res.data.data;
+            this.share_num = res.data.data
           } else {
-            this.$refs.alert.show("Get share count error!");
+            this.$refs.alert.show('Get share count error!')
           }
         })
         .catch(err => {
-          this.$refs.alert.show("Get share count error!!" + err);
-        });
-    },
-    // 获取抽奖活动时间信息
-    getLotteryMsg() {
-      this.$axios
-        .get(`/voting/lottery/v1/info?lottery_id=${this.lottery_id}`)
-        .then(res => {
-          if (res.data.code === 0) {
-            this.startTime = new Date(
-              res.data.data.start_time.replace(/-/g, "/").replace("T", " ") +
-                "+0000"
-            ).getTime();
-            this.endTime = new Date(
-              res.data.data.end_time.replace(/-/g, "/").replace("T", " ") +
-                "+0000"
-            ).getTime();
-            this.getVoteRemain();
-            this.getLeftLottery();
-            this.getVideoMsg();
-            this.getLotteryType();
-          } else {
-            this.$refs.alert.show("Get lottery info error!");
-          }
+          this.$refs.alert.show('Get share count error!!' + err)
         })
-        .catch(err => {
-          this.$refs.alert.show("Get lottery info error!!" + err);
-        });
     },
     // 获取剩余抽奖机会
     getLeftLottery() {
-      if (
-        this.$serverTime >= this.startTime &&
-        this.$serverTime < this.endTime
-      ) {
+      if (this.$serverTime >= this.startTime && this.$serverTime < this.endTime) {
         this.$axios
-          .get(
-            `/voting/v1/lottery/chance?lottery_id=${this.lottery_id}&vote_id=${this.vote_id}`
-          )
+          .get(`/voting/v1/lottery/chance?lottery_id=${this.lottery_id}&vote_id=${this.vote_id}`)
           .then(res => {
             if (res.data.code === 0) {
-              this.lotteryLeft = res.data.data;
+              this.lotteryLeft = res.data.data
             } else {
-              this.lotteryLeft = 0; // 服务器端计算数据错误时
-              this.$refs.alert.show("Get lottery chance error!");
+              this.lotteryLeft = 0 // 服务器端计算数据错误时
+              this.$refs.alert.show('Get lottery chance error!')
             }
           })
           .catch(err => {
-            this.lotteryLeft = 0;
-            this.$refs.alert.show("Get lottery chance error!! " + err);
-          });
+            this.lotteryLeft = 0
+            this.$refs.alert.show('Get lottery chance error!! ' + err)
+          })
       }
     },
     // 获取抽奖种类
@@ -1357,26 +1205,18 @@ export default {
         .get(`/voting/lottery/v1/rewards?lottery_id=${this.lottery_id}`)
         .then(res => {
           if (res.data.code === 0) {
-            this.lotteryType = res.data.data;
+            this.lotteryType = res.data.data
           } else {
-            this.lotteryType = []; // 服务器端计算数据错误时
-            this.$refs.alert.show("Get rewards error!");
+            this.lotteryType = [] // 服务器端计算数据错误时
+            this.$refs.alert.show('Get rewards error!')
           }
-          this.loaded_l = true;
-          this.getMsgList();
+          this.loaded_l = true
+          this.getMsgList()
         })
         .catch(err => {
-          this.lotteryType = [];
-          this.$refs.alert.show("Get rewards error!! " + err);
-        });
-    },
-    randomList(arr) {
-      for (let i = 0; i < arr.length; i++) {
-        const randomIndex =
-          Math.round(Math.random() * (arr.length - 1 - i)) + i;
-        [arr[i], arr[randomIndex]] = [arr[randomIndex], arr[i]];
-      }
-      return arr;
+          this.lotteryType = []
+          this.$refs.alert.show('Get rewards error!! ' + err)
+        })
     },
     // 获取消息列表
     getMsgList() {
@@ -1385,292 +1225,253 @@ export default {
         .then(res => {
           if (res.data.code === 0) {
             if (this.$serverTime <= this.startTime) {
-              this.items = [];
+              this.items = []
             } else {
-              this.items = res.data.data;
-              this.randomList(this.items);
+              this.items = res.data.data
               this.items.forEach(item => {
                 if (item.user_name) {
-                  if (
-                    new RegExp(
-                      /^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[a-z0-9]*[a-z0-9]+\.){1,63}[a-z0-9]+$/
-                    ).test(item.user_name)
-                  ) {
+                  if (new RegExp(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[a-z0-9]*[a-z0-9]+\.){1,63}[a-z0-9]+$/).test(item.user_name)) {
                     // 邮箱用户
-                    const arr = item.user_name.split("@");
+                    const arr = item.user_name.split('@')
                     if (arr[0].length > 3) {
                       item.user_name =
-                        arr[0].substr(0, 2) +
-                        arr[0].slice(2, -1).replace(/[^\s]/g, "*") +
-                        arr[0].substring(arr[0].length - 1) +
-                        "@" +
-                        arr[1];
+                        arr[0].substr(0, 2) + arr[0].slice(2, -1).replace(/[^\s]/g, '*') + arr[0].substring(arr[0].length - 1) + '@' + arr[1]
                     }
                     if (arr[0].length == 3) {
-                      item.user_name =
-                        arr[0].replace(/(\w{1})\w{1}(\w{1})/, "$1*$2") +
-                        "@" +
-                        arr[1];
+                      item.user_name = arr[0].replace(/(\w{1})\w{1}(\w{1})/, '$1*$2') + '@' + arr[1]
                     }
                     if (arr[0].length == 2) {
-                      item.user_name =
-                        arr[0].replace(/\w{1}(\w{1})/, "*$1") + "@" + arr[1];
+                      item.user_name = arr[0].replace(/\w{1}(\w{1})/, '*$1') + '@' + arr[1]
                     }
                     if (arr[0].length == 1) {
-                      item.user_name =
-                        arr[0].replace(/\w{1}/, "*") + "@" + arr[1];
+                      item.user_name = arr[0].replace(/\w{1}/, '*') + '@' + arr[1]
                     }
                   } else if (new RegExp(/^\d{1,}$/).test(item.user_name)) {
                     // 手机用户
-                    item.user_name = item.user_name
-                      .toString()
-                      .replace(/(.*)\d{3}(\d{3})/, "$1***$2");
+                    item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
                   }
                 }
-                item.user_id = item.user_id
-                  .toString()
-                  .replace(/(.*)\d{2}/, "$1**");
+                item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
                 for (let i = 0; i < this.lotteryType.length; i++) {
                   if (item.reward_id == this.lotteryType[i].id) {
-                    item.reward_name = this.lotteryType[i].name;
+                    item.reward_name = this.lotteryType[i].name
                   }
                 }
-              });
-              this.loaded_m = true;
+              })
+              this.loaded_m = true
+              console.log(this.items)
             }
           } else {
-            this.items = []; // 服务器端计算数据错误时
-            this.$refs.alert.show("Get winnings error!");
+            this.items = [] // 服务器端计算数据错误时
+            this.$refs.alert.show('Get winnings error!')
           }
         })
         .catch(err => {
-          this.items = [];
-          this.$refs.alert.show("Get winnings error!! " + err);
-        });
+          this.items = []
+          this.$refs.alert.show('Get winnings error!! ' + err)
+        })
     },
     // 抽奖按钮为灰提示
     canNotLottery() {
       if (!this.click) {
-        return;
+        return
       }
-      this.mSendEvLog("lottery_click", "", "-1");
+      this.mSendEvLog('lottery_click', '', '-1')
       if (this.appType == 0) {
-        this.callOrDownApp("lottery");
-        return;
+        this.callOrDownApp('lottery')
+        return
       }
       if (!this.isLogin) {
         // 移动端未登录
         this.$refs.alert.show(
-          "Tafadhali jisajili ili uanze mchuano wa bahati.",
+          'Tafadhali jisajili ili uanze mchuano wa bahati.',
           () => {
-            this.toSignIn();
+            this.toSignIn()
           },
-          "JISAJILI"
-        );
-        return;
+          'JISAJILI'
+        )
+        return
       }
       if (this.$serverTime < this.startTime) {
-        this.$refs.alert.show(
-          "Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!",
-          () => {},
-          "SAWA"
-        );
-        return;
+        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
+        return
       }
       if (this.$serverTime >= this.endTime) {
-        this.$refs.alert.show("Samahani, kura zimekwisha.", () => {}, "SAWA");
-        return;
+        this.$refs.alert.show('Samahani, kura zimekwisha.', () => {}, 'SAWA')
+        return
       }
       // 票不够不能抽奖
-      this.$refs.alert.show(
-        "Piga kura ili upate nafasi ya kushinda bahati nasibu! Kila kura 5 kwa mchezo 1",
-        () => {},
-        "SAWA"
-      );
+      this.$refs.alert.show('Piga kura ili upate nafasi ya kushinda bahati nasibu! Kila kura 5 kwa mchezo 1', () => {}, 'SAWA')
     },
     // 开始抽奖
     startLottery() {
       if (!this.click) {
-        return;
+        return
       }
-      this.lotteryLeft--;
-      this.speeds = 200;
-      this.click = false;
-      this.canClickTab2 = false;
-      this.startRoll();
+      this.lotteryLeft--
+      this.speeds = 200
+      this.click = false
+      this.canClickTab2 = false
+      this.startRoll()
     },
     // 开始转动
     startRoll() {
-      this.times += 1; // 转动次数
-      this.oneRoll(); // 转动过程调用的每一次转动方法，这里是第一次调用初始化
+      this.times += 1 // 转动次数
+      this.oneRoll() // 转动过程调用的每一次转动方法，这里是第一次调用初始化
 
       // 如果当前转动次数达到要求 && 目前转到的位置是中奖位置
       if (this.times > this.cycle + 10 && this.prize === this.indexs) {
-        clearTimeout(this.timers); // 清除转动定时器，停止转动
+        clearTimeout(this.timers) // 清除转动定时器，停止转动
         // this.prize = -1
-        this.times = 0;
+        this.times = 0
         // console.log("你已经中奖了，位置" + (this.indexs + 1));
         if (this.indexs < 5) {
           setTimeout(() => {
             this.$refs.alert.show(
-              "Hongera! Umepata " +
-                this.lotteryType[this.indexs].name +
-                "! Zawadi zitatolewa kwenye siku ya pili ya kazi katika Me-> Kuponi zangu.",
+              'Hongera! Umepata ' + this.lotteryType[this.indexs].name + '! Zawadi zitatolewa kwenye siku ya pili ya kazi katika Me-> Kuponi zangu.',
               () => {
-                this.click = true;
-                this.canClickTab2 = true;
+                this.click = true
+                this.canClickTab2 = true
               },
-              "SAWA"
-            );
-          }, 1000);
+              'SAWA'
+            )
+          }, 1000)
         } else if (this.indexs == 5) {
           this.getTicketAward(res => {
             if (res.data.code == 200) {
               setTimeout(() => {
                 this.$refs.alert.show(
-                  "Hongera! Umepata kura " + res.data.data + " zaidi!",
+                  'Hongera! Umepata kura ' + res.data.data + ' zaidi!',
                   () => {
-                    this.click = true;
-                    this.canClickTab2 = true;
+                    this.click = true
+                    this.canClickTab2 = true
                   },
-                  "SAWA"
-                );
-                this.voteLeft += res.data.data;
-              }, 1000);
+                  'SAWA'
+                )
+                this.voteLeft += res.data.data
+              }, 1000)
             } else {
-              this.$refs.alert.show(
-                "Get ticket award error!" + res.data.message
-              );
+              this.$refs.alert.show('Get ticket award error!' + res.data.message)
             }
-          });
+          })
         } else if (this.indexs === 6) {
           setTimeout(() => {
-            this.lotteryLeft++;
+            this.lotteryLeft++
             this.$refs.alert.show(
-              "Hongera! Umepata nafasi moja zaidi!",
+              'Hongera! Umepata nafasi moja zaidi!',
               () => {
-                this.click = true;
-                this.startLottery();
+                this.click = true
+                this.startLottery()
               },
-              "SAWA"
-            );
-          }, 1000);
+              'SAWA'
+            )
+          }, 1000)
         } else if (this.indexs === 7) {
           setTimeout(() => {
             this.$refs.alert.show(
-              "Asante kwa ushiriki wako.",
+              'Asante kwa ushiriki wako.',
               () => {
-                this.click = true;
-                this.canClickTab2 = true;
+                this.click = true
+                this.canClickTab2 = true
               },
-              "SAWA"
-            );
-          }, 1000);
+              'SAWA'
+            )
+          }, 1000)
         }
       } else {
         if (this.times < this.cycle) {
-          this.speeds -= 10; // 加快转动速度
+          this.speeds -= 10 // 加快转动速度
         } else if (this.times === this.cycle) {
           // 后台取得一个中奖位置
           this.$axios({
-            method: "POST",
+            method: 'POST',
             headers: {
-              "content-type": "application/x-www-form-urlencoded"
+              'content-type': 'application/x-www-form-urlencoded'
               // token: this.$store.state.token
             },
             data: qs.stringify({
               lottery_id: this.lottery_id
             }),
-            url: "/voting/lottery/v1/drawing"
+            url: '/voting/lottery/v1/drawing'
           })
             .then(res => {
               if (res.data.code == 0) {
-                const prizeNum = res.data.data;
+                const prizeNum = res.data.data
                 for (let i = 0; i < this.lotteryType.length; i++) {
                   if (prizeNum == this.lotteryType[i].id) {
-                    this.prize = i;
+                    this.prize = i
                   }
                 }
-                console.log(`中奖位置${this.prize + 1}`);
-                if (this.prize + 1 == 3)
-                  this.mSendEvLog("lottery_click", "vip", "1");
-                else if (this.prize + 1 == 4)
-                  this.mSendEvLog("lottery_click", "40offcoupon", "1");
-                else if (this.prize + 1 == 5)
-                  this.mSendEvLog("lottery_click", "30offcoupon", "1");
-                else if (this.prize + 1 == 6)
-                  this.mSendEvLog("lottery_click", "morevotes", "1");
-                else if (this.prize + 1 == 7)
-                  this.mSendEvLog("lottery_click", "tryagain", "0");
-                else if (this.prize + 1 == 8)
-                  this.mSendEvLog("lottery_click", "sorry", "0");
+                console.log(`中奖位置${this.prize + 1}`)
+                if (this.prize + 1 == 3) this.mSendEvLog('lottery_click', 'vip', '1')
+                else if (this.prize + 1 == 4) this.mSendEvLog('lottery_click', '40offcoupon', '1')
+                else if (this.prize + 1 == 5) this.mSendEvLog('lottery_click', '30offcoupon', '1')
+                else if (this.prize + 1 == 6) this.mSendEvLog('lottery_click', 'morevotes', '1')
+                else if (this.prize + 1 == 7) this.mSendEvLog('lottery_click', 'tryagain', '0')
+                else if (this.prize + 1 == 8) this.mSendEvLog('lottery_click', 'sorry', '0')
               } else {
                 setTimeout(() => {
-                  clearTimeout(this.timers);
-                  this.times = 0;
+                  clearTimeout(this.timers)
+                  this.times = 0
                   this.$refs.alert.show(
-                    "Lottery error!",
+                    'Lottery error!',
                     () => {
-                      this.lotteryLeft = 0;
+                      this.lotteryLeft = 0
                     },
-                    "SAWA"
-                  );
-                }, 3000);
+                    'SAWA'
+                  )
+                }, 3000)
               }
             })
             .catch(err => {
-              clearTimeout(this.timers);
-              this.times = 0;
-              this.$refs.alert.show("Lottery error!!" + err, () => {
-                this.lotteryLeft = 0;
-              });
-            });
-        } else if (
-          this.times > this.cycle + 10 &&
-          ((this.prize === 0 && this.indexs === 5) ||
-            this.prize === this.indexs + 1)
-        ) {
-          this.speeds += 110;
+              clearTimeout(this.timers)
+              this.times = 0
+              this.$refs.alert.show('Lottery error!!' + err, () => {
+                this.lotteryLeft = 0
+              })
+            })
+        } else if (this.times > this.cycle + 10 && ((this.prize === 0 && this.indexs === 5) || this.prize === this.indexs + 1)) {
+          this.speeds += 110
         } else {
-          this.speeds += 20;
+          this.speeds += 20
         }
 
         if (this.speeds < 80) {
-          this.speeds = 80;
+          this.speeds = 80
         }
-        this.timers = setTimeout(this.startRoll, this.speeds);
+        this.timers = setTimeout(this.startRoll, this.speeds)
       }
     },
     // 每一次转动
     oneRoll() {
-      let indexs = this.indexs; // 当前转动到哪个位置
-      const counts = this.counts; // 总共有多少个位置
-      indexs += 1;
+      let indexs = this.indexs // 当前转动到哪个位置
+      const counts = this.counts // 总共有多少个位置
+      indexs += 1
       if (indexs > counts - 1) {
-        indexs = 0;
+        indexs = 0
       }
-      this.indexs = indexs;
+      this.indexs = indexs
     },
     // 获得加票方法
     getTicketAward(callback) {
       this.$axios({
-        method: "POST",
+        method: 'POST',
         headers: {
-          "content-type": "application/json"
+          'content-type': 'application/json'
           // token: this.$store.state.token
         },
         data: qs.stringify({
           vote_id: this.vote_id,
           user_id: this.user_id
         }),
-        url: "/hybrid/vote/getTicketAward"
+        url: '/hybrid/vote/getTicketAward'
       })
         .then(res => {
-          callback && callback(res);
+          callback && callback(res)
         })
         .catch(err => {
-          this.$refs.alert.show("Get ticket award error!!" + err);
-        });
+          this.$refs.alert.show('Get ticket award error!!' + err)
+        })
     },
     // 获取往期视频
     getVideoMsg() {
@@ -1680,32 +1481,32 @@ export default {
         .then(res => {
           if (res.data.code === 0) {
             res.data.data.forEach(item => {
-              if (item.name.substr(0, 5) == "fuhuo") {
-                this.clipsList.push(item);
-              } else if (item.name.substr(0, 5) == "topic") {
-                this.topicList.push(item);
+              if (item.name.substr(0, 5) == 'fuhuo') {
+                this.clipsList.push(item)
+              } else if (item.name.substr(0, 5) == 'topic') {
+                this.topicList.push(item)
               }
-            });
+            })
             this.clipsList.forEach(item => {
-              this.mSendEvLog("video_show", item.description, "");
-            });
-            this.canClickTab2 = true;
-            if(this.$serverTime>this.endTime) {
-              this.changePage("barrage");
+              this.mSendEvLog('video_show', item.description, '')
+            })
+            this.canClickTab2 = true
+            if (this.$serverTime > this.endTime) {
+              this.changePage('barrage')
             }
           } else {
-            this.$refs.alert.show("Get program error!");
+            this.$refs.alert.show('Get program error!')
           }
         })
         .catch(err => {
-          this.$refs.alert.show("Get program error!!" + err);
-        });
+          this.$refs.alert.show('Get program error!!' + err)
+        })
     }
   }
-};
+}
 </script>
 <style lang="less" scoped>
-@import "~@/assets/less/vote/normal.less";
+@import '~@/assets/less/vote/normal.less';
 
 @keyframes go_in {
   0% {
@@ -1734,7 +1535,7 @@ export default {
   textarea::-webkit-input-placeholder {
     color: #acacac;
   }
-  background-image: url("~@/assets/img/vote/BSSVote2/bg-img.jpg");
+  background-image: url('~@/assets/img/vote/BSSVote2/bg-img.jpg');
   background-size: contain;
   background-repeat: repeat-y;
   font-size: 0.9rem;
@@ -1787,7 +1588,7 @@ export default {
           color: #def004;
           &::before,
           &::after {
-            content: "";
+            content: '';
             display: block;
             width: 0.3rem;
             height: 0.3rem;
@@ -1866,7 +1667,7 @@ export default {
                   top: 0;
                 }
                 &::before {
-                  content: "";
+                  content: '';
                   display: inline-block;
                   padding-bottom: 100%;
                   width: 0.1px;
@@ -1899,7 +1700,7 @@ export default {
                 height: 1.3rem;
                 line-height: 1.3rem;
                 color: #ffffff;
-                background-image: url("~@/assets/img/vote/BSSRegister/bg-vote.png");
+                background-image: url('~@/assets/img/vote/BSSRegister/bg-vote.png');
                 background-size: 4.5rem 1.3rem;
                 margin: 0 auto;
                 text-align: center;
@@ -2055,7 +1856,7 @@ export default {
           .lottery-type {
             width: 100%;
             margin: 0 auto;
-            background-image: url("~@/assets/img/vote/BSSRegister/bg-border.png");
+            background-image: url('~@/assets/img/vote/BSSRegister/bg-border.png');
             background-size: 100% 19.5rem;
             color: #ad5500;
             ul {
@@ -2075,14 +1876,14 @@ export default {
                 background-color: #fff;
                 border: 0.25rem solid transparent;
                 &:nth-child(1) {
-                  background-image: url("~@/assets/img/vote/BSSRegister/bg-lottery-light.png");
+                  background-image: url('~@/assets/img/vote/BSSRegister/bg-lottery-light.png');
                   background-size: 100% 100%;
                   border-top-left-radius: 1rem;
                   left: 3%;
                   top: 1.7rem;
                 }
                 &:nth-child(2) {
-                  background-image: url("~@/assets/img/vote/BSSRegister/bg-lottery-light.png");
+                  background-image: url('~@/assets/img/vote/BSSRegister/bg-lottery-light.png');
                   background-size: 100% 100%;
                   left: 35%;
                   top: 1.7rem;
@@ -2157,13 +1958,13 @@ export default {
                 line-height: 4.5rem;
               }
               .getLuck {
-                background-image: url("~@/assets/img/vote/BSSRegister/start.png");
+                background-image: url('~@/assets/img/vote/BSSRegister/start.png');
                 &:active {
-                  background-image: url("~@/assets/img/vote/BSSRegister/start-ac.png");
+                  background-image: url('~@/assets/img/vote/BSSRegister/start-ac.png');
                 }
               }
               .getLuck-gray {
-                background-image: url("~@/assets/img/vote/BSSRegister/start-gray.png");
+                background-image: url('~@/assets/img/vote/BSSRegister/start-gray.png');
                 color: #ccc;
               }
             }
@@ -2238,7 +2039,7 @@ export default {
             div {
               position: relative;
               width: 100%;
-              background-image: url("~@/assets/img/vote/BSSVote2/bg-border.png");
+              background-image: url('~@/assets/img/vote/BSSVote2/bg-border.png');
               background-size: 100% 100%;
               overflow: hidden;
               img {
@@ -2250,7 +2051,7 @@ export default {
                 top: 0;
               }
               &:before {
-                content: "";
+                content: '';
                 display: inline-block;
                 padding-bottom: 100%;
                 width: 0.1px;
@@ -2319,7 +2120,7 @@ export default {
               font-size: 0.9rem;
               width: 30%;
               height: 2rem;
-              background-image: url("~@/assets/img/vote/BSSVote2/btn-pick.png");
+              background-image: url('~@/assets/img/vote/BSSVote2/btn-pick.png');
               background-size: 100% 2rem;
               text-align: center;
               line-height: 2rem;
@@ -2474,9 +2275,8 @@ export default {
           border-radius: 1.25rem;
           position: relative;
           textarea {
-            font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu,
-              Cantarell, Noto Sans, sans-serif, "Apple Color Emoji",
-              "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+              'Segoe UI Symbol', 'Noto Color Emoji';
             border: none;
             outline: none;
             display: block;
@@ -2577,7 +2377,7 @@ export default {
               top: 0;
             }
             &:before {
-              content: "";
+              content: '';
               display: inline-block;
               padding-bottom: 62%;
               width: 0.1px;
@@ -2642,7 +2442,7 @@ export default {
       text-align: center;
       line-height: 1.8rem;
       color: #fff;
-      background-image: url("~@/assets/img/vote/BSSRegister/btn-success.png");
+      background-image: url('~@/assets/img/vote/BSSRegister/btn-success.png');
       background-size: 8rem 1.8rem;
       position: absolute;
       left: 4.5rem;
