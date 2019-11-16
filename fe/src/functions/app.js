@@ -4,7 +4,7 @@
 import { Base64 } from 'js-base64'
 import axios from 'axios'
 import qs from 'qs'
-import { getBrowser } from '@/functions/utils'
+import { getBrowser, getCookie, setCookie } from '@/functions/utils'
 
 const browser = getBrowser()
 const appleStore = 'https://itunes.apple.com/us/app/startimes/id1168518958?l=zh&ls=1&mt=8'
@@ -297,7 +297,8 @@ export const getQueryVariable = function(query, key) {
 
 export const addTicketByDownload = function(vote_id) {
   const user = getQueryVariable(location.search.replace('?', ''), 'pin')
-  if (user) {
+  const lastGetTicket = getCookie('get_ticket_time')
+  if (user && !lastGetTicket) {
     this.$axios.get('/hybrid/api/sign').then(({ data }) => {
       if (data.code == 200) {
         this.$axios({
@@ -313,6 +314,8 @@ export const addTicketByDownload = function(vote_id) {
             action: 'SHARE_DOWNLOAD'
           }),
           url: '/voting/v1/ticket'
+        }).then(() => {
+          setCookie('get_ticket_time', 1, 1000 * 60 * 60 * 24 * 30)
         })
       }
     })
