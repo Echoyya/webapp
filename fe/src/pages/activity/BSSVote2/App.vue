@@ -168,7 +168,8 @@
       <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
       <div class="rule-text">
         Matokeo ya Kura yataamua moja kwa moja safari ya washiriki 20 ambao waliaga mashindano. Watachaguliwa Washiriki 2 kati ya washiriki 16 ambao waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5 watakaokwenda kwenye fainali
-        <br /><br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
+        <br />
+        <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
         <br />2. Vigezo vya kupiga kura : Tafuta na pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
         <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja.
         <br />② Wanachama wa VIP(VIP: StarTimes On na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)).
@@ -485,12 +486,16 @@ export default {
         .then(res => {
           if (res.data.code === 0) {
             this.pageList = res.data.data
+            const sortByTime = key => {
+              return (on, om) => {
+                const vn = on[key]
+                const vm = om[key]
+                return vn < vm ? -1 : vn > vm ? 1 : 0
+              }
+            }
+            this.pageList.sort(sortByTime('start_time'))
             this.pageList.forEach(item => {
               this.timeList.push(new Date(item.start_time.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime())
-            })
-            this.timeList.sort(function(m, n) {
-              const r = m < n ? -1 : m > n ? 1 : 0
-              return r
             })
             this.currentPage = this.getIndexToIns(this.timeList, this.$serverTime)
             // console.log("currentPage: " + this.currentPage);
