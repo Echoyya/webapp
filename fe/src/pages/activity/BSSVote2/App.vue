@@ -431,6 +431,7 @@ export default {
     }
   },
   mounted() {
+    this.getTicketAward()
     this.mSendEvLog('page_show', '', '')
     this.getVoteRemain()
     this.getLeftLottery()
@@ -1547,14 +1548,10 @@ export default {
     getTicketAward(callback) {
       this.$axios({
         method: 'POST',
-        headers: {
-          'content-type': 'application/json'
-          // token: this.$store.state.token
-        },
-        data: qs.stringify({
+        data: {
           vote_id: this.vote_id,
           user_id: this.user_id
-        }),
+        },
         url: '/hybrid/vote/getTicketAward'
       })
         .then(res => {
