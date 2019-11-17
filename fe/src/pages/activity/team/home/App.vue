@@ -162,7 +162,7 @@ export default {
       }
     }
   },
-  created() {
+  mounted() {
     const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (teamno && !isNaN(teamno)) {
       history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
@@ -193,7 +193,7 @@ export default {
               )
             } else {
               // 队伍已满
-              this.$refs.malert.show(this.$t('vote.team.full_team'), () => {
+              this.$refs.malert.show(this.$t('vote.team.full_team') + '.' + this.$t('vote.team.to_change_team'), () => {
                 location.href = '/activity/team/search.html'
               })
             }
@@ -251,7 +251,7 @@ export default {
           this.toCreate()
         } else if (data.code == 2) {
           // 已经满了，再加入个别的吧
-          this.$refs.malert.show(this.$t('vote.team.full_team'), () => {
+          this.$refs.malert.show(this.$t('vote.team.full_team') + '.' + this.$t('vote.team.to_change_team'), () => {
             window.location.href = '/activity/team/search.html'
           })
         } else {
@@ -364,7 +364,7 @@ export default {
     },
     // 获取消息列表
     getMsgList() {
-      this.$axios·
+      this.$axios
         .get(`/voting/lottery/v1/winnings?lottery_id=${this.lottery_id}`)
         .then(res => {
           if (res.data.code === 0) {
@@ -446,7 +446,6 @@ export default {
             this.$refs.malert.show('Get rewards error!')
           }
           this.loaded_l = true
-          // this.getMsgList();
         })
         .catch(err => {
           this.lotteryType = []

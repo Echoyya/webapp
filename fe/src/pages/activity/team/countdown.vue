@@ -26,7 +26,19 @@
 import { toNativePage } from '@/functions/app'
 import { formatAmount } from '@/functions/utils'
 export default {
-  props: ['activityStart', 'activityEnd', 'teamNo'],
+  props: {
+    activityStart: {
+      requred: true,
+      type: Number
+    },
+    activityEnd: {
+      requred: true,
+      type: Number
+    },
+    teamNo: {
+      requred: false
+    }
+  },
   data() {
     return {
       days: '1000000',
