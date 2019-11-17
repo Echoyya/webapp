@@ -321,3 +321,32 @@ export const addTicketByDownload = function(vote_id) {
     })
   }
 }
+
+export const shareByFacebookInWeb = link => {
+  // eslint-disable-next-line no-undef
+  FB.ui({
+    method: 'share',
+    display: 'popup',
+    href: link
+  })
+}
+export const shareByTwitterInWeb = function(text, link) {
+  window.location.href = 'http://twitter.com/share?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(text)
+}
+
+export const copyClipboard = function(text) {
+  const input = document.createElement('input')
+  input.setAttribute('readOnly', true)
+  document.body.appendChild(input)
+  input.setAttribute('value', text)
+  input.select()
+  const successful = document.execCommand('copy')
+  document.body.removeChild(input)
+  window.getSelection().removeAllRanges()
+
+  if (successful) {
+    alert('Copied')
+  } else {
+    alert('Copy text is not support on your browser')
+  }
+}
