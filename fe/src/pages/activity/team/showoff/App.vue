@@ -55,8 +55,8 @@ export default {
       text: [this.$t('vote.team.congrats'), this.$t('vote.team.solucky'), this.$t('vote.team.jackpot')],
       award_day: '',
 
-      activityStart: new Date('2019-11-05 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-18 04:00:00').getTime(),
+      activityStart: new Date('2019-11-15 00:00:00').getTime(),
+      activityEnd: new Date('2019-11-25 04:00:00').getTime()
     }
   },
   computed: {
@@ -81,24 +81,20 @@ export default {
       window.location.href = '/activity/team/home.html'
     },
     callOrDownApp() {
-      callApp.call(
-        this,
-        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html`,
-        () => {
-          callMarket.call(this, () => {
-            this.$refs.confirm.show(
-              this.$t('vote.team.download_tip'),
-              () => {
-                downApk.call(this)
-              },
-              () => {},
-              'OK',
-              'NOT NOW'
-            )
-          })
-        }
-      )
-    },
+      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html`, () => {
+        callMarket.call(this, () => {
+          this.$refs.confirm.show(
+            this.$t('vote.team.download_tip'),
+            () => {
+              downApk.call(this)
+            },
+            () => {},
+            'OK',
+            'NOT NOW'
+          )
+        })
+      })
+    }
   }
 }
 </script>

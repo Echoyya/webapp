@@ -110,8 +110,8 @@ export default {
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.shareText'),
 
-      activityStart: new Date('2019-11-11 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-18 04:00:00').getTime(),
+      activityStart: new Date('2019-11-15 00:00:00').getTime(),
+      activityEnd: new Date('2019-11-25 04:00:00').getTime(),
       show_share: false,
       hasFinish: false,
 

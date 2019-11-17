@@ -126,8 +126,8 @@ export default {
   data() {
     return {
       // 页面
-      activityStart: new Date('2019-11-05 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-18 04:00:00').getTime(),
+      activityStart: new Date('2019-11-15 00:00:00').getTime(),
+      activityEnd: new Date('2019-11-25 04:00:00').getTime(),
 
       mumberList: [],
       moreList1: [],
