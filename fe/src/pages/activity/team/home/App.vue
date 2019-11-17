@@ -84,7 +84,7 @@
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
 import env from '@/functions/config'
-import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
+import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity/team/func'
 import {
   shareByFacebook,
   shareByWhatsApp,
@@ -160,21 +160,12 @@ export default {
       } else {
         return []
       }
-    },
-    platform() {
-      if (this.$appType == 1) {
-        return 'Android'
-      } else if (this.$appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
     }
   },
   created() {
     const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
     if (teamno && !isNaN(teamno)) {
-      // history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
+      history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
           //未找到队伍
@@ -189,17 +180,12 @@ export default {
                 () => {
                   // 加入队伍
                   if (this.$isLogin) {
-                    joinTeam.call(this, teamno, data => {
-                      if (data.code == 0) {
-                        this.team = data.data.team_member_dtos
-                        this.teamNum = teamno
-                      } else {
-                        this.$refs.malert.show(data.message)
-                      }
-                    })
+                    this.toJoin(teamno)
                   } else if (this.$appType === 1) {
+                    localStorage.setItem('join_teamno', this.teamNum)
                     toNativePage('com.star.mobile.video.account.LoginActivity')
                   } else {
+                    localStorage.setItem('join_teamno', this.teamNum)
                     toNativePage('startimes://login')
                   }
                 },
@@ -207,7 +193,7 @@ export default {
               )
             } else {
               // 队伍已满
-              this.$refs.malert.show('Change another Team', () => {
+              this.$refs.malert.show(this.$t('vote.team.full_team'), () => {
                 location.href = '/activity/team/search.html'
               })
             }
@@ -215,27 +201,9 @@ export default {
             // 老用户
             this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
               if (this.$isLogin) {
-                createTeam.call(this, data => {
-                  if (data.code == 0) {
-                    this.team = data.data.team_member_dtos
-                    this.teamNum = data.data.team_no
-                  } else if (data.code == 1) {
-                    this.$axios.get(`/voting/team-building/v1/participating-team?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
-                      this.team = data.data.team_member_dtos
-                      this.teamNum = data.data.team_no
-                    })
-                  } else if (data.code == 2) {
-                    this.hasFinish = true
-                  }
-                })
+                this.toCreate()
               } else {
-                // 创建假的队伍
-                this.team = [
-                  {
-                    nick_name: this.$user.nickName,
-                    logo: this.$user.head || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
-                  }
-                ]
+                this.fakeTeam()
               }
             })
           }
@@ -243,45 +211,17 @@ export default {
       })
     } else {
       if (this.$isLogin) {
-        this.$axios.get(`/voting/team-building/v1/participating-team?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
-          if (data.code == 0) {
-            this.team = data.data.team_member_dtos
-            this.teamNum = data.data.team_no
-            // 判断队伍是否满队
-            if (this.team.length >= 3) {
-              this.canLottery = true
-              this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
-                window.scrollTo(0, 1500)
-                this.startLottery()
-              })
-            }
+        // 获取缓存的teamNo
+        const cacheTeamNo = localStorage.getItem('join_teamno')
+        this.checkMyTeam(() => {
+          if (cacheTeamNo) {
+            this.toJoin(cacheTeamNo)
           } else {
-            createTeam.call(this, data2 => {
-              if (data2.code == 0) {
-                this.team = [
-                  {
-                    nick_name: data2.data.leader_nick_name,
-                    logo: data2.data.leader_logo || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
-                  }
-                ]
-                this.teamNum = data2.data.team_no
-              } else if (data2.code == 2) {
-                this.hasFinish = true
-                // TODO 分享确定
-              } else {
-                this.$refs.malert.show(data2.message)
-              }
-            })
+            this.toCreate()
           }
         })
       } else {
-        // 创建假的队伍
-        this.team = [
-          {
-            nick_name: this.$user.nickName,
-            logo: this.$user.head || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
-          }
-        ]
+        this.fakeTeam()
       }
     }
     this.getLotteryType()
@@ -289,10 +229,87 @@ export default {
     this.msgScroll()
   },
   methods: {
+    toJoin(teamno) {
+      joinTeam.call(this, teamno, data => {
+        if (data.code == 0 || data.code == 4) {
+          // 加入成功
+          this.team = data.data.team_member_dtos
+          this.teamNum = teamno
+          if (data.code == 4) {
+            this.$refs.malert.show(data.message)
+          }
+          if (this.team.length >= 3) {
+            this.canLottery = true
+            this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
+              window.scrollTo(0, 1500)
+              this.startLottery()
+            })
+          }
+        } else if (data.code == 1) {
+          // 不是新用户，需要创建队伍
+          this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
+          this.toCreate()
+        } else if (data.code == 2) {
+          // 已经满了，再加入个别的吧
+          this.$refs.malert.show(this.$t('vote.team.full_team'), () => {
+            window.location.href = '/activity/team/search.html'
+          })
+        } else {
+          this.$refs.malert.show(data.message)
+        }
+      })
+    },
+    toCreate() {
+      createTeam.call(this, data => {
+        if (data.code == 0) {
+          this.team = [
+            {
+              nick_name: data.data.leader_nick_name,
+              logo: data.data.leader_logo || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
+            }
+          ]
+          this.teamNum = data.data.team_no
+        } else if (data.code == 1) {
+          this.checkMyTeam()
+        } else if (data.code == 2) {
+          // 已经达到了最高限制
+          this.hasFinish = true
+        } else {
+          this.$refs.malert.show(data.message)
+        }
+      })
+    },
+    fakeTeam() {
+      this.team = [
+        {
+          nick_name: this.$user.nickName,
+          logo: this.$user.head || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
+        }
+      ]
+    },
+    checkMyTeam(failback) {
+      searchMyTeam.call(this, data => {
+        if (data.code == 0) {
+          this.team = data.data.team_member_dtos
+          this.teamNum = data.data.team_no
+          if (this.team.length >= 3) {
+            this.canLottery = true
+            this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
+              window.scrollTo(0, 1500)
+              this.startLottery()
+            })
+          } else {
+            this.$refs.malert.show(this.$t('vote.team.have_team'))
+          }
+        } else {
+          failback && failback()
+        }
+      })
+    },
     toFacebook() {
       if (this.$appType == 1) {
         shareByFacebook(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -302,7 +319,7 @@ export default {
     toWhatsApp() {
       if (this.$appType == 1) {
         shareByWhatsApp(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -322,7 +339,7 @@ export default {
     toCopylink() {
       if (this.$appType == 1) {
         shareByCopyLink(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
         )
       }
     },
@@ -335,7 +352,7 @@ export default {
           this.show_share = true
         } else {
           shareInvite(
-            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
             this.shareTitle,
             this.shareText,
             this.imgUrl
@@ -347,7 +364,7 @@ export default {
     },
     // 获取消息列表
     getMsgList() {
-      this.$axios
+      this.$axios·
         .get(`/voting/lottery/v1/winnings?lottery_id=${this.lottery_id}`)
         .then(res => {
           if (res.data.code === 0) {
@@ -500,28 +517,8 @@ export default {
                   }
                   console.log(`中奖位置${this.prize + 1}`)
                 }
-                // createTeam.call(this, data => {
-                //   if (data.code == 0) {
-                //     this.team = data.data.team_member_dtos
-                //     this.teamNum = data.data.team_no
-                //   } else if (data.code == 1) {
-                //     // 有为抽奖队伍
-                //   } else if (data.code == 2) {
-                //     this.hasFinish = true
-                //   }
-                // })
               } else if (res.data.code == 1) {
                 this.prize = 3
-                // createTeam.call(this, data => {
-                //   if (data.code == 0) {
-                //     this.team = data.data.team_member_dtos
-                //     this.teamNum = data.data.team_no
-                //   } else if (data.code == 1) {
-                //     // 有为抽奖队伍
-                //   } else if (data.code == 2) {
-                //     this.hasFinish = true
-                //   }
-                // })
               } else {
                 this.fail = true
                 this.prize = 3

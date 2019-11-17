@@ -60,7 +60,8 @@ export default {
       no_awards: "You don't have a reward yet",
       draw_title: 'Draw your prize!',
       draw_button: 'DRAW',
-      draw_none: 'Sorry,you have not won'
+      draw_none: 'Sorry,you have not won',
+      have_team:'you have a team before,so you can not join a new team'
     }
   }
 }

@@ -52,17 +52,6 @@ export default {
       showBtn: true
     }
   },
-  computed: {
-    platform() {
-      if (this.appType == 1) {
-        return 'Android'
-      } else if (this.appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
-    }
-  },
   methods: {
     submit() {
       const teamno = ('' + this.teamNum).trim()
@@ -96,6 +85,7 @@ export default {
           }
         })
       } else {
+        localStorage.setItem('join_teamno', this.teamNum)
         toNativePage('com.star.mobile.video.account.LoginActivity')
       }
     },
