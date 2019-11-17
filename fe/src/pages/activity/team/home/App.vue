@@ -85,7 +85,16 @@
 import mBanner from '@/pages/activity/team/banner.vue'
 import env from '@/functions/config'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable, toNativePage } from '@/functions/app'
+import {
+  shareByFacebook,
+  shareByWhatsApp,
+  shareByXender,
+  shareByDownload,
+  shareByCopyLink,
+  getQueryVariable,
+  toNativePage,
+  shareInvite
+} from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
 import countdown from '@/pages/activity/team/countdown'
 export default {
@@ -322,7 +331,16 @@ export default {
     },
     showShare() {
       if (this.$isLogin) {
-        this.show_share = true
+        if (this.$appVersion) {
+          this.show_share = true
+        } else {
+          shareInvite(
+            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        }
       } else {
         toNativePage('com.star.mobile.video.account.LoginActivity')
       }

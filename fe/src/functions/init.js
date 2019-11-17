@@ -48,6 +48,7 @@ if (appInfo) {
   token = appInfo.token
   language = appInfo.lnCode
   appType = 1
+  Vue.prototype.$appVersion = appInfo.versionCode
 } else {
   appInfo = {}
   token = window.getChannelId && window.getChannelId.getToken && window.getChannelId.getToken()

@@ -24,7 +24,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable, shareInvite } from '@/functions/app'
 import countdown from '@/pages/activity/team/countdown'
 export default {
   components: {
@@ -70,40 +70,61 @@ export default {
     create() {
       window.location.href = '/activity/team/home.html'
     },
+    shareOldVersion() {
+      shareInvite(
+        `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+        this.shareTitle,
+        this.shareText,
+        this.imgUrl
+      )
+    },
     toFacebook() {
       if (this.$appType == 1) {
-        shareByFacebook(
-          `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        if (this.$appVersion) {
+          shareByFacebook(
+            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        } else {
+          this.shareOldVersion()
+        }
       }
     },
     toWhatsApp() {
       if (this.$appType == 1) {
-        shareByWhatsApp(
-          `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        if (this.$appVersion) {
+          shareByWhatsApp(
+            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        } else {
+          this.shareOldVersion()
+        }
       }
     },
     toXender() {
       if (this.$appType == 1) {
-        shareByXender()
+        if (this.$appVersion) {
+          shareByXender()
+        } else {
+          this.shareOldVersion()
+        }
       }
     },
     toCopylink() {
       if (this.$appType == 1) {
-        shareByCopyLink(
-          `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
-        )
+        if (this.$appVersion) {
+          shareByCopyLink(
+            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+          )
+        } else {
+          this.shareOldVersion()
+        }
       }
-    },
-    showAwards() {
-      console.log('my awards')
     }
   }
 }
