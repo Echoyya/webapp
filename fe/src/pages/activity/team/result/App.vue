@@ -48,17 +48,6 @@ export default {
       team_activity_id: 1
     }
   },
-  computed: {
-    platform() {
-      if (this.appType == 1) {
-        return 'Android'
-      } else if (this.appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
-    }
-  },
   mounted() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.award_day = getQueryVariable(location.search.replace('?', ''), 'prize')
@@ -72,7 +61,7 @@ export default {
     },
     shareOldVersion() {
       shareInvite(
-        `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+        `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
         this.shareTitle,
         this.shareText,
         this.imgUrl
@@ -82,7 +71,7 @@ export default {
       if (this.$appType == 1) {
         if (this.$appVersion) {
           shareByFacebook(
-            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
             this.shareTitle,
             this.shareText,
             this.imgUrl
@@ -96,7 +85,7 @@ export default {
       if (this.$appType == 1) {
         if (this.$appVersion) {
           shareByWhatsApp(
-            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
             this.shareTitle,
             this.shareText,
             this.imgUrl
@@ -119,7 +108,7 @@ export default {
       if (this.$appType == 1) {
         if (this.$appVersion) {
           shareByCopyLink(
-            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
           )
         } else {
           this.shareOldVersion()

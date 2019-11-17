@@ -75,9 +75,9 @@ if (appInfo) {
 if (appType == 1) {
   Vue.prototype.$platform = 'Android'
 } else if (appType == 2) {
-  Vue.prototype.$platform = 'Ios'
+  Vue.prototype.$platform = 'iOS'
 } else {
-  Vue.prototype.$platform = 'Web'
+  Vue.prototype.$platform = 'web'
 }
 
 let langObj = i18n.en

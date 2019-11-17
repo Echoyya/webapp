@@ -73,17 +73,6 @@ export default {
       have_no_result: false
     }
   },
-  computed: {
-    platform() {
-      if (this.$appType == 1) {
-        return 'Android'
-      } else if (this.$appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
-    }
-  },
   created() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
@@ -99,7 +88,7 @@ export default {
     toFacebook() {
       if (this.$appType == 1) {
         shareByFacebook(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -109,7 +98,7 @@ export default {
     toWhatsApp() {
       if (this.$appType == 1) {
         shareByWhatsApp(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -129,7 +118,7 @@ export default {
     toCopylink() {
       if (this.$appType == 1) {
         shareByCopyLink(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
         )
       }
     }
