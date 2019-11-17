@@ -21,57 +21,66 @@
   </div>
 </template>
 <script>
-// import { shareByFacebook, shareByTwitter, copyClipboard } from '@/functions/utils'
+import { shareByFacebookInWeb, shareByTwitterInWeb, copyClipboard } from '@/functions/app'
 export default {
-  props: {
-    shareUrl: {
-      required: false,
-      type: String,
-      default: ""
-    },
-  },
   data() {
     return {
-      style: "none",
-    };
+      shareUrl: location.href,
+      style: 'none'
+    }
+  },
+  mounted() {
+    window.fbAsyncInit = function() {
+      // eslint-disable-next-line no-undef
+      FB.init({
+        appId: '159785064477978',
+        status: true,
+        xfbml: true,
+        version: 'v3.2'
+      })
+    }
+    const script = document.createElement('script')
+    script.src = 'https://connect.facebook.net/en_US/sdk.js'
+    const firstScript = document.getElementsByTagName('script')[0]
+    firstScript.parentNode.insertBefore(script, firstScript)
   },
   methods: {
     close() {
-      this.style = "none"
+      this.style = 'none'
     },
     show() {
-      this.style = "block"
+      this.style = 'block'
     },
     shareWithFacebook() {
       this.$sendEvLog({
-        category: "share",
-        action: "share_click",
-        label: "facebook",
+        category: 'share',
+        action: 'share_click',
+        label: 'facebook',
         value: this.shareUrl || window.location.href
-      });
-      // shareByFacebook.call(this, this.shareUrl || window.location.href)
+      })
+      shareByFacebookInWeb.call(this, this.shareUrl || window.location.href)
     },
     copyLink() {
       this.$sendEvLog({
-        category: "share",
-        action: "share_click",
-        label: "copylink",
+        category: 'share',
+        action: 'share_click',
+        label: 'copylink',
         value: this.shareUrl || window.location.href
-      });
-      // copyClipboard.call(this, this.shareUrl || window.location.href)
-      // this.$store.commit('SET_SHARE_STATE', false)
+      })
+      copyClipboard.call(this, this.shareUrl || window.location.href)
+      this.close()
     },
     shareWithTwitter() {
       this.$sendEvLog({
-        category: "share",
-        action: "share_click",
-        label: "twitter",
+        category: 'share',
+        action: 'share_click',
+        label: 'twitter',
         value: this.shareUrl || window.location.href
-      });
-      // shareByTwitter.call(this, document.title, this.shareUrl || window.location.href)
+      })
+      shareByTwitterInWeb.call(this, document.title, this.shareUrl || window.location.href)
     }
   }
-};
+}
 </script>
 <style lang="less" scoped>
 p,
