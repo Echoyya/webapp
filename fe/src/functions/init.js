@@ -41,8 +41,8 @@ function sendMsg(url) {
 let appType = 0
 
 let appInfo = window.getChannelId && window.getChannelId.jsGetHeadInfo && window.getChannelId.jsGetHeadInfo()
-let token = tokenMap['NG'] // 默认尼日匿名用户
-let language = 'en' // 默认英语
+let token = tokenMap['NG']
+let language = 'en' // default language en
 if (appInfo) {
   appInfo = JSON.parse(appInfo)
   token = appInfo.token
@@ -56,9 +56,27 @@ if (appInfo) {
     appType = 1
     setCookie('token', token)
   } else {
-    appType = 0 // 暂时没有ios，用户活跃不会计入ios的统计数据中
+    const ua = navigator.userAgent
+    if (ua.indexOf('iPhone') >= 0) {
+      const uaArr = ua.split(' ')
+      if (uaArr[uaArr.length - 1].indexOf('Mobile/') >= 0) {
+        appType = 2
+      } else {
+        appType = 0
+      }
+    } else {
+      appType = 0
+    }
     token = getCookie('token') || tokenMap['NG']
   }
+}
+
+if (appType == 1) {
+  Vue.prototype.$platform = 'Android'
+} else if (appType == 2) {
+  Vue.prototype.$platform = 'Ios'
+} else {
+  Vue.prototype.$platform = 'Web'
 }
 
 let langObj = i18n.en
@@ -101,6 +119,12 @@ Vue.prototype.$appType = appType
 Vue.prototype.$token = token
 
 let deviceId = appInfo.deviceId || getCookie('_stdid') || randomString(32)
+
+// 对deviceID 针对ios特例化
+if (appType == 2) {
+  deviceId = deviceId + '_h5ios'
+}
+
 const ua = navigator.userAgent
 const os = (appType === 1 && 'Android') || (appType === 2 && 'IOS') || (ua.includes('iPhone') && 'IOS') || (ua.includes('iPad') && 'IOS') || 'Android'
 const gaKey = (appType === 1 && gaAndroidKey) || (appType === 2 && gaIosKey) || gaWapKey
@@ -159,17 +183,42 @@ const sendEvLog = msg => {
   sendMsg(countlyServer + '/i?logtype=event&app_key=' + countlyAppKey + '&events=' + result + '&device_id=' + deviceId + '&timestamp=' + now)
 
   // eslint-disable-next-line no-undef
-  ga('send', {
-    hitType: 'event',
-    eventCategory: msg.category,
-    eventAction: msg.action,
-    eventLabel: msg.label,
-    eventValue: 1
-  })
+  // 在未迁firebase之前暂时不用ga
+  // ga('send', {
+  //   hitType: 'event',
+  //   eventCategory: msg.category,
+  //   eventAction: msg.action,
+  //   eventLabel: msg.label,
+  //   eventValue: 1
+  // })
 }
 
 axios.defaults.baseURL = env.apiUrl
 axios.defaults.headers.token = token
+
+axios.interceptors.response.use(
+  function(response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response
+  },
+  function(error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    console.log(error.toJSON())
+    sendEvLog({
+      category: 'h5_open',
+      action: 'api_error',
+      label: encodeURIComponent(error.config.url),
+      value: error.message,
+      postdata: encodeURIComponent(error.config.data),
+      token: error.config.headers.token
+    })
+
+    return Promise.reject(error)
+  }
+)
+
 Vue.prototype.$axios = axios
 Vue.prototype.$sendEvLog = sendEvLog
 
@@ -222,7 +271,5 @@ export const initPage = function(page) {
         value: appType
       })
       // TODO 登录状态失效
-      
-
     })
 }
