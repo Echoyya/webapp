@@ -100,7 +100,7 @@ li {
   }
   .slide-bar-share {
     width: 100%;
-    height: 11rem;
+    height: 10rem;
     z-index: 1001;
     position: fixed;
     left: 0;
@@ -122,6 +122,11 @@ li {
         padding: 0 1rem;
         img {
           width: 65%;
+        }
+        >p{
+          padding:0;
+          height:1.2rem;
+          line-height:1.2rem;
         }
       }
     }
