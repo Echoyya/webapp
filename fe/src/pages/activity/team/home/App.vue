@@ -216,6 +216,7 @@ export default {
         this.checkMyTeam(() => {
           if (cacheTeamNo) {
             this.toJoin(cacheTeamNo)
+            localStorage.removeItem('join_teamno')
           } else {
             this.toCreate()
           }
@@ -298,8 +299,6 @@ export default {
               window.scrollTo(0, 1500)
               this.startLottery()
             })
-          } else {
-            this.$refs.malert.show(this.$t('vote.team.have_team'))
           }
         } else {
           failback && failback()
@@ -466,7 +465,7 @@ export default {
           })
         }
       } else {
-        toNativePage('com.star.mobile.video.account.LoginActivity')
+        this.$refs.malert.show(this.$t('vote.team.invite_tips'))
       }
     },
     // 开始转动
@@ -524,6 +523,7 @@ export default {
               }
             })
             .catch(() => {
+              // TODO 提示
               this.fail = true
               this.prize = 3
             })

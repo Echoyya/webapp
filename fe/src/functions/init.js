@@ -194,6 +194,7 @@ const sendEvLog = msg => {
   // })
 }
 
+axios.defaults.timeout = 10000 // ajax timeout 10s
 axios.defaults.baseURL = env.apiUrl
 axios.defaults.headers.token = token
 
