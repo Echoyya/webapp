@@ -195,6 +195,30 @@ const sendEvLog = msg => {
 
 axios.defaults.baseURL = env.apiUrl
 axios.defaults.headers.token = token
+
+axios.interceptors.response.use(
+  function(response) {
+    // Any status code that lie within the range of 2xx cause this function to trigger
+    // Do something with response data
+    return response
+  },
+  function(error) {
+    // Any status codes that falls outside the range of 2xx cause this function to trigger
+    // Do something with response error
+    console.log(error.toJSON())
+    sendEvLog({
+      category: 'h5_open',
+      action: 'api_error',
+      label: encodeURIComponent(error.config.url),
+      value: error.message,
+      postdata: encodeURIComponent(error.config.data),
+      token: error.config.headers.token
+    })
+
+    return Promise.reject(error)
+  }
+)
+
 Vue.prototype.$axios = axios
 Vue.prototype.$sendEvLog = sendEvLog
 

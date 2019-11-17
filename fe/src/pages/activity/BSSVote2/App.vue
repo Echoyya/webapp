@@ -431,13 +431,12 @@ export default {
     }
   },
   mounted() {
-    this.getTicketAward()
     this.mSendEvLog('page_show', '', '')
+    this.getAdvisorList()
     this.getVoteRemain()
     this.getLeftLottery()
     this.getVideoMsg()
     this.getLotteryType()
-    this.getAdvisorList()
     this.getShareNum()
     this.msgScroll()
     this.pageWidth = document.body.clientWidth
@@ -582,7 +581,6 @@ export default {
               this.timeList.push(new Date(item.start_time.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime())
             })
             this.currentPage = this.getIndexToIns(this.timeList, this.$serverTime)
-            // console.log("currentPage: " + this.currentPage);
             this.topic = this.topicList[this.currentPage - 1].cover
             if (this.index != this.currentPage - 1) {
               this.index = this.currentPage - 1
@@ -676,7 +674,6 @@ export default {
         const commentWidth = p.offsetWidth + 35
         commentItem.style.width = commentWidth + 15 + 'px'
       }
-      // let s = document.getElementById(this.count).offsetWidth / (this.speed * 3) + 0.3
       let s = document.getElementById(this.count).offsetWidth / this.speed
       if (s < this.minSp) s = this.minSp
       else if (s > this.maxSp) s = this.maxSp
@@ -689,10 +686,8 @@ export default {
           clearInterval(time)
           return true
         }
-        // if (num > this.space && flag) {
         if ((dom.offsetWidth + num > this.maxSpace || num > this.minSpace) && flag) {
           flag = false
-          // console.log(this.count + ' has finished ')
           this.count++
           if (this.timeNum % 2 != 0 ? this.count >= this.number : this.count >= this.number * 2) {
             if (this.timeNum != 0 && this.timeNum % 2 == 0) {
@@ -701,7 +696,6 @@ export default {
             this.getCommentList()
             return true
           }
-          // let s = document.getElementById(this.count).offsetWidth / (this.speed * 3) + 0.3
           let s = document.getElementById(this.count).offsetWidth / this.speed
           if (s < this.minSp) s = this.minSp
           else if (s > this.maxSp) s = this.maxSp
@@ -983,7 +977,6 @@ export default {
                 clearInterval(time)
               }
             }, 5)
-            // console.log('call' + lineNum)
             const duringTime = setInterval(() => {
               this.during--
               if (this.during == 0) {
@@ -1048,7 +1041,6 @@ export default {
         label: label,
         value: value
       })
-      console.log('form_BSSVote2_' + this.platform, action, label, value)
     },
     // app登录方法
     toSignIn() {
@@ -1416,7 +1408,6 @@ export default {
         clearTimeout(this.timers) // 清除转动定时器，停止转动
         // this.prize = -1
         this.times = 0
-        // console.log("你已经中奖了，位置" + (this.indexs + 1));
         if (this.indexs < 5) {
           setTimeout(() => {
             this.$refs.alert.show(
@@ -1494,7 +1485,6 @@ export default {
                     this.prize = i
                   }
                 }
-                console.log(`中奖位置${this.prize + 1}`)
                 if (this.prize + 1 == 3) this.mSendEvLog('lottery_click', 'vip', '1')
                 else if (this.prize + 1 == 4) this.mSendEvLog('lottery_click', '40offcoupon', '1')
                 else if (this.prize + 1 == 5) this.mSendEvLog('lottery_click', '30offcoupon', '1')
