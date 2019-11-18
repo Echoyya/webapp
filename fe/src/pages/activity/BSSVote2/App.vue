@@ -278,7 +278,7 @@ import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 // import { getCookie, setCookie } from '@/functions/utils'
 import mShare from '@/components/web/share.vue'
-import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload } from '@/functions/app'
+import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable, } from '@/functions/app'
 export default {
   components: {
     mShare,
@@ -429,6 +429,10 @@ export default {
         return 'web'
       }
     }
+  },
+  created() {
+    this.vote_id = getQueryVariable(location.search.replace('?', ''), 'voteid')
+    this.barrage_id = getQueryVariable(location.search.replace('?', ''), 'barrageid')
   },
   mounted() {
     this.mSendEvLog('page_show', '', '')
