@@ -311,9 +311,9 @@ export default {
       loaded: false,
       advisorList: [],
       vote_id: 64,
-      startTime: new Date('2019-11-18 09:00:00').getTime(),
-      endTime: new Date('2019-12-11 06:00:00').getTime(),
-      endTime2: new Date('2019-12-21 09:00:00').getTime(),
+      startTime: new Date('2019-11-18T09:00:00'.replace(/-/g, "/").replace("T", " ") + "+0000").getTime(),
+      endTime: new Date('2019-12-11T06:00:00'.replace(/-/g, "/").replace("T", " ") + "+0000").getTime(),
+      endTime2: new Date('2019-12-21T09:00:00'.replace(/-/g, "/").replace("T", " ") + "+0000").getTime(),
       canVotes: true,
 
       // 抽奖
