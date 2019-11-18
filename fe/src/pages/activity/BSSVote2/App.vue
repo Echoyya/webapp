@@ -25,7 +25,7 @@
                 <div class="item-box">
                   <div>
                     <img
-                      :src="item.icon"
+                      :src="item.icon+'?w=150'"
                       class="icon"
                       @click="toPlayer(item,'votepic_click',item.name)"
                     />
@@ -170,11 +170,11 @@
       </div>
       <div v-else class="page-barrage">
         <div class="topic">
-          <img class="title" :src="topic" alt />
+          <img class="title" :src="topic+'?w=250'" alt />
           <div class="pick-box">
             <div class="left">
               <div>
-                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[0].icon" alt />
+                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[0].icon+'?w=250'" alt />
               </div>
             </div>
             <div class="middle">
@@ -184,7 +184,7 @@
             </div>
             <div class="right">
               <div>
-                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[1].icon" alt />
+                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[1].icon+'?w=250'" alt />
               </div>
             </div>
             <div v-show="!picked||appType==0" class="pick">
@@ -240,7 +240,7 @@
         <ul class="clearfix">
           <li v-for="(item,i) in clipsList" :key="i">
             <div @click="toPlayer(item,'video_click',item.description)">
-              <img class="url" :src="item.cover" />
+              <img class="url" :src="item.cover+'?w=230'" />
             </div>
             <p class="title">{{(item.description)}}</p>
           </li>
