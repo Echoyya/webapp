@@ -431,8 +431,8 @@ export default {
     }
   },
   created() {
-    this.vote_id = getQueryVariable(location.search.replace('?', ''), 'voteid')
-    this.barrage_id = getQueryVariable(location.search.replace('?', ''), 'barrageid')
+    this.vote_id = getQueryVariable(location.search.replace('?', ''), 'voteid') || 64
+    this.barrage_id = getQueryVariable(location.search.replace('?', ''), 'barrageid') || 17
   },
   mounted() {
     this.mSendEvLog('page_show', '', '')
