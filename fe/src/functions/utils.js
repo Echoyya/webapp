@@ -48,6 +48,7 @@ export const formatAmount = num => {
     return ''
   }
 }
+
 export const formatTime = val => {
   if (val < 3600) {
     const min = Math.floor(val / 60) < 10 ? '0' + Math.floor(val / 60) : Math.floor(val / 60)
@@ -59,22 +60,6 @@ export const formatTime = val => {
     const sec = Math.floor(val % 60) < 10 ? '0' + Math.floor(val % 60) : Math.floor(val % 60)
     return hour + ':' + min + ':' + sec
   }
-}
-
-export const animateCSS = function(element, animationName, callback) {
-  const node = element
-
-  function handleAnimationEnd() {
-    node.classList.remove('animated', animationName)
-    node.removeEventListener('animationend', handleAnimationEnd)
-    node.removeEventListener('webkitAnimationEnd', handleAnimationEnd)
-
-    if (typeof callback === 'function') callback()
-  }
-
-  node.addEventListener('animationend', handleAnimationEnd)
-  node.addEventListener('webkitAnimationEnd', handleAnimationEnd)
-  node.classList.add('animated', animationName)
 }
 
 export const getBrowser = function() {

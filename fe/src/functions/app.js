@@ -1,6 +1,3 @@
-// 参考 https://github.com/suanmei/callapp-lib/blob/master/index.js
-// 仅在客户端执行
-
 import { Base64 } from 'js-base64'
 import axios from 'axios'
 import qs from 'qs'
@@ -9,16 +6,8 @@ import { getBrowser, getCookie, setCookie } from '@/functions/utils'
 const browser = getBrowser()
 const appleStore = 'https://itunes.apple.com/us/app/startimes/id1168518958?l=zh&ls=1&mt=8'
 
-export const base64Page = function(page) {
-  let target = ''
-  if (page) {
-    target = '?target=' + Base64.encode(page.replace(/&/g, '**'))
-  }
-  return target
-}
-
 export const createIntent = function(page, host, path, scheme) {
-  const target = base64Page(page)
+  const target = page ? '?target=' + Base64.encode(page.replace(/&/g, '**')) : ''
   host = host || 'platformapi'
   path = path || 'webtoapp'
   scheme = scheme || (browser.isIos ? 'startimes' : 'starvideo')
@@ -26,7 +15,7 @@ export const createIntent = function(page, host, path, scheme) {
 }
 
 export const createScheme = function(page, host, path, scheme) {
-  const target = base64Page(page)
+  const target = page ? '?target=' + Base64.encode(page.replace(/&/g, '**')) : ''
   host = host || 'platformapi'
   path = path || 'webtoapp'
   scheme = scheme || (browser.isIos ? 'startimes' : 'starvideo')
@@ -38,7 +27,7 @@ export const pageDlay = function(callback, second) {
   const timerStart = new Date().getTime()
   let lastFired = new Date().getTime()
   if (browser.browserVer > 40) {
-    const lalal = () => {
+    const exam = () => {
       const now = new Date().getTime()
       if (now - lastFired < 100) {
         // 健康状态
@@ -46,11 +35,11 @@ export const pageDlay = function(callback, second) {
           if (!document.hidden) callback && callback()
         } else {
           lastFired = now
-          window.requestAnimationFrame(lalal)
+          window.requestAnimationFrame(exam)
         }
       }
     }
-    window.requestAnimationFrame(lalal)
+    window.requestAnimationFrame(exam)
   } else {
     const interval = 200
     const deviation = 20
@@ -76,11 +65,23 @@ export const pageDlay = function(callback, second) {
   }
 }
 
+/**
+ * 用跳转链接的形式尝试唤醒
+ * 在部分手机会报错误
+ * @param {String} target 链接
+ * @param {Function} failback 失败回调
+ */
 export const invokeByHref = function(target, failback) {
   window.location.href = target
   pageDlay.call(this, failback)
 }
 
+/**
+ * 用iframe的形式尝试唤醒
+ * 是一种废弃的标准，为了解决兼容才存在
+ * @param {String} target
+ * @param {Function} failback
+ */
 export const invokeByIframe = function(target, failback) {
   const iframe = document.createElement('iframe')
   iframe.frameborder = '0'
@@ -104,6 +105,7 @@ export const callApp = function(page, failback) {
     )
   )
 
+  // 该判断需要根据大量测试场景进行判断
   if (browser.browserVer > 40) {
     if (browser.ua.indexOf('UCBrowser') > 0) {
       if (browser.androidVer >= 4.4) {
@@ -147,11 +149,13 @@ export const downApk = function(callback) {
 export const callMarket = function(failback) {
   const utmParam = getUtmParam.call(this)
   let source = utmParam.str
+
   // 对组队活动特殊处理teamno
   const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
   if (teamno) {
     source = source + encodeURIComponent('&utm_term=' + encodeURIComponent(location.origin + '/activity/team/home.html?teamno=' + teamno))
   }
+
   this.$sendEvLog(
     Object.assign(
       {
@@ -180,7 +184,6 @@ export const playVodinApp = function(appType, vod) {
   } else if (appType == 2) {
     window.location.href = 'startimes://player?vodId=' + vod
   } else {
-    this.$nuxt.$loading.start()
     callApp.call(this, 'com.star.mobile.video.player.PlayerVodActivity?vodId=' + vod, () => {
       callMarket.call(this, () => {
         downApk.call(this)
@@ -197,7 +200,7 @@ export const toNativePage = function(page) {
   }
 }
 
-// TODO 待优化
+// TODO 5.20 以前 准备废弃
 export const shareInvite = (link, shareTitle, shareContent, shareImg) => {
   if (window.getChannelId && window.getChannelId.showCustorm) {
     const content = '【' + shareTitle + '】' + shareContent + ' ' + link
@@ -228,7 +231,7 @@ export const shareByDownload = link => {
     window.getChannelId.shareDownload(link)
   }
 }
-export const shareByXender = (teamno) => {
+export const shareByXender = teamno => {
   if (window.getChannelId && window.getChannelId.shareXender) {
     window.getChannelId.shareXender(teamno)
   }
@@ -243,11 +246,13 @@ export const getUtmParam = function() {
   let utmMedium = ''
 
   if (query.referrer) {
+    // 通过referrer 参数接收
     source = source + referrer
     utmSource = getQueryVariable(decodeURIComponent(referrer), 'utm_source') || ''
     utmMedium = getQueryVariable(decodeURIComponent(referrer), 'utm_medium') || ''
     utmCampaign = getQueryVariable(decodeURIComponent(referrer), 'utm_campaign') || ''
   } else if (query.utm_source) {
+    // 通过utm_source格式接收
     let str = `utm_source=${query.utm_source}`
     if (query.utm_medium) str += `&utm_medium=${query.utm_medium}`
     if (query.utm_campaign) str += `&utm_campaign=${query.utm_campaign}`
@@ -256,6 +261,7 @@ export const getUtmParam = function() {
     utmMedium = query.utm_medium || ''
     utmCampaign = query.utm_campaign || ''
   } else if (query.utms) {
+    // 通过utms简写方式(utms,utmm,utmc)
     let str = `utm_source=${query.utms}`
     if (query.utmm) str += `&utm_medium=${query.utmm}`
     if (query.utmc) str += `&utm_campaign=${query.utmc}`
@@ -264,6 +270,7 @@ export const getUtmParam = function() {
     utmMedium = query.utmm || ''
     utmCampaign = query.utmc || ''
   } else {
+    // 通过会话缓存接收
     const utmCache = sessionStorage.getItem('utm_str')
     if (utmCache) {
       source = source + utmCache
@@ -288,6 +295,7 @@ export const getUtmParam = function() {
 }
 
 export const getQueryVariable = function(query, key) {
+  query = query.includes('?') ? query.replace('?', '') : query
   const vars = query.split('&')
   for (let i = 0; i < vars.length; i++) {
     const pair = vars[i].split('=')
@@ -298,7 +306,7 @@ export const getQueryVariable = function(query, key) {
 }
 
 export const addTicketByDownload = function(vote_id) {
-  const user = getQueryVariable(location.search.replace('?', ''), 'pin')
+  const user = getQueryVariable(location.search, 'pin')
   const lastGetTicket = getCookie('get_ticket_time')
   if (user && !lastGetTicket) {
     this.$axios.get('/hybrid/api/sign').then(({ data }) => {
