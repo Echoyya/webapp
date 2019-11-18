@@ -1336,7 +1336,7 @@ export default {
                     item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
                   }
                 }
-                item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
+                item.user_id = item.user_id ? item.user_id.toString().replace(/(.*)\d{2}/, '$1**') : 9999
                 for (let i = 0; i < this.lotteryType.length; i++) {
                   if (item.reward_id == this.lotteryType[i].id) {
                     item.reward_name = this.lotteryType[i].name
