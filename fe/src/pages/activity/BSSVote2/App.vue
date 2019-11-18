@@ -138,7 +138,7 @@
         </div>
         <div id="comment" class="comment">
           <div class="comment-box">
-            <vue-baberrage :isShow="true" :barrageList="barrageList" :loop="false"></vue-baberrage>
+            <vue-baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></vue-baberrage>
           </div>
           <div class="send-box">
             <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
@@ -207,10 +207,10 @@ export default {
       // 页面
       show_rules: false,
       show_pick: false,
-      appType: this.$appType,
-      isLogin: this.$isLogin,
-      // appType: 1,
-      // isLogin: true,
+      // appType: this.$appType,
+      // isLogin: this.$isLogin,
+      appType: 1,
+      isLogin: true,
       firstTime: true,
       // msg: '',
       user_id: this.$user.id,
@@ -223,7 +223,9 @@ export default {
       isLinkVip: false,
 
       // msg: '',
-      // currentId: 0,
+      currentId: 0,
+      sendNum: 0,
+      i: 0,
       barrageList: [],
       t: null,
 
@@ -357,7 +359,7 @@ export default {
   },
   mounted() {
     this.pageWidth = document.body.clientWidth
-    this.barrageBox = document.getElementsByClassName('baberrage-stage')[0]
+    this.barrageBox = document.getElementsByClassName('baberrage-stage')
     this.mSendEvLog('page_show', '', '')
     this.getAdvisorList()
     this.getVoteRemain()
@@ -371,14 +373,12 @@ export default {
   methods: {
     addToList(v) {
       this.barrageList.push({
-        id: v.id,
-        avatar: v.avatar,
+        id: ++this.currentId,
+        avatar: v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar,
         msg: v.content,
-        time: 500 / (10 + v.content.length * 0.5),
-        type: MESSAGE_TYPE.NORMAL,
-        barrageStyle: v.barrageStyle
+        time: 50 / (10 + v.content.length * 0.5),
+        type: MESSAGE_TYPE.NORMAL
       })
-      this.barrageBox.children()
     },
     msgScroll() {
       this.tmsg = setInterval(() => {
@@ -553,13 +553,22 @@ export default {
             this.last_id = res.data.data[res.data.data.length - 1].id
             this.commentList = res.data.data
             this.canClickTab1 = true
-            let i = 0
+            this.i = 0
             this.t = setInterval(() => {
-              console.log(i)
-              this.commentList[i].barrageStyle = 'red'
-              this.addToList(this.commentList[i++])
-              if (i >= 20) {
-                i = 0
+              console.log(this.i)
+              for (let j = 0; j < this.barrageBox[0].childNodes.length; j++) {
+                if (this.barrageBox[0].childNodes[j].nodeName == 'DIV') {
+                  this.barrageBox[0].childNodes[j].style.backgroundColor = '#848d34'
+                  this.barrageBox[0].childNodes[j].style.borderRadius = '100px'
+                  this.barrageBox[0].childNodes[j].style.color = '#fff'
+                }
+              }
+              this.addToList(this.commentList[this.i++])
+              console.log(this.barrageList)
+              if (this.i >= this.number) {
+                console.log(this.i,this.sendNum,this.currentId)
+                this.i = 0
+                this.sendNum = 0
                 clearInterval(this.t)
                 this.barrageList = []
                 this.getCommentList()
@@ -794,55 +803,14 @@ export default {
           if (res.data.code === 0) {
             this.mSendEvLog('send_click', this.commentText, '')
             const during = this.during
-            const item = document.createElement('span')
-            const img = document.createElement('img')
-            const p = document.createElement('p')
-            if (this.$head) {
-              img.src = this.$head == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : this.$head
-            } else {
-              img.src = 'http://cdn.startimestv.com/banner/DD_user_icon.png'
-            }
-            p.innerText = this.commentText
-            p.style.display = 'inline-block'
-            p.style.color = '#fff'
-            p.style.top = -6 + 'px'
-            p.style.position = 'relative'
-            p.style.marginLeft = 6 + 'px'
-            p.style.whiteSpace = 'nowrap'
-            img.style.display = 'inline-block'
-            img.style.width = '26px'
-            img.style.height = '26px'
-            img.style.backgroundColor = '#bfbfbf'
-            img.style.borderRadius = '14px'
-            img.style.position = 'relative'
-            img.style.top = '2px'
-            img.style.left = '2.2px'
-            item.appendChild(img)
-            item.appendChild(p)
-            document.getElementsByClassName('comment')[0].appendChild(item)
-            const itemWidth = p.offsetWidth + 28
-            item.style.backgroundColor = '#838d34'
-            item.style.borderRadius = 15 + 'px'
-            item.style.height = 30 + 'px'
-            item.style.lineHeight = 30 + 'px'
-            item.style.position = 'absolute'
-            item.style.right = -2000 + 'px'
-            item.style.width = itemWidth + 25 + 'px'
-            item.setAttribute('class', 'new-barrage')
-            const lineNum = this.count >= 2 ? this.count - 2 : this.count + this.commentList.length - 2
-            item.style.top = (lineNum % 4) * this.lineSpace + 13.5 + 'px'
-            let sp = itemWidth / this.speed
-            if (sp < this.minSp) sp = this.minSp
-            else if (sp > this.maxSp) sp = this.maxSp
-            let num = -itemWidth
-            const time = setInterval(() => {
-              if (num <= this.pageWidth + 20) {
-                item.style.right = num + 'px'
-                num += sp
-              } else {
-                clearInterval(time)
-              }
-            }, 5)
+            this.sendNum++
+            this.i++
+            this.addToList({
+              id: this.currentId++,
+              avatar:  this.$head == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : this.$head,
+              content: this.commentText,
+            })
+            console.log(this.barrageList)
             const duringTime = setInterval(() => {
               this.during--
               if (this.during == 0) {
