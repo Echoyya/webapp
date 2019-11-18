@@ -98,7 +98,7 @@ export default {
     toXender() {
       if (this.$appType == 1) {
         if (this.$appVersion) {
-          shareByXender()
+          shareByXender(this.teamNum)
         } else {
           this.shareOldVersion()
         }

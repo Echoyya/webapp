@@ -327,7 +327,7 @@ export default {
     },
     toXender() {
       if (this.$appType == 1) {
-        shareByXender()
+        shareByXender(this.teamNum)
       }
     },
     toDownload() {

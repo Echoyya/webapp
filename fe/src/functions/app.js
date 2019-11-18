@@ -226,9 +226,9 @@ export const shareByDownload = link => {
     window.getChannelId.shareDownload(link)
   }
 }
-export const shareByXender = () => {
+export const shareByXender = (teamno) => {
   if (window.getChannelId && window.getChannelId.shareXender) {
-    window.getChannelId.shareXender()
+    window.getChannelId.shareXender(teamno)
   }
 }
 
