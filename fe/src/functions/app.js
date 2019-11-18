@@ -135,8 +135,10 @@ export const downApk = function(callback) {
   if (browser.isIos) {
     window.location.href = appleStore
   } else {
-    axios.get('/hybrid/api/app/getApk').then(data => {
-      window.location.href = data.data.data
+    axios.get('http://upms.startimestv.com/cms/public/app').then(data => {
+      const url = data.data.apkUrl
+      const direct = url.indexOf('google') > 0 ? url.replace('google', 'officialWap') : url
+      window.location.href = direct
     })
   }
   callback && callback()
