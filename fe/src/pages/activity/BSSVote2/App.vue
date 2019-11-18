@@ -14,7 +14,7 @@
       </div>
       <div v-if="pageVote" class="page-vote">
         <img class="text text1" src="@/assets/img/vote/BSSVote2/text1.png" alt />
-        <div class="date">NOVEMBA 18 - DESEMBA 10</div>
+        <div class="date">NOVEMBA 18 - DESEMBA 11</div>
         <div class="vote-box">
           <div class="vote-remaining">
             <div class="remain">KURA ZILIZOBAKI:{{appType==0?0:(voteLeft>0?voteLeft:0)}}</div>
@@ -25,7 +25,7 @@
                 <div class="item-box">
                   <div>
                     <img
-                      :src="item.icon"
+                      :src="item.icon+'?w=150'"
                       class="icon"
                       @click="toPlayer(item,'votepic_click',item.name)"
                     />
@@ -170,11 +170,11 @@
       </div>
       <div v-else class="page-barrage">
         <div class="topic">
-          <img class="title" :src="topic" alt />
+          <img class="title" :src="topic+'?w=250'" alt />
           <div class="pick-box">
             <div class="left">
               <div>
-                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[0].icon" alt />
+                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[0].icon+'?w=250'" alt />
               </div>
             </div>
             <div class="middle">
@@ -184,7 +184,7 @@
             </div>
             <div class="right">
               <div>
-                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[1].icon" alt />
+                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[1].icon+'?w=250'" alt />
               </div>
             </div>
             <div v-show="!picked||appType==0" class="pick">
@@ -240,7 +240,7 @@
         <ul class="clearfix">
           <li v-for="(item,i) in clipsList" :key="i">
             <div @click="toPlayer(item,'video_click',item.description)">
-              <img class="url" :src="item.cover" />
+              <img class="url" :src="item.cover+'?w=230'" />
             </div>
             <p class="title">{{(item.description)}}</p>
           </li>
@@ -264,7 +264,7 @@
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
     </div>
     <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
-    <mShare ref="share" />
+    <mShare v-if="$appType=0" ref="share" />
     <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
     <toast-dialog ref="toast" />
@@ -272,13 +272,11 @@
 </template>
 <script>
 import qs from 'qs'
-// import { Base64 } from "js-base64";
 import alertDialog from '@/components/alert'
 import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
-// import { getCookie, setCookie } from '@/functions/utils'
 import mShare from '@/components/web/share.vue'
-import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload } from '@/functions/app'
+import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable, } from '@/functions/app'
 export default {
   components: {
     mShare,
@@ -311,9 +309,9 @@ export default {
       loaded: false,
       advisorList: [],
       vote_id: 64,
-      startTime: new Date('2019-11-13 09:00:00').getTime(),
-      endTime: new Date('2019-11-18 06:00:00').getTime(),
-      endTime2: new Date('2019-12-21 09:00:00').getTime(),
+      startTime: new Date('2019-11-18T09:00:00'.replace(/-/g, "/").replace("T", " ") + "+0000").getTime(),
+      endTime: new Date('2019-12-11T06:00:00'.replace(/-/g, "/").replace("T", " ") + "+0000").getTime(),
+      endTime2: new Date('2019-12-21T09:00:00'.replace(/-/g, "/").replace("T", " ") + "+0000").getTime(),
       canVotes: true,
 
       // 抽奖
@@ -429,6 +427,10 @@ export default {
         return 'web'
       }
     }
+  },
+  created() {
+    this.vote_id = getQueryVariable(location.search.replace('?', ''), 'voteid') || 64
+    this.barrage_id = getQueryVariable(location.search.replace('?', ''), 'barrageid') || 17
   },
   mounted() {
     this.mSendEvLog('page_show', '', '')
@@ -620,7 +622,7 @@ export default {
         return
       }
       this.$axios
-        .get(`/voting/v1/comments?comment_activity_id=${this.index + 1}&last_id=${this.last_id}&num_per_page=${this.number}`)
+        .get(`/voting/v1/comments?comment_activity_id=${this.index + 13}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
             this.timeNum++
@@ -920,7 +922,7 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
-          comment_activity_id: this.index + 1,
+          comment_activity_id: this.index + 13,
           content: encodeURI(this.commentText)
         })
       })
@@ -1062,8 +1064,9 @@ export default {
       if (label == 'voterules') this.closeShadow()
       this.mSendEvLog('share_click', label, '')
       if (this.appType == 1) {
+        const url = window.location.href.indexOf('?') >= 0 ? window.location.href+'&pin='+(this.isLogin ? this.$user.id : '')+'&utm_source=VOTE&utm_medium=BSS&utm_campaign='+this.platform : window.location.href+'?pin='+(this.isLogin ? this.$user.id : '')+'&utm_source=VOTE&utm_medium=BSS&utm_campaign='+this.platform
         shareInvite(
-          `${window.location.href}?pin=${this.isLogin ? this.$user.id : ''}&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
+          url,
           this.shareTitle,
           this.shareText,
           this.imgUrl
@@ -1336,7 +1339,7 @@ export default {
                     item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
                   }
                 }
-                item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
+                item.user_id = item.user_id ? item.user_id.toString().replace(/(.*)\d{2}/, '$1**') : 9999
                 for (let i = 0; i < this.lotteryType.length; i++) {
                   if (item.reward_id == this.lotteryType[i].id) {
                     item.reward_name = this.lotteryType[i].name
