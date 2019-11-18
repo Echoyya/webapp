@@ -14,7 +14,7 @@
       </div>
       <div v-if="pageVote" class="page-vote">
         <img class="text text1" src="@/assets/img/vote/BSSVote2/text1.png" alt />
-        <div class="date">NOVEMBA 18 - DESEMBA 10</div>
+        <div class="date">NOVEMBA 18 - DESEMBA 11</div>
         <div class="vote-box">
           <div class="vote-remaining">
             <div class="remain">KURA ZILIZOBAKI:{{appType==0?0:(voteLeft>0?voteLeft:0)}}</div>
@@ -624,7 +624,7 @@ export default {
         return
       }
       this.$axios
-        .get(`/voting/v1/comments?comment_activity_id=${this.index + 1}&last_id=${this.last_id}&num_per_page=${this.number}`)
+        .get(`/voting/v1/comments?comment_activity_id=${this.index + 13}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
             this.timeNum++
@@ -924,7 +924,7 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
-          comment_activity_id: this.index + 1,
+          comment_activity_id: this.index + 13,
           content: encodeURI(this.commentText)
         })
       })
