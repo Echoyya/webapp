@@ -14,7 +14,7 @@
       </div>
       <div v-if="pageVote" class="page-vote">
         <img class="text text1" src="@/assets/img/vote/BSSVote2/text1.png" alt />
-        <div class="date">NOVEMBA 18 - DESEMBA 10</div>
+        <div class="date">NOVEMBA 18 - DESEMBA 11</div>
         <div class="vote-box">
           <div class="vote-remaining">
             <div class="remain">KURA ZILIZOBAKI:{{appType==0?0:(voteLeft>0?voteLeft:0)}}</div>
@@ -278,7 +278,7 @@ import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 // import { getCookie, setCookie } from '@/functions/utils'
 import mShare from '@/components/web/share.vue'
-import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload } from '@/functions/app'
+import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable, } from '@/functions/app'
 export default {
   components: {
     mShare,
@@ -311,8 +311,8 @@ export default {
       loaded: false,
       advisorList: [],
       vote_id: 64,
-      startTime: new Date('2019-11-13 09:00:00').getTime(),
-      endTime: new Date('2019-11-18 06:00:00').getTime(),
+      startTime: new Date('2019-11-18 09:00:00').getTime(),
+      endTime: new Date('2019-12-11 06:00:00').getTime(),
       endTime2: new Date('2019-12-21 09:00:00').getTime(),
       canVotes: true,
 
@@ -429,6 +429,10 @@ export default {
         return 'web'
       }
     }
+  },
+  created() {
+    this.vote_id = getQueryVariable(location.search.replace('?', ''), 'voteid') || 64
+    this.barrage_id = getQueryVariable(location.search.replace('?', ''), 'barrageid') || 17
   },
   mounted() {
     this.mSendEvLog('page_show', '', '')
@@ -620,7 +624,7 @@ export default {
         return
       }
       this.$axios
-        .get(`/voting/v1/comments?comment_activity_id=${this.index + 1}&last_id=${this.last_id}&num_per_page=${this.number}`)
+        .get(`/voting/v1/comments?comment_activity_id=${this.index + 13}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
             this.timeNum++
@@ -920,7 +924,7 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
-          comment_activity_id: this.index + 1,
+          comment_activity_id: this.index + 13,
           content: encodeURI(this.commentText)
         })
       })
@@ -1336,7 +1340,7 @@ export default {
                     item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
                   }
                 }
-                item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
+                item.user_id = item.user_id ? item.user_id.toString().replace(/(.*)\d{2}/, '$1**') : 9999
                 for (let i = 0; i < this.lotteryType.length; i++) {
                   if (item.reward_id == this.lotteryType[i].id) {
                     item.reward_name = this.lotteryType[i].name
