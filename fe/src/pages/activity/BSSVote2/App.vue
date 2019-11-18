@@ -224,7 +224,6 @@ export default {
 
       // msg: '',
       currentId: 0,
-      sendNum: 0,
       i: 0,
       barrageList: [],
       t: null,
@@ -308,13 +307,6 @@ export default {
     }
   },
   computed: {
-    // commentListReady() {
-    //   if (this.loaded_comment) {
-    //     return this.commentList
-    //   } else {
-    //     return []
-    //   }
-    // },
     pageListReady() {
       if (this.loaded_page) {
         return this.pageList
@@ -566,9 +558,8 @@ export default {
               this.addToList(this.commentList[this.i++])
               console.log(this.barrageList)
               if (this.i >= this.number) {
-                console.log(this.i,this.sendNum,this.currentId)
+                console.log(this.i, this.currentId)
                 this.i = 0
-                this.sendNum = 0
                 clearInterval(this.t)
                 this.barrageList = []
                 this.getCommentList()
@@ -803,12 +794,10 @@ export default {
           if (res.data.code === 0) {
             this.mSendEvLog('send_click', this.commentText, '')
             const during = this.during
-            this.sendNum++
-            this.i++
             this.addToList({
               id: this.currentId++,
-              avatar:  this.$head == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : this.$head,
-              content: this.commentText,
+              avatar: this.$head == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : this.$head,
+              content: this.commentText
             })
             console.log(this.barrageList)
             const duringTime = setInterval(() => {
