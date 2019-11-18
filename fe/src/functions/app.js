@@ -225,12 +225,7 @@ export const shareByCopyLink = link => {
     window.getChannelId.shareCopyLink(link)
   }
 }
-export const shareByDownload = link => {
-  if (window.getChannelId && window.getChannelId.shareDownload) {
-    // window.getChannelId.shareDownload('https://cdn.startimestv.com/head/h_d.png')
-    window.getChannelId.shareDownload(link)
-  }
-}
+
 export const shareByXender = teamno => {
   if (window.getChannelId && window.getChannelId.shareXender) {
     window.getChannelId.shareXender(teamno)

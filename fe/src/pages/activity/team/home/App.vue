@@ -83,18 +83,8 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import env from '@/functions/config'
 import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity/team/func'
-import {
-  shareByFacebook,
-  shareByWhatsApp,
-  shareByXender,
-  shareByDownload,
-  shareByCopyLink,
-  getQueryVariable,
-  toNativePage,
-  shareInvite
-} from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable, toNativePage, shareInvite } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
 import countdown from '@/pages/activity/team/countdown'
 export default {
@@ -331,8 +321,12 @@ export default {
       }
     },
     toDownload() {
-      if (this.$appType == 1) {
-        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
+      if (window.getChannelId && window.getChannelId.shareDownload) {
+        window.getChannelId.shareDownload(
+          'fea',
+          '12312',
+          'https://cdn.startimestv.com/head/h_d.png,https://cdn.startimestv.com/head/h_d.png,https://cdn.startimestv.com/head/h_d.png'
+        )
       }
     },
     toCopylink() {
