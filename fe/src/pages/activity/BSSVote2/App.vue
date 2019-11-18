@@ -264,7 +264,7 @@
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
     </div>
     <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
-    <mShare ref="share" />
+    <mShare v-if="$appType=0" ref="share" />
     <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
     <toast-dialog ref="toast" />
@@ -272,11 +272,9 @@
 </template>
 <script>
 import qs from 'qs'
-// import { Base64 } from "js-base64";
 import alertDialog from '@/components/alert'
 import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
-// import { getCookie, setCookie } from '@/functions/utils'
 import mShare from '@/components/web/share.vue'
 import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable, } from '@/functions/app'
 export default {
