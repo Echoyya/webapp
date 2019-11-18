@@ -1066,8 +1066,9 @@ export default {
       if (label == 'voterules') this.closeShadow()
       this.mSendEvLog('share_click', label, '')
       if (this.appType == 1) {
+        const url = window.location.href.indexOf('?') >= 0 ? window.location.href+'&pin='+(this.isLogin ? this.$user.id : '')+'&utm_source=VOTE&utm_medium=BSS&utm_campaign='+this.platform : window.location.href+'?pin='+(this.isLogin ? this.$user.id : '')+'&utm_source=VOTE&utm_medium=BSS&utm_campaign='+this.platform
         shareInvite(
-          `${window.location.href}?pin=${this.isLogin ? this.$user.id : ''}&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
+          url,
           this.shareTitle,
           this.shareText,
           this.imgUrl
