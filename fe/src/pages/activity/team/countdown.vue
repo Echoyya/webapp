@@ -122,6 +122,7 @@ export default {
   margin: 0 auto;
   font-style: italic;
   .title {
+    font-style: normal;
     background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
     width: 80%;
     height: 2rem;

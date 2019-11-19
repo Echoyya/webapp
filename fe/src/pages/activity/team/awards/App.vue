@@ -31,7 +31,9 @@
               <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
-          <div class="vip">VIP {{item.my_award_day}} DAYS</div>
+          <div v-if="item.my_award_day==0" class="vip">THANKS</div>
+          <div v-if="item.my_award_day==1" class="vip">VIP {{item.my_award_day}} DAY</div>
+          <div v-if="item.my_award_day!=0&&item.my_award_day!=1" class="vip">VIP {{item.my_award_day}} DAYS</div>
         </div>
       </div>
       <div class="friends" @click="show_share=true">
@@ -187,7 +189,6 @@ export default {
     z-index: 2;
     width: 95%;
     margin: -18% auto 0;
-    font-style: italic;
     margin-bottom: 0.5rem;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80));
@@ -238,7 +239,6 @@ export default {
           }
           span {
             color: #9f00ee;
-            font-style: normal;
             position: absolute;
             left: 6%;
           }
@@ -264,7 +264,6 @@ export default {
           width: 5.5rem;
           height: 2.2rem;
           line-height: 2.1rem;
-          font-style: normal;
           font-size: 0.75rem;
           color: #ffbc00;
           text-align: center;
@@ -293,7 +292,6 @@ export default {
       }
       p {
         text-align: center;
-        font-style: normal;
         font-weight: bold;
       }
     }

@@ -39,8 +39,6 @@ export default {
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.invite_con'),
-      prize: 1,
-      text: [this.$t('vote.team.congrats'), this.$t('vote.team.solucky'), this.$t('vote.team.jackpot')],
       award_day: '',
 
       activityStart: new Date('2019-11-15 00:00:00').getTime(),
@@ -53,9 +51,6 @@ export default {
   mounted() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.award_day = getQueryVariable(location.search.replace('?', ''), 'prize')
-    if (this.award_day == 1) this.prize = 1
-    else if (this.award_day == 7) this.prize = 2
-    else if (this.award_day == 30) this.prize = 3
   },
   methods: {
     create() {
@@ -138,7 +133,6 @@ export default {
     z-index: 2;
     width: 95%;
     margin: 0 auto;
-    font-style: italic;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
       width: 80%;
