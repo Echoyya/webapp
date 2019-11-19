@@ -171,15 +171,16 @@ export default {
                   if (this.$isLogin) {
                     this.toJoin(teamno)
                   } else if (this.$appType === 1) {
-                    localStorage.setItem('join_teamno', this.teamNum)
+                    localStorage.setItem('join_teamno', teamno)
                     toNativePage('com.star.mobile.video.account.LoginActivity')
                   } else {
-                    localStorage.setItem('join_teamno', this.teamNum)
+                    localStorage.setItem('join_teamno', teamno)
                     toNativePage('startimes://login')
                   }
                 },
                 'OK'
               )
+              this.fakeTeam()
             } else {
               // 队伍已满
               this.$refs.malert.show(this.$t('vote.team.full_team') + '.' + this.$t('vote.team.to_change_team'), () => {
@@ -285,6 +286,7 @@ export default {
           if (this.team.length >= 3 && data.data.allow_lottery) {
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
               window.scrollTo(0, 1500)
+              this.canLottery = true
               this.startLottery()
             })
           }
