@@ -184,16 +184,12 @@
 </template>
 <script>
 import qs from 'qs'
-// import { Base64 } from "js-base64";
 import alertDialog from '@/components/alert'
 import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
-// import { getCookie, setCookie } from '@/functions/utils'
 import mShare from '@/components/web/share.vue'
 import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable } from '@/functions/app'
 import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
-// import Vue from 'vue'
-// Vue.use(vueBaberrage)
 export default {
   components: {
     mShare,
@@ -367,8 +363,8 @@ export default {
       this.barrageList.push({
         id: ++this.currentId,
         avatar: v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar,
-        msg: v.content,
-        time: 50 / (10 + v.content.length * 0.5),
+        msg: decodeURI(v.content),
+        time: 50 / (10 + decodeURI(v.content).length * 0.5),
         type: MESSAGE_TYPE.NORMAL
       })
     },
