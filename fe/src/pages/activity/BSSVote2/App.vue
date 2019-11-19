@@ -223,6 +223,8 @@ export default {
       i: 0,
       barrageList: [],
       t: null,
+      maxTime: 5,
+      minTime: 3,
 
       // 投票
       voteLeft: 0,
@@ -260,7 +262,6 @@ export default {
       // 弹幕
       barrage_id: 17,
       topic: '',
-      timer: null, // tab滚动定位定时器
       during: 5, // 发送弹幕后倒计时
       disabled: false, // send状态
       index: 0, // 当前所在的节目期数
@@ -279,21 +280,12 @@ export default {
       allNum: 0,
       picked: false, // 是否已经投票
       canVote: true, // 防多pick
-      lineSpace: 40,
-      pageWidth: 0, // 页面可视区域宽度
-      // count: 0, // 当前完全滚入屏幕的弹幕下标
-      speed: 125, // 弹幕速度，越大越慢
-      minSp: 1.1, // 弹幕的最小速度
-      maxSp: 1.8, // 弹幕的最大速度
-      minSpace: 80, // 两行弹幕的最小间隔
-      maxSpace: 240, // 两行弹幕的最大间隔
       time: null, // 弹幕滚动定时器
       commentText: '', // 发送的内容
       loaded_page: false,
       loaded_comment: false,
       number: 20, // 每次请求的弹幕数量
       last_id: 0, // 上一次请求的最后一条弹幕id
-      // timeNum: 0, // 记录已在当前页面上成功调用获取弹幕接口的次数
       canClickTab1: false,
       canClickTab2: false,
 
@@ -346,7 +338,6 @@ export default {
     this.barrage_id = getQueryVariable(location.search.replace('?', ''), 'barrageid') || 17
   },
   mounted() {
-    this.pageWidth = document.body.clientWidth
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
     this.mSendEvLog('page_show', '', '')
     this.getAdvisorList()
@@ -360,11 +351,15 @@ export default {
 
   methods: {
     addToList(v) {
+      let time = 75 / (10 + decodeURI(v.content).length * 0.5)
+      if (time > this.maxTime) time = this.maxTime
+      if (time < this.minTime) time = this.minTime
+      console.log(time)
       this.barrageList.push({
         id: ++this.currentId,
         avatar: v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar,
         msg: decodeURI(v.content),
-        time: 50 / (10 + decodeURI(v.content).length * 0.5),
+        time: time,
         type: MESSAGE_TYPE.NORMAL
       })
     },
@@ -544,7 +539,8 @@ export default {
             this.i = 0
             this.t = setInterval(() => {
               console.log(this.i)
-              console.log(this.barrageBox[0].childNodes)
+              // console.log(this.barrageBox[0].childNodes) 
+              this.addToList(this.commentList[this.i])
               for (let j = 0; j < this.barrageBox[0].childNodes.length; j++) {
                 if (this.barrageBox[0].childNodes[j].nodeName == 'DIV') {
                   this.barrageBox[0].childNodes[j].style.backgroundColor = '#848d34'
@@ -552,9 +548,7 @@ export default {
                   this.barrageBox[0].childNodes[j].style.color = '#fff'
                 }
               }
-              setTimeout(()=>{
-                this.addToList(this.commentList[this.i++])
-              },1000)
+              this.i++
               if (this.i >= this.number) {
                 this.i = 0
                 clearInterval(this.t)
@@ -791,9 +785,10 @@ export default {
           if (res.data.code === 0) {
             this.mSendEvLog('send_click', this.commentText, '')
             const during = this.during
+            console.log(this.$head)
             this.addToList({
               id: this.currentId++,
-              avatar: this.$head,
+              avatar: this.$user.head,
               content: this.commentText
             })
             console.log(this.barrageList)
@@ -2119,8 +2114,12 @@ export default {
         position: relative;
         overflow: hidden;
         .comment-box {
+          width: 150%;
           height: 212px;
+          position: relative;
+          left: 0;
           .baberrage-stage {
+            width: 100%;
             position: absolute;
             padding-top: 15px;
             width: 100%;
