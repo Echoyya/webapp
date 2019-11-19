@@ -181,6 +181,7 @@ export default {
                 },
                 'OK'
               )
+              this.fakeTeam()
             } else {
               // 队伍已满
               this.$refs.malert.show(this.$t('vote.team.full_team') + '.' + this.$t('vote.team.to_change_team'), () => {
