@@ -3,8 +3,10 @@
     <mBanner />
     <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
     <div class="prize">
-      <div class="text">{{text[prize-1]}}</div>
-      <div class="vip">VIP {{award_day}} DAY</div>
+      <img v-if="award_day==1" src="@/assets/img/vote/TeamFission/vip1.png" alt="">
+      <img v-if="award_day==7" src="@/assets/img/vote/TeamFission/vip7.png" alt="">
+      <img v-if="award_day==30" src="@/assets/img/vote/TeamFission/vip30.png" alt="">
+      <img v-if="award_day==0" src="@/assets/img/vote/TeamFission/thanks.png" alt="">
     </div>
     <div class="share-box">
       <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
@@ -158,29 +160,10 @@ export default {
   .prize {
     width: 95%;
     margin: 0 auto;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 1rem 0.5rem 1.5rem;
     border-radius: 1rem;
-    text-align: center;
-    .text {
-      color: #fff;
+    overflow: hidden;
+    img {
       width: 100%;
-      margin: 0 auto;
-      height: 2rem;
-      line-height: 2rem;
-      margin-bottom: 1rem;
-    }
-    .vip {
-      color: #ffbc00;
-      margin: 0 auto;
-      width: 50%;
-      height: 3rem;
-      line-height: 2.9rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border: 0.05rem solid #ffbc00;
-      border-radius: 0.5rem;
-      background-color: #000;
     }
   }
   .share-box {

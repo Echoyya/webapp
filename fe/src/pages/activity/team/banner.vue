@@ -2,6 +2,7 @@
   <div class="banner">
     <div class="top">
       <div class="img">
+        <img src="@/assets/img/vote/TeamFission/ic_startimeson.png" alt="" class="icon">
         <img src="@/assets/img/vote/TeamFission/bg-banner.png" alt="bg-img" class="bg-img" />
       </div>
       <div class="about" @click="showRule">{{$t('vote.team.about_title')}}</div>
@@ -74,6 +75,14 @@ export default {
         height: 100%;
         position: absolute;
         top: 0;
+      }
+      .icon {
+        width: 7.3rem;
+        height: 1.5rem;
+        position: absolute;
+        z-index: 2;
+        top: 0.8rem;
+        left: 0.8rem;
       }
       &:before {
         content: '';

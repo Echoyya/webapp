@@ -55,7 +55,6 @@
               <div>
                 <div class="prize">
                   <img :src="item.picture_url" alt />
-                  <p>{{item.name}}</p>
                 </div>
               </div>
             </li>
@@ -437,9 +436,7 @@ export default {
         .then(res => {
           if (res.data.code === 0) {
             this.lotteryType = res.data.data
-            // for (let i = 0; i < this.lotteryType.length; i++) {
-            //   if (this.lotteryType[i].name == 'Thanks') this.prize = 3
-            // }
+            console.log(this.lotteryType.picture_url)
           } else {
             this.lotteryType = [] // 服务器端计算数据错误时
             this.$refs.malert.show('Get rewards error!')
@@ -709,112 +706,104 @@ export default {
     }
   }
   .lottery {
-    height: 23rem;
     .contant {
-      padding: 0;
-      height: 20.5rem;
-      padding: 0.5rem 0 0.5rem;
       .lottery-type {
         width: 100%;
-        height: 19.5rem;
         margin: 0 auto;
         background-image: url('~@/assets/img/vote/TeamFission/bg-lottery.png');
-        background-size: 100% 19.5rem;
+        background-size: 100% 101%;
         color: #ad5500;
         font-style: normal;
         ul {
-          width: 90%;
+          width: 100%;
           margin: 0 auto;
           border-radius: 0.5rem;
-          padding: 0.2rem 0;
           position: relative;
-          height: 20rem;
+          &:before {
+            content: '';
+            display: inline-block;
+            padding-bottom: 100%;
+            width: 0;
+            vertical-align: middle;
+          }
           li {
-            width: 30%;
-            height: 5.5rem;
+            width: 28%;
             display: block;
             position: absolute;
             overflow: hidden;
-            border-radius: 0.2rem;
             background-color: #fff;
             border: 0.25rem solid transparent;
             border-radius: 0.5rem;
+            background-color: #a80044;
             &:nth-child(1) {
-              left: 3%;
-              top: 1.1rem;
+              left: 6%;
+              top: 6%;
             }
             &:nth-child(2) {
-              left: 35%;
-              top: 1.1rem;
+              left: 36%;
+              top: 6%;
             }
             &:nth-child(3) {
-              left: 67%;
-              top: 1.1rem;
+              left: 66%;
+              top: 6%;
             }
             &:nth-child(4) {
-              left: 67%;
-              top: 6.9rem;
+              left: 66%;
+              top: 36%;
             }
             &:nth-child(5) {
-              left: 67%;
-              top: 12.7rem;
+              left: 66%;
+              top: 66%;
             }
             &:nth-child(6) {
-              left: 35%;
-              top: 12.7rem;
+              left: 36%;
+              top: 66%;
             }
             &:nth-child(7) {
-              left: 3%;
-              top: 12.7rem;
+              left: 6%;
+              top: 66%;
             }
             &:nth-child(8) {
-              left: 3%;
-              top: 6.9rem;
+              left: 6%;
+              top: 36%;
             }
             &.active {
-              border: 0.25rem solid #8cd021;
+              background-color: #ff0090;
             }
             > div {
               width: 100%;
-              height: 5.5rem;
-              padding: 0 0.2rem;
               .prize {
                 img {
                   display: block;
-                  width: auto;
-                  height: 2.7rem;
-                  margin: 0 auto;
-                  padding: 0.3rem 0;
-                }
-                p {
-                  display: block;
                   width: 100%;
-                  text-align: center;
-                  font-size: 0.75rem;
-                  display: -webkit-box;
-                  -webkit-box-orient: vertical;
-                  -webkit-line-clamp: 2;
-                  overflow: hidden;
+                  height: 100%;
                 }
               }
             }
           }
           .getLuck {
-            width: 30%;
-            height: 5.5rem;
-            border-radius: 0.2rem;
+            width: 28%;
+            border-radius: 0.5rem;
             text-align: center;
             position: absolute;
-            top: 6.9rem;
-            left: 35%;
-            background-size: 100% 5.5rem;
+            top: 36%;
+            left: 36%;
             font-size: 1.2rem;
             font-weight: bold;
-            line-height: 5.5rem;
-            color: #fff;
-            background-image: url('~@/assets/img/vote/TeamFission/bg-start.png');
+            color: #FDF2FF;
+            background-color: #FF008A;
+            border: 0.25rem solid #FF4CA3;
             &:active {
-              background-image: url('~@/assets/img/vote/TeamFission/bg-start.png');
+              background-color: #8b0048;
+              border: 0.25rem solid #9f195f;
+              color: #E0AAC9;
+            }
+            &:before {
+              content: '';
+              display: inline-block;
+              padding-bottom: 100%;
+              width: 0;
+              vertical-align: middle;
             }
           }
         }
