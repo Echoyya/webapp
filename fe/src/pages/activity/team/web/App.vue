@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div v-if="mumberList.length<3" class="text text1">{{$t('vote.team.invite_tip',[leader_name])}}</div>
+    <div v-if="mumberList.length<3" class="text text0" v-html="$t('vote.team.invite_tip',[leader_name])"></div>
     <div v-else class="text text1">{{$t('vote.team.full_team')}}</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
@@ -30,10 +30,7 @@
         <div id="copy" data-clipboard-target="#teamno">COPY</div>
       </div>
     </div>
-    <div
-      v-show="moreList1.length>0&&moreList2.length>0"
-      class="text text2"
-    >{{$t('vote.team.follow_team')}}</div>
+    <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
     <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
       <div class="team1 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
@@ -74,7 +71,7 @@
         </div>
       </div>
     </div>
-    <div class="text text3">{{$t('vote.team.invite_infotit')}}</div>
+    <div class="text text3" v-html="$t('vote.team.invite_infotit')"></div>
     <div class="video">
       <div class="item">
         <div class="video-item">
@@ -232,11 +229,17 @@ export default {
     color: #fff;
     border-top-right-radius: 1rem;
     border-top-left-radius: 1rem;
-    background-color: #ff3867;
-    font-style: italic;
+    background-color: #c20044;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    color: #FFBC00;
+    font-weight: bold;
+    &.text0 {
+      height: 3.4rem;
+      margin: -18% auto 0;
+      text-align: center;
+    }
     &.text1 {
       margin: -18% auto 0;
     }
@@ -244,7 +247,14 @@ export default {
       margin: 0.5rem auto 0;
     }
     &.text3 {
+      height: 3.4rem;
       margin: 0.5rem auto 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      text-align: center;
     }
   }
   .invite {

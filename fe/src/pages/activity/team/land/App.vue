@@ -3,9 +3,9 @@
     <img src="@/assets/img/vote/TeamFission/landing-banner.png" class="banner" />
     <div class="download">
       <div v-if="appType==2" class="download-appstore-wrapper" @click="down()">
-        <img v-if="lang=='fy'" src="@/assets/img/landpage/ios_appstore_bg_fy.png" />
-        <img v-if="lang=='py'" src="@/assets/img/landpage/ios_appstore_bg_py.png" />
-        <img v-if="lang!='py'&&lang!='fy'" src="@/assets/img/landpage/ios_appstore_bg.png" />
+        <img v-if="lang=='fr'" src="@/assets/img/landpage/ios_appstore_bg_fy.png" />
+        <img v-if="lang=='pt'" src="@/assets/img/landpage/ios_appstore_bg_py.png" />
+        <img v-if="lang!='pt'&&lang!='fr'" src="@/assets/img/landpage/ios_appstore_bg.png" />
       </div>
       <div v-if="appType==1" class="download-app-wrapper">
         <div class="download-app-btn" @click="down()">
@@ -18,7 +18,7 @@
 </template>
 <script>
 import { downApk, callApp, callMarket } from '@/functions/app'
-import { getBrowser } from '@/functions/utils'
+import { getBrowser,getCookie } from '@/functions/utils'
 export default {
   components: {},
   data() {
@@ -29,6 +29,7 @@ export default {
   },
   mounted() {
     this.appType = getBrowser().isIos ? 2 : 1
+    this.lang = getCookie('lang') || 'en'
   },
   methods: {
     down() {

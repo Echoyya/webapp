@@ -605,7 +605,6 @@ export default {
     z-index: 2;
     width: 95%;
     margin: 0 auto;
-    font-style: italic;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
       width: 80%;
@@ -627,6 +626,10 @@ export default {
   }
   .invite {
     margin-bottom: 0.5rem;
+    .title {
+      width: 100%;
+      background-color: #C20044;
+    }
     .contant {
       padding: 0.5rem 0.5rem 1.5rem;
       position: relative;
@@ -657,7 +660,6 @@ export default {
         }
         span {
           color: #9f00ee;
-          font-style: normal;
           position: absolute;
           left: 6%;
         }
@@ -687,7 +689,6 @@ export default {
       border-radius: 1rem;
       background-color: #a1014b;
       text-align: center;
-      font-style: normal;
       font-weight: bold;
     }
     .firends-box {
@@ -721,7 +722,6 @@ export default {
         }
         p {
           text-align: center;
-          font-style: normal;
           font-weight: bold;
         }
       }
@@ -753,7 +753,6 @@ export default {
         background-image: url('~@/assets/img/vote/TeamFission/bg-lottery.png');
         background-size: 100% 101%;
         color: #ad5500;
-        font-style: normal;
         ul {
           width: 100%;
           margin: 0 auto;
