@@ -300,46 +300,75 @@ export default {
     },
     toFacebook() {
       if (this.$appType == 1) {
-        shareByFacebook(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        if (this.hasFinish == true) {
+          shareByFacebook(
+            `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        } else {
+          shareByFacebook(
+            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        }
       }
     },
     toWhatsApp() {
       if (this.$appType == 1) {
-        shareByWhatsApp(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        if (this.hasFinish == true) {
+          shareByWhatsApp(
+            `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        } else {
+          shareByWhatsApp(
+            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        }
       }
     },
     toXender() {
       if (this.$appType == 1) {
-        shareByXender(this.teamNum)
+        if (this.teamNum) {
+          shareByXender(this.teamNum)
+        }
       }
     },
     toDownload() {
       if (window.getChannelId && window.getChannelId.shareDownload) {
-        if (this.team && this.team.length > 0) {
-          const teamLeader = this.team[0].nick_name || this.team[0].user_id
-          const logoArr = []
-          this.team.forEach(item => {
-            logoArr.push(item.logo || 'https://cdn.startimestv.com/head/h_d.png')
+        if (this.teamNum) {
+          searchTeam.call(this, this.teamNum, data => {
+            const team = data.data.team_member_dtos
+            if (team && team.length > 0) {
+              const teamLeader = team[0].nick_name || team[0].user_id
+              const logoArr = []
+              team.forEach(item => {
+                logoArr.push(item.logo || 'https://cdn.startimestv.com/head/h_d.png')
+              })
+              window.getChannelId.shareDownload(teamLeader, this.teamNum, logoArr.join(','))
+            }
           })
-          window.getChannelId.shareDownload(teamLeader, this.teamNum, logoArr.join(','))
         }
       }
     },
     toCopylink() {
       if (this.$appType == 1) {
-        shareByCopyLink(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
-        )
+        if (this.hasFinish == true) {
+          shareByCopyLink(`${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`)
+        } else {
+          shareByCopyLink(
+            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+          )
+        }
       }
     },
     toSearch() {
@@ -351,12 +380,21 @@ export default {
         if (this.$appVersion) {
           this.show_share = true
         } else {
-          shareInvite(
-            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            this.shareTitle,
-            this.shareText,
-            this.imgUrl
-          )
+          if (this.hasFinish == true) {
+            shareInvite(
+              `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+              this.shareTitle,
+              this.shareText,
+              this.imgUrl
+            )
+          } else {
+            shareInvite(
+              `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+              this.shareTitle,
+              this.shareText,
+              this.imgUrl
+            )
+          }
         }
       } else {
         toNativePage('com.star.mobile.video.account.LoginActivity')
@@ -792,13 +830,13 @@ export default {
             left: 36%;
             font-size: 1.2rem;
             font-weight: bold;
-            color: #FDF2FF;
-            background-color: #FF008A;
-            border: 0.25rem solid #FF4CA3;
+            color: #fdf2ff;
+            background-color: #ff008a;
+            border: 0.25rem solid #ff4ca3;
             &:active {
               background-color: #8b0048;
               border: 0.25rem solid #9f195f;
-              color: #E0AAC9;
+              color: #e0aac9;
             }
             &:before {
               content: '';

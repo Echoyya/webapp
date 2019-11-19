@@ -134,6 +134,8 @@ axios.interceptors.response.use(
       token: error.config.headers.token
     })
 
+    // TODO 登录状态失效
+
     return Promise.reject(error)
   }
 )
