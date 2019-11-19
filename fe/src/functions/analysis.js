@@ -1,6 +1,4 @@
 import env from '@/functions/config'
-const countlyServer = env.countlyServer
-const countlyAppKey = env.countlyAppKey
 const ua = navigator.userAgent
 const os = (ua.includes('iPhone') && 'IOS') || (ua.includes('iPad') && 'IOS') || 'Android'
 const now = new Date().getTime()
@@ -92,7 +90,7 @@ const serializeMsg = msg => {
 
 export const sendEvLog = msg => {
   const result = serializeMsg(msg)
-  sendMsg(countlyServer + '/i?logtype=event&app_key=' + countlyAppKey + '&events=' + result + '&device_id=' + deviceId + '&timestamp=' + now)
+  sendMsg(env.countlyServer + '/i?logtype=event&app_key=' + env.countlyAppKey + '&events=' + result + '&device_id=' + deviceId + '&timestamp=' + now)
   // TODO 换成fireBase
   // eslint-disable-next-line no-undef
   ga('send', {
