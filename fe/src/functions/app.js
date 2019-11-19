@@ -1,4 +1,3 @@
-import { Base64 } from 'js-base64'
 import axios from 'axios'
 import qs from 'qs'
 import { getBrowser, getCookie, setCookie } from '@/functions/utils'
@@ -7,7 +6,7 @@ const browser = getBrowser()
 const appleStore = 'https://itunes.apple.com/us/app/startimes/id1168518958?l=zh&ls=1&mt=8'
 
 export const createIntent = function(page, host, path, scheme) {
-  const target = page ? '?target=' + Base64.encode(page.replace(/&/g, '**')) : ''
+  const target = page ? '?target=' + window.btoa(page.replace(/&/g, '**')) : ''
   host = host || 'platformapi'
   path = path || 'webtoapp'
   scheme = scheme || (browser.isIos ? 'startimes' : 'starvideo')
@@ -15,7 +14,7 @@ export const createIntent = function(page, host, path, scheme) {
 }
 
 export const createScheme = function(page, host, path, scheme) {
-  const target = page ? '?target=' + Base64.encode(page.replace(/&/g, '**')) : ''
+  const target = page ? '?target=' + window.btoa(page.replace(/&/g, '**')) : ''
   host = host || 'platformapi'
   path = path || 'webtoapp'
   scheme = scheme || (browser.isIos ? 'startimes' : 'starvideo')
