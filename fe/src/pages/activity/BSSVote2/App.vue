@@ -544,6 +544,7 @@ export default {
             this.i = 0
             this.t = setInterval(() => {
               console.log(this.i)
+              console.log(this.barrageBox[0].childNodes)
               for (let j = 0; j < this.barrageBox[0].childNodes.length; j++) {
                 if (this.barrageBox[0].childNodes[j].nodeName == 'DIV') {
                   this.barrageBox[0].childNodes[j].style.backgroundColor = '#848d34'
@@ -551,10 +552,10 @@ export default {
                   this.barrageBox[0].childNodes[j].style.color = '#fff'
                 }
               }
-              this.addToList(this.commentList[this.i++])
-              console.log(this.barrageList)
+              setTimeout(()=>{
+                this.addToList(this.commentList[this.i++])
+              },1000)
               if (this.i >= this.number) {
-                console.log(this.i, this.currentId)
                 this.i = 0
                 clearInterval(this.t)
                 this.barrageList = []
@@ -792,7 +793,7 @@ export default {
             const during = this.during
             this.addToList({
               id: this.currentId++,
-              avatar: this.$head == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : this.$head,
+              avatar: this.$head,
               content: this.commentText
             })
             console.log(this.barrageList)
