@@ -256,7 +256,7 @@ export default {
           this.team = [
             {
               nick_name: data.data.leader_nick_name,
-              logo: data.data.leader_logo || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
+              logo: data.data.leader_logo || 'https://cdn.startimestv.com/head/h_d.png'
             }
           ]
           this.teamNum = data.data.team_no
@@ -274,7 +274,7 @@ export default {
       this.team = [
         {
           nick_name: this.$user.nickName,
-          logo: this.$user.head || 'http://cdn.startimestv.com/head/upload/f3a83a46-00bb-42ca-9380-a13d6a3c4fc1.png'
+          logo: this.$user.head || 'https://cdn.startimestv.com/head/h_d.png'
         }
       ]
     },
@@ -324,11 +324,14 @@ export default {
     },
     toDownload() {
       if (window.getChannelId && window.getChannelId.shareDownload) {
-        window.getChannelId.shareDownload(
-          'fea',
-          '12312',
-          'https://cdn.startimestv.com/head/h_d.png,https://cdn.startimestv.com/head/h_d.png,https://cdn.startimestv.com/head/h_d.png'
-        )
+        if (this.team && this.team.length > 0) {
+          const teamLeader = this.team[0].nick_name || this.team[0].user_id
+          const logoArr = []
+          this.team.forEach(item => {
+            logoArr.push(item.logo || 'https://cdn.startimestv.com/head/h_d.png')
+          })
+          window.getChannelId.shareDownload(teamLeader, this.teamNum, logoArr.join(','))
+        }
       }
     },
     toCopylink() {
@@ -343,6 +346,7 @@ export default {
     },
     showShare() {
       if (this.$isLogin) {
+        this.show_share = true
         if (this.$appVersion) {
           this.show_share = true
         } else {
@@ -473,25 +477,23 @@ export default {
       // 如果当前转动次数达到要求 && 目前转到的位置是中奖位置
       if (this.times > this.cycle + 10 && this.prize === this.indexs) {
         clearTimeout(this.timers) // 清除转动定时器，停止转动
-        // this.prize = -1
         this.times = 0
         console.log('你已经中奖了，位置' + (this.indexs + 1))
         console.log('你已经中奖了，奖品' + this.lotteryType[this.indexs].name)
         if (this.prize < 3) {
           setTimeout(() => {
-            // this.$refs.malert.show(`你已经中奖了，奖品'${this.lotteryType[this.indexs].name}`, () => {
             location.replace('/activity/team/result.html?teamno=' + tmpTeamId + '&prize=' + this.award_day)
-            // })
           }, 1000)
         } else if (this.prize == 3) {
           if (this.fail) {
             setTimeout(() => {
               this.$refs.malert.show('lottery error!!')
             }, 1000)
+          } else {
+            setTimeout(() => {
+              this.$refs.malert.show(this.$t('vote.team.draw_none'))
+            }, 1000)
           }
-          setTimeout(() => {
-            this.$refs.malert.show(this.$t('vote.team.draw_none'))
-          }, 1000)
         }
       } else {
         if (this.times < this.cycle) {

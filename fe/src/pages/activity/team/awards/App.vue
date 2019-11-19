@@ -51,8 +51,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import env from '@/functions/config'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable } from '@/functions/app'
 export default {
   components: {
     mBanner
@@ -111,8 +110,15 @@ export default {
       }
     },
     toDownload() {
-      if (this.$appType == 1) {
-        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
+      if (window.getChannelId && window.getChannelId.shareDownload) {
+        if (this.team && this.team.length > 0) {
+          const teamLeader = this.team[0].nick_name || this.team[0].user_id
+          const logoArr = []
+          this.team.forEach(item => {
+            logoArr.push(item.logo || 'https://cdn.startimestv.com/head/h_d.png')
+          })
+          window.getChannelId.shareDownload(teamLeader, this.teamNum, logoArr.join(','))
+        }
       }
     },
     toCopylink() {
