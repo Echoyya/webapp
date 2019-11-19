@@ -172,10 +172,10 @@ export default {
                   if (this.$isLogin) {
                     this.toJoin(teamno)
                   } else if (this.$appType === 1) {
-                    localStorage.setItem('join_teamno', this.teamNum)
+                    localStorage.setItem('join_teamno', teamno)
                     toNativePage('com.star.mobile.video.account.LoginActivity')
                   } else {
-                    localStorage.setItem('join_teamno', this.teamNum)
+                    localStorage.setItem('join_teamno', teamno)
                     toNativePage('startimes://login')
                   }
                 },
