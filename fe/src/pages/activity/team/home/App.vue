@@ -2,9 +2,9 @@
   <div class="wrapper">
     <mBanner />
     <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
-    <div v-if="team.length>0" v-show="!show_share" class="invite box">
+    <div v-show="!show_share" class="invite box">
       <div v-show="!hasFinish" class="title">{{$t('vote.team.invite_tips')}}</div>
-      <div v-show="!hasFinish" class="contant">
+      <div v-show="!hasFinish" v-if="team.length>0" class="contant">
         <div>
           <div>
             <img :src="team[0].logo" alt />
@@ -283,14 +283,16 @@ export default {
         if (data.code == 0) {
           this.team = data.data.team_member_dtos
           this.teamNum = data.data.team_no
-          if (this.team.length >= 3) {
-            this.canLottery = true
+          if (this.team.length >= 3 && data.data.allow_lottery) {
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
               window.scrollTo(0, 1500)
               this.startLottery()
             })
           }
         } else {
+          if (data.data.team_limit_arrived) {
+            this.hasFinish = true
+          }
           failback && failback()
         }
       })
