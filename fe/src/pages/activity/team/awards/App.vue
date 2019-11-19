@@ -52,6 +52,7 @@
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import { searchTeam } from '@/pages/activity/team/func'
 export default {
   components: {
     mBanner
@@ -86,46 +87,73 @@ export default {
   methods: {
     toFacebook() {
       if (this.$appType == 1) {
-        shareByFacebook(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        if (this.teams.length >= 10) {
+          shareByFacebook(
+            `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        } else {
+          shareByFacebook(
+            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        }
       }
     },
     toWhatsApp() {
       if (this.$appType == 1) {
-        shareByWhatsApp(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        if (this.teams.length >= 10) {
+          shareByFacebook(
+            `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        } else {
+          shareByWhatsApp(
+            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+            this.shareTitle,
+            this.shareText,
+            this.imgUrl
+          )
+        }
       }
     },
     toXender() {
       if (this.$appType == 1) {
-        shareByXender(this.teamNum)
+        if (this.teamNum) {
+          shareByXender(this.teamNum)
+        }
       }
     },
     toDownload() {
       if (window.getChannelId && window.getChannelId.shareDownload) {
-        if (this.team && this.team.length > 0) {
-          const teamLeader = this.team[0].nick_name || this.team[0].user_id
-          const logoArr = []
-          this.team.forEach(item => {
-            logoArr.push(item.logo || 'https://cdn.startimestv.com/head/h_d.png')
-          })
-          window.getChannelId.shareDownload(teamLeader, this.teamNum, logoArr.join(','))
-        }
+        searchTeam.call(this, this.teamNum, data => {
+          const team = data.data.team_member_dtos
+          if (team && team.length > 0) {
+            const teamLeader = team[0].nick_name || team[0].user_id
+            const logoArr = []
+            team.forEach(item => {
+              logoArr.push(item.logo || 'https://cdn.startimestv.com/head/h_d.png')
+            })
+            window.getChannelId.shareDownload(teamLeader, this.teamNum, logoArr.join(','))
+          }
+        })
       }
     },
     toCopylink() {
       if (this.$appType == 1) {
-        shareByCopyLink(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
-        )
+        if (this.teams.length >= 10) {
+          shareByCopyLink(`${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`)
+        } else {
+          shareByCopyLink(
+            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+          )
+        }
       }
     }
   }
