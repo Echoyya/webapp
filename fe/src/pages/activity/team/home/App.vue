@@ -287,6 +287,7 @@ export default {
           if (this.team.length >= 3 && data.data.allow_lottery) {
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
               window.scrollTo(0, 1500)
+              this.canLottery = true
               this.startLottery()
             })
           }

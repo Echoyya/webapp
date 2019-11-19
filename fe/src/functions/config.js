@@ -6,7 +6,7 @@ if (location.hostname.indexOf('localhost') >= 0 || location.hostname.indexOf('10
     gaIosKey: 'UA-55969660-8',
     countlyAppKey: 'cb95b4e9125098b99a7df2fbda4554eda982918b',
     countlyServer: 'http://10.0.243.111:8080',
-    apiUrl: 'http://dev.upms.startimestv.com'
+    apiUrl: 'http://qa.upms.startimestv.com'
   }
 } else if (location.hostname.indexOf('dev') >= 0) {
   env = {
