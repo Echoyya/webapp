@@ -62,7 +62,7 @@ export default {
     box-sizing: border-box;
   }
   width: 100%;
-  background-image: linear-gradient(#a90828, #930537, #7c003d);
+  // background-image: linear-gradient(#a90828, #930537, #7c003d);
   overflow: hidden;
   .top {
     width: 100%;
