@@ -1038,7 +1038,7 @@ export default {
             this.voteLeft -= value
             this.getLeftLottery()
             if (this.voteLeft > 0) {
-              this.$refs.toast.show('Upigaji umefanikiwa! Umepata nafasi ya kucheza bahati nasibu.')
+              this.$refs.toast.show('Upigaji umefanikiwa! Umepata nafasi ya kupata zawadi kwa kupitia mchezo wa ukurasa huu.')
             } else {
               this.$refs.confirm.show(
                 'Upigaji umefanikiwa! Shirikisha marafiki kupata kura zaidi.',
@@ -1196,7 +1196,7 @@ export default {
         return
       }
       // 票不够不能抽奖
-      this.$refs.alert.show('Piga kura ili upate nafasi ya kushinda bahati nasibu! Kila kura 5 kwa mchezo 1', () => {}, 'SAWA')
+      this.$refs.alert.show('Piga kura ili upate nafasi ya kupata zawadi! Kila kura 5 kwa mchezo 1', () => {}, 'SAWA')
     },
     // 开始抽奖
     startLottery() {
