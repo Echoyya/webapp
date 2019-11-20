@@ -353,7 +353,6 @@ export default {
       let time = 75 / (10 + decodeURI(v.content).length * 0.5)
       if (time > this.maxTime) time = this.maxTime
       if (time < this.minTime) time = this.minTime
-      console.log(time)
       this.barrageList.push({
         id: ++this.currentId,
         avatar: v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar,
@@ -537,8 +536,6 @@ export default {
             this.canClickTab1 = true
             this.i = 0
             this.t = setInterval(() => {
-              console.log(this.i)
-              // console.log(this.barrageBox[0].childNodes)
               this.addToList(this.commentList[this.i])
               for (let j = 0; j < this.barrageBox[0].childNodes.length; j++) {
                 if (this.barrageBox[0].childNodes[j].nodeName == 'DIV') {
@@ -784,13 +781,11 @@ export default {
           if (res.data.code === 0) {
             this.mSendEvLog('send_click', this.commentText, '')
             const during = this.during
-            console.log(this.$head)
             this.addToList({
               id: this.currentId++,
               avatar: this.$user.head,
               content: this.commentText
             })
-            console.log(this.barrageList)
             const duringTime = setInterval(() => {
               this.during--
               if (this.during == 0) {
