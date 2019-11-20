@@ -15,19 +15,13 @@
           <img src="@/assets/img/vote/TeamFission/ic_forward2.png" />
           <div>
             <div>
-              <img
-                v-if="item.team_member_dtos[1]&&item.team_member_dtos[1].logo"
-                :src="item.team_member_dtos[1].logo"
-              />
+              <img v-if="item.team_member_dtos[1]&&item.team_member_dtos[1].logo" :src="item.team_member_dtos[1].logo" />
               <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <div>
             <div>
-              <img
-                v-if="item.team_member_dtos[2]&&item.team_member_dtos[2].logo"
-                :src="item.team_member_dtos[2].logo"
-              />
+              <img v-if="item.team_member_dtos[2]&&item.team_member_dtos[2].logo" :src="item.team_member_dtos[2].logo" />
               <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
@@ -78,9 +72,9 @@ export default {
   created() {
     this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
-      if (data.data && data.data.all_award_days) {
-        this.teams = data.data.my_award_team_dtos ? data.data.my_award_team_dtos : []
-        this.allDays = data.data.all_award_days ? data.data.all_award_days : 0
+      if (data.code == 0) {
+        this.teams = data.data.my_award_team_dtos
+        this.allDays = data.data.all_award_days
       } else {
         this.have_no_result = true
       }
