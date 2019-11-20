@@ -233,7 +233,7 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    color: #FFBC00;
+    color: #ffbc00;
     font-weight: bold;
     &.text0 {
       height: 3.4rem;
@@ -391,6 +391,13 @@ export default {
               border-radius: 100%;
               display: block;
               margin: 0 auto;
+              &::before {
+                content: '';
+                display: inline-block;
+                padding-bottom: 100%;
+                width: 0;
+                vertical-align: middle;
+              }
             }
             p {
               background: rgba(134, 0, 200, 1);
@@ -422,6 +429,7 @@ export default {
             border-radius: 1rem;
             border: 0.15rem solid #fa7a00;
             text-align: center;
+            background-color: #37006f;
           }
         }
       }
@@ -487,6 +495,7 @@ export default {
       top: 0;
       background-image: url('~@/assets/img/vote/TeamFission/bg-banner.png');
       background-size: cover;
+      background-position: center;
       border-bottom-left-radius: 1rem;
       border-bottom-right-radius: 1rem;
     }
