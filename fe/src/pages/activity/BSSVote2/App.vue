@@ -24,7 +24,7 @@
               <li v-for="(item,key) in coupleList" :key="key" data-id="item.id">
                 <div class="item-box">
                   <div>
-                    <img :src="item.icon" class="icon" @click="toPlayer(item,'votepic_click',item.name)" />
+                    <img :src="item.icon+'?w=150'" class="icon" @click="toPlayer(item,'votepic_click',item.name)" />
                   </div>
                   <span class="name">{{item.name.toUpperCase()}}</span>
                 </div>
@@ -109,7 +109,7 @@
           <div class="pick-box">
             <div class="left">
               <div>
-                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[0].icon" alt />
+                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[0].icon+'?w=250'" alt />
               </div>
             </div>
             <div class="middle">
@@ -119,7 +119,7 @@
             </div>
             <div class="right">
               <div>
-                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[1].icon" alt />
+                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[1].icon+'?w=250'" alt />
               </div>
             </div>
             <div v-show="!picked||appType==0" class="pick">
@@ -152,7 +152,7 @@
         <ul class="clearfix">
           <li v-for="(item,i) in clipsList" :key="i">
             <div @click="toPlayer(item,'video_click',item.description)">
-              <img class="url" :src="item.cover" />
+              <img class="url" :src="item.cover+'?w=230'" />
             </div>
             <p class="title">{{(item.description)}}</p>
           </li>
@@ -176,7 +176,7 @@
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
     </div>
     <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
-    <mShare ref="share" />
+    <mShare v-if="$appType=0" ref="share" />
     <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
     <toast-dialog ref="toast" />
@@ -190,6 +190,7 @@ import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
 import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable } from '@/functions/app'
 import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
+import env from '@/functions/config'
 export default {
   components: {
     mShare,
@@ -230,9 +231,9 @@ export default {
       loaded: false,
       advisorList: [],
       vote_id: 64,
-      startTime: new Date('2019-11-18 09:00:00').getTime(),
-      endTime: new Date('2019-12-11 06:00:00').getTime(),
-      endTime2: new Date('2019-12-21 09:00:00').getTime(),
+      startTime: new Date('2019-11-18T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
+      endTime: new Date('2019-12-11T06:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
+      endTime2: new Date('2019-12-21T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
       canVotes: true,
 
       // 抽奖
@@ -873,12 +874,11 @@ export default {
       if (label == 'voterules') this.closeShadow()
       this.mSendEvLog('share_click', label, '')
       if (this.appType == 1) {
-        shareInvite(
-          `${window.location.href}?pin=${this.isLogin ? this.$user.id : ''}&utm_source=VOTE&utm_medium=BSS&utm_campaign=${this.platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        const url =
+          window.location.href.indexOf('?') >= 0
+            ? window.location.href + '&pin=' + (this.isLogin ? this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+            : window.location.href + '?pin=' + (this.isLogin ? this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+        shareInvite(url, this.shareTitle, this.shareText, this.imgUrl)
       } else if (this.appType == 0) {
         this.$refs.share.show()
       }
@@ -1347,13 +1347,18 @@ export default {
     },
     // 获得加票方法
     getTicketAward(callback) {
+      let url = '/hybrid/vote/getTicketAward'
+      if (env.apiUrl == 'http://upms.startimestv.com') {
+        url = 'http://m.startimestv.com' + url
+      }
+
       this.$axios({
         method: 'POST',
         data: {
           vote_id: this.vote_id,
           user_id: this.user_id
         },
-        url: '/hybrid/vote/getTicketAward'
+        url: url
       })
         .then(res => {
           callback && callback(res)

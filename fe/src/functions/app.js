@@ -5,6 +5,7 @@ import { Base64 } from 'js-base64'
 import axios from 'axios'
 import qs from 'qs'
 import { getBrowser, getCookie, setCookie } from '@/functions/utils'
+import env from '@/functions/config'
 
 const browser = getBrowser()
 const appleStore = 'https://itunes.apple.com/us/app/startimes/id1168518958?l=zh&ls=1&mt=8'
@@ -135,8 +136,10 @@ export const downApk = function(callback) {
   if (browser.isIos) {
     window.location.href = appleStore
   } else {
-    axios.get('/hybrid/api/app/getApk').then(data => {
-      window.location.href = data.data.data
+    axios.get('http://upms.startimestv.com/cms/public/app').then(data => {
+      const url = data.data.apkUrl
+      const direct = url.indexOf('google') > 0 ? url.replace('google', 'officialWap') : url
+      window.location.href = direct
     })
   }
   callback && callback()
@@ -299,7 +302,11 @@ export const addTicketByDownload = function(vote_id) {
   const user = getQueryVariable(location.search.replace('?', ''), 'pin')
   const lastGetTicket = getCookie('get_ticket_time')
   if (user && !lastGetTicket) {
-    this.$axios.get('/hybrid/api/sign').then(({ data }) => {
+    let url = '/hybrid/api/sign'
+    if (env.apiUrl == 'http://upms.startimestv.com') {
+      url = 'http://m.startimestv.com' + url
+    }
+    this.$axios.get(url).then(({ data }) => {
       if (data.code == 200) {
         this.$axios({
           method: 'POST',
