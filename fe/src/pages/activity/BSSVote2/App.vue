@@ -356,7 +356,7 @@ export default {
       console.log(time)
       this.barrageList.push({
         id: ++this.currentId,
-        avatar: v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png?w=20' : v.avatar+'?w=20',
+        avatar: v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar,
         msg: decodeURI(v.content),
         time: time,
         type: MESSAGE_TYPE.NORMAL
@@ -538,7 +538,7 @@ export default {
             this.i = 0
             this.t = setInterval(() => {
               console.log(this.i)
-              // console.log(this.barrageBox[0].childNodes) 
+              // console.log(this.barrageBox[0].childNodes)
               this.addToList(this.commentList[this.i])
               for (let j = 0; j < this.barrageBox[0].childNodes.length; j++) {
                 if (this.barrageBox[0].childNodes[j].nodeName == 'DIV') {
@@ -1422,14 +1422,13 @@ export default {
 }
 
 .wrapper {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   img,
   div,
   li {
     box-sizing: border-box;
   }
-  textarea::-webkit-input-placeholder {
-    color: #acacac;
-  }
+
   background-image: url('~@/assets/img/vote/BSSVote2/bg-img.jpg');
   background-size: contain;
   background-repeat: repeat-y;
@@ -1559,6 +1558,7 @@ export default {
                   width: 100%;
                   height: 100%;
                   position: absolute;
+                  border-radius: 50%;
                   top: 0;
                 }
                 &::before {
@@ -2166,6 +2166,9 @@ export default {
             overflow: hidden;
             overflow-x: auto;
             resize: none;
+            &::-webkit-input-placeholder {
+              color: #acacac;
+            }
           }
           .btn {
             display: block;
