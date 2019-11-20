@@ -355,7 +355,7 @@ export default {
       if (time < this.minTime) time = this.minTime
       this.barrageList.push({
         id: ++this.currentId,
-        avatar: v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar,
+        avatar: v.avatar ? (v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar) : 'http://cdn.startimestv.com/banner/DD_user_icon.png',
         msg: decodeURI(v.content),
         time: time,
         type: MESSAGE_TYPE.NORMAL
@@ -783,7 +783,7 @@ export default {
             const during = this.during
             this.addToList({
               id: this.currentId++,
-              avatar: this.$user.head,
+              avatar: this.$user.head || 'http://cdn.startimestv.com/banner/DD_user_icon.png',
               content: this.commentText
             })
             const duringTime = setInterval(() => {
