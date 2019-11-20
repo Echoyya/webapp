@@ -24,11 +24,7 @@
               <li v-for="(item,key) in coupleList" :key="key" data-id="item.id">
                 <div class="item-box">
                   <div>
-                    <img
-                      :src="item.icon+'?w=150'"
-                      class="icon"
-                      @click="toPlayer(item,'votepic_click',item.name)"
-                    />
+                    <img :src="item.icon+'?w=150'" class="icon" @click="toPlayer(item,'votepic_click',item.name)" />
                   </div>
                   <span class="name">{{item.name.toUpperCase()}}</span>
                 </div>
@@ -40,21 +36,9 @@
                   <div class="title">CHAGUA KURA ZAKO</div>
                   <div class="votes">Kura zilizobaki: {{voteLeft}}</div>
                   <div class="pick">
-                    <div
-                      class="vote-value"
-                      :class="voteLeft>=1?'abled':'disabled'"
-                      @click="handleVote(item,1)"
-                    >+1</div>
-                    <div
-                      class="vote-value"
-                      :class="voteLeft>=5?'abled':'disabled'"
-                      @click="handleVote(item,5)"
-                    >+5</div>
-                    <div
-                      class="vote-value"
-                      :class="voteLeft>=10?'abled':'disabled'"
-                      @click="handleVote(item,10)"
-                    >+10</div>
+                    <div class="vote-value" :class="voteLeft>=1?'abled':'disabled'" @click="handleVote(item,1)">+1</div>
+                    <div class="vote-value" :class="voteLeft>=5?'abled':'disabled'" @click="handleVote(item,5)">+5</div>
+                    <div class="vote-value" :class="voteLeft>=10?'abled':'disabled'" @click="handleVote(item,10)">+10</div>
                   </div>
                   <div class="cancel" @click="closeShadow">GHAIRI</div>
                 </div>
@@ -66,39 +50,15 @@
         <div class="more-vote">
           <div class="vip">
             <!-- APP外、匿名、登录都不是会员 -->
-            <img
-              v-if="appType==0||(appType>0&&!isOttVip&&!isLinkVip)"
-              src="@/assets/img/vote/BSSVote2/ic-noOtt-noLink.png"
-              alt
-            />
+            <img v-if="appType==0||(appType>0&&!isOttVip&&!isLinkVip)" src="@/assets/img/vote/BSSVote2/ic-noOtt-noLink.png" alt />
             <!-- 都是会员 -->
-            <img
-              v-if="appType>0&&isOttVip&&isLinkVip"
-              src="@/assets/img/vote/BSSVote2/ic-isOtt-isLink.png"
-              alt
-            />
+            <img v-if="appType>0&&isOttVip&&isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-isLink.png" alt />
             <!-- 是OTT 不是LINK -->
-            <img
-              v-if="appType>0&&isOttVip&&!isLinkVip"
-              src="@/assets/img/vote/BSSVote2/ic-isOtt-noLink.png"
-              alt
-            />
+            <img v-if="appType>0&&isOttVip&&!isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-noLink.png" alt />
             <!-- 不是OTT 是LINK -->
-            <img
-              v-if="appType>0&&!isOttVip&&isLinkVip"
-              src="@/assets/img/vote/BSSVote2/ic-noOtt-isLink.png"
-              alt
-            />
-            <div
-              v-if="appType==0||appType>0&&!isOttVip"
-              class="op open-ott"
-              @click="toVip('ottvip')"
-            ></div>
-            <div
-              v-if="appType==0||appType>0&&!isLinkVip"
-              class="op open-dvb"
-              @click="toVip('dvbvip')"
-            ></div>
+            <img v-if="appType>0&&!isOttVip&&isLinkVip" src="@/assets/img/vote/BSSVote2/ic-noOtt-isLink.png" alt />
+            <div v-if="appType==0||appType>0&&!isOttVip" class="op open-ott" @click="toVip('ottvip')"></div>
+            <div v-if="appType==0||appType>0&&!isLinkVip" class="op open-dvb" @click="toVip('dvbvip')"></div>
           </div>
           <img v-if="appType>0&&isLogin" src="@/assets/img/vote/BSSVote2/ic-2login.png" alt />
           <img v-else src="@/assets/img/vote/BSSVote2/ic-2login-no.png" alt @click="toSignIn" />
@@ -107,34 +67,13 @@
             <p>FANIKIWA KUALIKA RAFIKI {{share_num}}</p>
           </div>
         </div>
-        <img
-          src="@/assets/img/vote/BSSVote2/img-share.png"
-          class="share"
-          @click="toShare('midshare')"
-        />
-        <img
-          src="@/assets/img/vote/BSSRegister/ic-link-comment.png"
-          alt
-          class="link"
-          @click="toComment('mid')"
-        />
-        <img
-          v-if="appType>0&&!isLogin"
-          class="text text3"
-          src="@/assets/img/vote/BSSVote2/text3-login-no.png"
-          @click="toSignIn"
-        />
-        <img
-          v-if="!(appType>0&&!isLogin)"
-          class="text text3"
-          src="@/assets/img/vote/BSSVote2/text3-login.png"
-          alt
-        />
+        <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
+        <img src="@/assets/img/vote/BSSRegister/ic-link-comment.png" alt class="link" @click="toComment('mid')" />
+        <img v-if="appType>0&&!isLogin" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login-no.png" @click="toSignIn" />
+        <img v-if="!(appType>0&&!isLogin)" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login.png" alt />
         <div class="lottery-box">
           <div class="lottery">
-            <div
-              class="count"
-            >NAFASI ZILIZOBAKI:{{appType>0&&isLogin?(lotteryLeft>0?lotteryLeft:0):0}}</div>
+            <div class="count">NAFASI ZILIZOBAKI:{{appType>0&&isLogin?(lotteryLeft>0?lotteryLeft:0):0}}</div>
             <div class="lottery-type">
               <ul class="clearfix">
                 <li v-for="(item,key) in lotteryList" :key="key" :class="indexs==key?'active':''">
@@ -145,11 +84,7 @@
                     </div>
                   </div>
                 </li>
-                <div
-                  v-if="appType>0&&isLogin&&lotteryLeft>0"
-                  class="getLuck"
-                  @click="startLottery"
-                >Anza</div>
+                <div v-if="appType>0&&isLogin&&lotteryLeft>0" class="getLuck" @click="startLottery">Anza</div>
                 <div v-else class="getLuck-gray" @click="canNotLottery">Anza</div>
               </ul>
             </div>
@@ -188,16 +123,8 @@
               </div>
             </div>
             <div v-show="!picked||appType==0" class="pick">
-              <div
-                v-if="pageListReady[index]"
-                class="btn"
-                @click="handlePick('left',pageListReady[index].candidates)"
-              >CHAGUA</div>
-              <div
-                v-if="pageListReady[index]"
-                class="btn"
-                @click="handlePick('right',pageListReady[index].candidates)"
-              >CHAGUA</div>
+              <div v-if="pageListReady[index]" class="btn" @click="handlePick('left',pageListReady[index].candidates)">CHAGUA</div>
+              <div v-if="pageListReady[index]" class="btn" @click="handlePick('right',pageListReady[index].candidates)">CHAGUA</div>
             </div>
             <div v-show="picked&&appType>0" class="progress" :class="{'show-in':show_in}">
               <div class="bar l"></div>
@@ -219,21 +146,11 @@
             </ul>
           </div>
           <div class="send-box">
-            <textarea
-              v-model="commentText"
-              type="text"
-              placeholder="SHIRIKISHA HISIA YAKO..."
-              maxlength="100"
-              @focus="inputFocus"
-            />
+            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
             <div class="btn" @click="sendComment">{{disabled?`${during}s`:`TUMA`}}</div>
           </div>
         </div>
-        <img
-          src="@/assets/img/vote/BSSVote2/img-share.png"
-          class="share"
-          @click="toShare('midshare')"
-        />
+        <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
       </div>
       <img class="text text4" src="@/assets/img/vote/BSSVote2/text4.png" alt />
       <div class="past-programme">
@@ -264,7 +181,7 @@
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
     </div>
     <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
-    <mShare v-if="$appType=0" ref="share" />
+    <mShare v-if="$appType==0" ref="share" />
     <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
     <toast-dialog ref="toast" />
@@ -276,7 +193,7 @@ import alertDialog from '@/components/alert'
 import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
-import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable, } from '@/functions/app'
+import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable } from '@/functions/app'
 export default {
   components: {
     mShare,
@@ -309,9 +226,9 @@ export default {
       loaded: false,
       advisorList: [],
       vote_id: 64,
-      startTime: new Date('2019-11-18T09:00:00'.replace(/-/g, "/").replace("T", " ") + "+0000").getTime(),
-      endTime: new Date('2019-12-11T06:00:00'.replace(/-/g, "/").replace("T", " ") + "+0000").getTime(),
-      endTime2: new Date('2019-12-21T09:00:00'.replace(/-/g, "/").replace("T", " ") + "+0000").getTime(),
+      startTime: new Date('2019-11-18T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
+      endTime: new Date('2019-12-11T06:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
+      endTime2: new Date('2019-12-21T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
       canVotes: true,
 
       // 抽奖
@@ -1064,13 +981,11 @@ export default {
       if (label == 'voterules') this.closeShadow()
       this.mSendEvLog('share_click', label, '')
       if (this.appType == 1) {
-        const url = window.location.href.indexOf('?') >= 0 ? window.location.href+'&pin='+(this.isLogin ? this.$user.id : '')+'&utm_source=VOTE&utm_medium=BSS&utm_campaign='+this.platform : window.location.href+'?pin='+(this.isLogin ? this.$user.id : '')+'&utm_source=VOTE&utm_medium=BSS&utm_campaign='+this.platform
-        shareInvite(
-          url,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        const url =
+          window.location.href.indexOf('?') >= 0
+            ? window.location.href + '&pin=' + (this.isLogin ? this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+            : window.location.href + '?pin=' + (this.isLogin ? this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+        shareInvite(url, this.shareTitle, this.shareText, this.imgUrl)
       } else if (this.appType == 0) {
         this.$refs.share.show()
       }

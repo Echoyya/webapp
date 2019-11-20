@@ -326,13 +326,9 @@ export const addTicketByDownload = function(vote_id) {
   }
 }
 
-export const shareByFacebookInWeb = link => {
-  // eslint-disable-next-line no-undef
-  FB.ui({
-    method: 'share',
-    display: 'popup',
-    href: link
-  })
+export const shareByFacebookInWeb = () => {
+  window.location.href =
+    'https://www.facebook.com/dialog/share?app_id=549455765620872&display=popup&href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F&redirect_uri=https%3A%2F%2Fdevelopers.facebook.com%2Ftools%2Fexplorer'
 }
 export const shareByTwitterInWeb = function(text, link) {
   window.location.href = 'http://twitter.com/share?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(text)

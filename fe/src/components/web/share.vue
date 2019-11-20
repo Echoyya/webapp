@@ -30,15 +30,6 @@ export default {
     }
   },
   mounted() {
-    window.fbAsyncInit = function() {
-      // eslint-disable-next-line no-undef
-      FB.init({
-        appId: '159785064477978',
-        status: true,
-        xfbml: true,
-        version: 'v3.2'
-      })
-    }
     const script = document.createElement('script')
     script.src = 'https://connect.facebook.net/en_US/sdk.js'
     const firstScript = document.getElementsByTagName('script')[0]
