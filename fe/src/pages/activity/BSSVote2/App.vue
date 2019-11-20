@@ -356,7 +356,7 @@ export default {
       console.log(time)
       this.barrageList.push({
         id: ++this.currentId,
-        avatar: v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar,
+        avatar: v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png?w=20' : v.avatar+'?w=20',
         msg: decodeURI(v.content),
         time: time,
         type: MESSAGE_TYPE.NORMAL
