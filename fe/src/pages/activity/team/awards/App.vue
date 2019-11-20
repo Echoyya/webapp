@@ -86,16 +86,12 @@ export default {
         if (this.teams.length >= 10) {
           shareByFacebook(
             `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            this.shareTitle,
-            this.shareText,
-            this.imgUrl
+            `【${this.shareTitle}】 ${this.shareText} `
           )
         } else {
           shareByFacebook(
             `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            this.shareTitle,
-            this.shareText,
-            this.imgUrl
+            `【${this.shareTitle}】 ${this.shareText} `
           )
         }
       }
@@ -103,7 +99,7 @@ export default {
     toWhatsApp() {
       if (this.$appType == 1) {
         if (this.teams.length >= 10) {
-          shareByFacebook(
+          shareByWhatsApp(
             `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
             this.shareTitle,
             this.shareText,

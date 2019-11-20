@@ -303,16 +303,12 @@ export default {
         if (this.hasFinish == true) {
           shareByFacebook(
             `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            this.shareTitle,
-            this.shareText,
-            this.imgUrl
+            `【${this.shareTitle}】 ${this.shareText} `
           )
         } else {
           shareByFacebook(
             `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            this.shareTitle,
-            this.shareText,
-            this.imgUrl
+            `【${this.shareTitle}】 ${this.shareText} `
           )
         }
       }
@@ -628,7 +624,7 @@ export default {
     margin-bottom: 0.5rem;
     .title {
       width: 100%;
-      background-color: #C20044;
+      background-color: #c20044;
     }
     .contant {
       padding: 0.5rem 0.5rem 1.5rem;

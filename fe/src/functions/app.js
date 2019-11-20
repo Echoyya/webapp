@@ -216,15 +216,13 @@ export const shareInvite = (link, shareTitle, shareContent, shareImg) => {
   }
 }
 
-export const shareByFacebook = (link, shareTitle, shareContent, shareImg) => {
+export const shareByFacebook = (link, shareContent) => {
   if (window.getChannelId && window.getChannelId.shareFacebook) {
-    // window.getChannelId.shareFacebook(shareTitle + ' ', shareContent + ' ', link, shareImg, '')
-    window.getChannelId.shareFacebook(shareTitle + ' ', ' ', link, shareImg, '')
+    window.getChannelId.shareFacebook('', shareContent, link, link, '')
   }
 }
 export const shareByWhatsApp = (link, shareTitle, shareContent, shareImg) => {
   if (window.getChannelId && window.getChannelId.shareWhatsApp) {
-    // window.getChannelId.shareWhatsApp(shareTitle + ' ', shareContent + ' ', link, shareImg, '')
     window.getChannelId.shareWhatsApp(shareTitle + ' ', ' ', link, shareImg, '')
   }
 }

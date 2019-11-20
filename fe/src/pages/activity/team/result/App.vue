@@ -69,9 +69,7 @@ export default {
         if (this.$appVersion) {
           shareByFacebook(
             `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            this.shareTitle,
-            this.shareText,
-            this.imgUrl
+            `【${this.shareTitle}】 ${this.shareText} `
           )
         } else {
           this.shareOldVersion()
