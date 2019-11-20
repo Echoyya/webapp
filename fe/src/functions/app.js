@@ -1,6 +1,7 @@
 import axios from 'axios'
 import qs from 'qs'
 import { getBrowser, getCookie, setCookie } from '@/functions/utils'
+import env from '@/functions/config'
 
 const browser = getBrowser()
 const appleStore = 'https://itunes.apple.com/us/app/startimes/id1168518958?l=zh&ls=1&mt=8'
@@ -326,9 +327,28 @@ export const addTicketByDownload = function(vote_id) {
   }
 }
 
-export const shareByFacebookInWeb = () => {
-  window.location.href =
-    'https://www.facebook.com/dialog/share?app_id=549455765620872&display=popup&href=https%3A%2F%2Fdevelopers.facebook.com%2Fdocs%2F&redirect_uri=https%3A%2F%2Fdevelopers.facebook.com%2Ftools%2Fexplorer'
+/**
+ *
+ * @param {string} link 分享链接,默认是当前地址
+ * @param {string} quote  由开发者定义的引文，可由用户编辑  default null
+ * @param {string} hashtag  由开发者定义的话题标签 default null
+ * @param {string} redirect_uri  分享后的跳转地址，默认是当前页面
+ */
+export const shareByFacebookInWeb = (link, quote, hashtag, redirect_uri) => {
+  link = link || location.href
+  redirect_uri = redirect_uri || location.href
+  let href =
+    'https://www.facebook.com/dialog/share?app_id=' +
+    env.facebookAppId +
+    '&display=popup&href=' +
+    encodeURIComponent(link) +
+    '&redirect_uri=' +
+    encodeURIComponent(redirect_uri)
+
+  if (quote) href += '&quote=' + encodeURIComponent(quote)
+  if (hashtag) href += '&hashtag=' + encodeURIComponent(hashtag)
+
+  window.location.href = href
 }
 export const shareByTwitterInWeb = function(text, link) {
   window.location.href = 'http://twitter.com/share?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(text)

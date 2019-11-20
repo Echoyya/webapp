@@ -29,12 +29,6 @@ export default {
       style: 'none'
     }
   },
-  mounted() {
-    const script = document.createElement('script')
-    script.src = 'https://connect.facebook.net/en_US/sdk.js'
-    const firstScript = document.getElementsByTagName('script')[0]
-    firstScript.parentNode.insertBefore(script, firstScript)
-  },
   methods: {
     close() {
       this.style = 'none'
@@ -114,10 +108,10 @@ li {
         img {
           width: 65%;
         }
-        >p{
-          padding:0;
-          height:1.2rem;
-          line-height:1.2rem;
+        > p {
+          padding: 0;
+          height: 1.2rem;
+          line-height: 1.2rem;
         }
       }
     }
