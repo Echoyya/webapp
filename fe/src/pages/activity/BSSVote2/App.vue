@@ -827,9 +827,11 @@ export default {
         } else if (this.isLogin) {
           if (vip == 'dvbvip') {
             // 原生DVB
+            this.mSendEvLog('dvb_click', '', '')
             toNativePage('com.star.mobile.video.smartcard.changebouquet.ChangeBouquetActivity')
           } else if (vip == 'ottvip') {
             // 原生OTT
+            this.mSendEvLog('ott_click', '', '')
             toNativePage('com.star.mobile.video.me.product.MembershipListActivity')
           }
         }
