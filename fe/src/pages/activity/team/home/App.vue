@@ -158,6 +158,7 @@ export default {
       history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
 
       searchTeam.call(this, teamno, data => {
+        // TODO  活动时间
         if (data.code >= 2) {
           this.$refs.malert.show(data.message)
           return
@@ -218,7 +219,6 @@ export default {
   methods: {
     toJoin(teamno) {
       joinTeam.call(this, teamno, data => {
-
         // TODO 确认data.code ==4 是否属于这个分支
         if (data.code == 0 || data.code == 4) {
           this.team = data.data.team_member_dtos
@@ -249,10 +249,7 @@ export default {
     },
     toCreate() {
       createTeam.call(this, data => {
-        if (data.code == 0) {
-          this.team = data.data.team_member_dtos
-          this.teamNum = data.data.team_no
-        } else if (data.code == 1) {
+        if (data.code == 0 || data.code == 1) {
           this.checkMyTeam()
         } else if (data.code == 2) {
           // 已经达到了最高限制
