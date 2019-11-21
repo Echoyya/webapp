@@ -7,7 +7,7 @@
       <div v-show="!hasFinish" v-if="team.length>0" class="contant">
         <div>
           <div>
-            <img :src="team[0].logo" alt />
+            <img :src="team[0].logo" />
           </div>
           <span>{{team[0].nick_name}}</span>
         </div>
@@ -99,8 +99,8 @@ export default {
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.shareText'),
 
-      activityStart: new Date('2019-11-15 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-25 04:00:00').getTime(),
+      activityStart: new Date('2019-11-15T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
+      activityEnd: new Date('2019-11-25T04:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
       show_share: false,
       hasFinish: false,
 
@@ -374,6 +374,7 @@ export default {
       if (this.$isLogin) {
         this.show_share = true
         if (this.$appVersion) {
+          // 5.20版本
           this.show_share = true
         } else {
           if (this.hasFinish == true) {
