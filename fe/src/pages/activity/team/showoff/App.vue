@@ -45,7 +45,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import { getQueryVariable, callApp, callMarket, downApk } from '@/functions/app'
+import { getQuery, callApp, callMarket, downApk } from '@/functions/app'
 export default {
   components: {
     mBanner
@@ -71,7 +71,7 @@ export default {
     }
   },
   mounted() {
-    this.award_day = getQueryVariable(location.search.replace('?', ''), 'prize')
+    this.award_day = getQuery('prize')
   },
   methods: {
     create() {
@@ -137,7 +137,7 @@ export default {
     -webkit-box-orient: vertical;
     margin: 0.5rem auto 0;
     text-align: center;
-    color: #FFBC00;
+    color: #ffbc00;
     font-weight: bold;
   }
   .video {

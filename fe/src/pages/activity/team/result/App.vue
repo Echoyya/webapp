@@ -3,10 +3,10 @@
     <mBanner />
     <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
     <div class="prize">
-      <img v-if="award_day==1" src="@/assets/img/vote/TeamFission/vip1.png" alt="">
-      <img v-if="award_day==7" src="@/assets/img/vote/TeamFission/vip7.png" alt="">
-      <img v-if="award_day==30" src="@/assets/img/vote/TeamFission/vip30.png" alt="">
-      <img v-if="award_day==0" src="@/assets/img/vote/TeamFission/thanks.png" alt="">
+      <img v-if="award_day==1" src="@/assets/img/vote/TeamFission/vip1.png" alt />
+      <img v-if="award_day==7" src="@/assets/img/vote/TeamFission/vip7.png" alt />
+      <img v-if="award_day==30" src="@/assets/img/vote/TeamFission/vip30.png" alt />
+      <img v-if="award_day==0" src="@/assets/img/vote/TeamFission/thanks.png" alt />
     </div>
     <div class="share-box">
       <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
@@ -26,7 +26,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable, shareInvite } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, shareInvite } from '@/functions/app'
 import countdown from '@/pages/activity/team/countdown'
 export default {
   components: {
@@ -49,8 +49,8 @@ export default {
     }
   },
   mounted() {
-    this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
-    this.award_day = getQueryVariable(location.search.replace('?', ''), 'prize')
+    this.teamNum = getQuery('teamno')
+    this.award_day = getQuery('prize')
   },
   methods: {
     create() {

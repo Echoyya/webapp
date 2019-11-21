@@ -47,7 +47,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery } from '@/functions/app'
 import { searchTeam } from '@/pages/activity/team/func'
 export default {
   components: {
@@ -70,7 +70,7 @@ export default {
     }
   },
   created() {
-    this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
+    this.teamNum = getQuery('teamno')
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
       if (data.code == 0) {
         this.teams = data.data.my_award_team_dtos
