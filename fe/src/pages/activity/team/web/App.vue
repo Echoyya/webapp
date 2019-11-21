@@ -110,7 +110,7 @@
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
 import { searchTeam } from '@/pages/activity/team/func'
-import { getQueryVariable, callApp, callMarket, downApk } from '@/functions/app'
+import { getQuery, callApp, callMarket, downApk } from '@/functions/app'
 import confirmDialog from '@/components/confirm'
 import malert from '@/pages/activity/team/malert'
 import ClipboardJS from 'clipboard'
@@ -154,7 +154,7 @@ export default {
     const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
     this.number = formatAmount(10 + Math.floor(period * speed))
 
-    this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
+    this.teamNum = getQuery('teamno')
     if (this.teamNum) {
       this.search()
     }

@@ -151,7 +151,7 @@ export const callMarket = function(failback) {
   let source = utmParam.str
 
   // 对组队活动特殊处理teamno
-  const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
+  const teamno = getQuery('teamno')
   if (teamno) {
     source =
       source +
@@ -249,9 +249,9 @@ export const getUtmParam = function() {
   if (query.referrer) {
     // 通过referrer 参数接收
     source = source + referrer
-    utmSource = getQueryVariable(decodeURIComponent(referrer), 'utm_source') || ''
-    utmMedium = getQueryVariable(decodeURIComponent(referrer), 'utm_medium') || ''
-    utmCampaign = getQueryVariable(decodeURIComponent(referrer), 'utm_campaign') || ''
+    utmSource = getQuery('utm_source', decodeURIComponent(referrer)) || ''
+    utmMedium = getQuery('utm_medium', decodeURIComponent(referrer)) || ''
+    utmCampaign = getQuery('utm_campaign', decodeURIComponent(referrer)) || ''
   } else if (query.utm_source) {
     // 通过utm_source格式接收
     let str = `utm_source=${query.utm_source}`
@@ -275,9 +275,9 @@ export const getUtmParam = function() {
     const utmCache = sessionStorage.getItem('utm_str')
     if (utmCache) {
       source = source + utmCache
-      utmSource = getQueryVariable(decodeURIComponent(utmCache), 'utm_source') || ''
-      utmMedium = getQueryVariable(decodeURIComponent(utmCache), 'utm_medium') || ''
-      utmCampaign = getQueryVariable(decodeURIComponent(utmCache), 'utm_campaign') || ''
+      utmSource = getQuery('utm_source', decodeURIComponent(utmCache)) || ''
+      utmMedium = getQuery('utm_medium', decodeURIComponent(utmCache)) || ''
+      utmCampaign = getQuery('utm_campaign', decodeURIComponent(utmCache)) || ''
     } else {
       source = source + encodeURIComponent('utm_source=officeWap')
       utmSource = 'officeWap'
@@ -294,8 +294,13 @@ export const getUtmParam = function() {
     }
   }
 }
-
-export const getQueryVariable = function(query, key) {
+/**
+ *
+ * @param {string} key 获取query参数名
+ * @param {string} queryStr 指定字符串
+ */
+export const getQuery = function(key, queryStr) {
+  let query = queryStr || location.search
   query = query.includes('?') ? query.replace('?', '') : query
   const vars = query.split('&')
   for (let i = 0; i < vars.length; i++) {
@@ -304,14 +309,14 @@ export const getQueryVariable = function(query, key) {
       if (pair[1]) {
         return decodeURIComponent(pair[1])
       } else {
-        return null
+        return ''
       }
     }
   }
 }
 
 export const addTicketByDownload = function(vote_id) {
-  const user = getQueryVariable(location.search, 'pin')
+  const user = getQuery('pin')
   const lastGetTicket = getCookie('get_ticket_time')
   if (user && !lastGetTicket) {
     let url = '/hybrid/api/sign'

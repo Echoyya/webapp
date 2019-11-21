@@ -83,7 +83,7 @@
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
 import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity/team/func'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable, toNativePage, shareInvite } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, toNativePage, shareInvite } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
 import countdown from '@/pages/activity/team/countdown'
 export default {
@@ -107,7 +107,7 @@ export default {
       //team
       team: [],
       teamNum: '',
-      team_activity_id: 1, // TODO 活动id抽离
+      team_activity_id: getQuery('activiy') || 1,
 
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
@@ -152,7 +152,7 @@ export default {
     }
   },
   mounted() {
-    const teamno = getQueryVariable(location.search.replace('?', ''), 'teamno')
+    const teamno = getQuery('teamno')
     if (teamno && !isNaN(teamno)) {
       history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
       searchTeam.call(this, teamno, data => {

@@ -188,7 +188,7 @@ import alertDialog from '@/components/alert'
 import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
-import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable } from '@/functions/app'
+import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQuery } from '@/functions/app'
 import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
 import env from '@/functions/config'
 export default {
@@ -334,8 +334,8 @@ export default {
     }
   },
   created() {
-    this.vote_id = getQueryVariable(location.search.replace('?', ''), 'voteid') || 64
-    this.barrage_id = getQueryVariable(location.search.replace('?', ''), 'barrageid') || 17
+    this.vote_id = getQuery('voteid') || 64
+    this.barrage_id = getQuery('barrageid') || 17
   },
   mounted() {
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
