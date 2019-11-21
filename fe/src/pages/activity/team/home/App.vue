@@ -83,7 +83,7 @@
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
 import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity/team/func'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, toNativePage, shareInvite } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, toNativePage, shareInvite, toNativeLogin } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
 import countdown from '@/pages/activity/team/countdown'
 export default {
@@ -107,7 +107,7 @@ export default {
       //team
       team: [],
       teamNum: '',
-      team_activity_id: getQuery('activiy') || 1,
+      activity_id: getQuery('activiy') || 1,
 
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
@@ -153,57 +153,53 @@ export default {
   },
   mounted() {
     const teamno = getQuery('teamno')
+
     if (teamno && !isNaN(teamno)) {
       history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
+
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
-          //未找到队伍
           this.$refs.malert.show(data.message)
-        } else {
-          if (data.data.newcomer) {
-            if (data.code > 0) {
-              // 队伍未满
-              const teamLeader = data.data.team_member_dtos[0].nick_name
-              this.$refs.findTeamAlert.show(
-                'Here! You are going to join ' + teamLeader + '`s team',
-                () => {
-                  // 加入队伍
-                  if (this.$isLogin) {
-                    this.toJoin(teamno)
-                  } else if (this.$appType === 1) {
-                    localStorage.setItem('join_teamno', teamno)
-                    toNativePage('com.star.mobile.video.account.LoginActivity')
-                  } else {
-                    localStorage.setItem('join_teamno', teamno)
-                    toNativePage('startimes://login')
-                  }
-                },
-                'OK'
-              )
-              this.fakeTeam()
-            } else {
-              // 队伍已满
-              this.$refs.malert.show(this.$t('vote.team.full_team') + '.' + this.$t('vote.team.to_change_team'), () => {
-                location.href = '/activity/team/search.html'
-              })
-            }
+          return
+        }
+        if (data.data.newcomer) {
+          if (data.code > 0) {
+            // can join
+            const teamLeader = data.data.team_member_dtos[0].nick_name || data.data.team_member_dtos[0].id
+            this.$refs.findTeamAlert.show(
+              'Here! You are going to join ' + teamLeader + '`s team',
+              () => {
+                if (this.$isLogin) {
+                  this.toJoin(teamno)
+                } else {
+                  localStorage.setItem('join_teamno', teamno)
+                  toNativeLogin(this.$appType)
+                }
+              },
+              'OK'
+            )
+            this.fakeTeam()
           } else {
-            // 老用户
-            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
-              if (this.$isLogin) {
-                this.toCreate()
-              } else {
-                this.fakeTeam()
-              }
+            // team is full
+            this.$refs.malert.show(this.$t('vote.team.full_team') + '.' + this.$t('vote.team.to_change_team'), () => {
+              location.href = '/activity/team/search.html'
             })
           }
+        } else {
+          this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
+            if (this.$isLogin) {
+              this.toCreate()
+            } else {
+              this.fakeTeam()
+            }
+          })
         }
       })
     } else {
       if (this.$isLogin) {
-        // 获取缓存的teamNo
         const cacheTeamNo = localStorage.getItem('join_teamno')
         this.checkMyTeam(() => {
+          // check my team failed
           if (cacheTeamNo) {
             this.toJoin(cacheTeamNo)
             localStorage.removeItem('join_teamno')
@@ -222,8 +218,9 @@ export default {
   methods: {
     toJoin(teamno) {
       joinTeam.call(this, teamno, data => {
+
+        // TODO 确认data.code ==4 是否属于这个分支
         if (data.code == 0 || data.code == 4) {
-          // 加入成功
           this.team = data.data.team_member_dtos
           this.teamNum = teamno
           if (data.code == 4) {
@@ -253,12 +250,7 @@ export default {
     toCreate() {
       createTeam.call(this, data => {
         if (data.code == 0) {
-          this.team = [
-            {
-              nick_name: data.data.leader_nick_name,
-              logo: data.data.leader_logo || 'https://cdn.startimestv.com/head/h_d.png'
-            }
-          ]
+          this.team = data.data.team_member_dtos
           this.teamNum = data.data.team_no
         } else if (data.code == 1) {
           this.checkMyTeam()
@@ -535,7 +527,7 @@ export default {
         } else if (this.times === this.cycle) {
           // 后台取得一个中奖位置
           this.$axios
-            .post(`/voting/team-award/v1/user/award?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
+            .post(`/voting/team-award/v1/user/award?activity_id=${this.activity_id}&team_no=${this.teamNum}`)
             .then(res => {
               if (res.data.code == 0) {
                 this.award_day = res.data.data.award_day

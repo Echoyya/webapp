@@ -389,3 +389,11 @@ export const copyClipboard = function(text) {
     alert('Copy text is not support on your browser')
   }
 }
+
+export const toNativeLogin = function(type) {
+  if (type == 2) {
+    toNativePage('startimes://login')
+  } else {
+    toNativePage('com.star.mobile.video.account.LoginActivity')
+  }
+}
