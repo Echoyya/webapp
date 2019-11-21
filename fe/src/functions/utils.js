@@ -69,7 +69,14 @@ export const getBrowser = function() {
   const systemInfo = /Android [\d.]*/i.exec(ua)
   const browserInfo = /Chrome\/[\d.]*/i.exec(ua)
   const browserVer = browserInfo ? parseFloat(browserInfo[0].split('/')[1]) : -1
-  const androidVer = systemInfo ? parseFloat(systemInfo[0].split('/')[1]) : -1
+  let androidVer = -1
+  if (systemInfo) {
+    if (systemInfo.includes('/')) {
+      androidVer = parseFloat(systemInfo[0].split('/')[1])
+    } else {
+      androidVer = parseFloat(systemInfo[0].split(' ')[1])
+    }
+  }
 
   return {
     isAndroid,
