@@ -282,6 +282,15 @@ export default {
       .mumber {
         width: 33%;
         float: left;
+        span {
+          img {
+            width: 65%;
+            margin: 0 auto;
+            border: 2px solid #8600c8;
+            border-radius: 100%;
+            display: block;
+          }
+        }
         > div {
           width: 65%;
           position: relative;

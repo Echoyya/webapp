@@ -2,76 +2,141 @@
   <div class="wrapper">
     <mBanner />
     <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
-    <div v-show="!show_share" class="invite box">
-      <div v-show="!hasFinish" class="title">{{$t('vote.team.invite_tips')}}</div>
-      <div v-show="!hasFinish" v-if="team.length>0" class="contant">
-        <div>
+    <div v-if="!isFull" class="team-normal">
+      <div v-show="!show_share" class="invite box">
+        <div v-show="!hasFinish" class="title">{{$t('vote.team.invite_tips')}}</div>
+        <div v-show="!hasFinish" v-if="team.length>0" class="contant">
           <div>
-            <img :src="team[0].logo" />
+            <div>
+              <img :src="team[0].logo" />
+            </div>
+            <span>{{team[0].nick_name}}</span>
           </div>
-          <span>{{team[0].nick_name}}</span>
-        </div>
-        <img src="@/assets/img/vote/TeamFission/ic_forward2.png" />
-        <div>
+          <img src="@/assets/img/vote/TeamFission/ic_forward2.png" />
           <div>
-            <img v-if="team[1]" :src="team[1].logo" />
-            <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+            <div>
+              <img v-if="team[1]" :src="team[1].logo" />
+              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+            </div>
+          </div>
+          <div>
+            <div>
+              <img v-if="team[2]" :src="team[2].logo" />
+              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+            </div>
           </div>
         </div>
-        <div>
-          <div>
-            <img v-if="team[2]" :src="team[2].logo" />
-            <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+        <div v-show="hasFinish" class="finish">
+          {{$t('vote.team.share10_1')}}
+          <br />
+          {{$t('vote.team.share10_2')}}
+        </div>
+        <div class="firends-box clearfix">
+          <div class="img" @click="toSearch"></div>
+          <div class="friends" @click="showShare">
+            <img src="@/assets/img/vote/TeamFission/ic_share.png" />
+            <p>{{$t('vote.team.invite_btn')}}</p>
           </div>
         </div>
       </div>
-      <div v-show="hasFinish" class="finish">
-        {{$t('vote.team.share10_1')}}
-        <br />
-        {{$t('vote.team.share10_2')}}
+      <div v-show="show_share" class="share-box">
+        <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false" />
+        <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
+        <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
+        <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
+        <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
+        <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
       </div>
-      <div class="firends-box clearfix">
-        <div class="img" @click="toSearch"></div>
-        <div class="friends" @click="showShare">
-          <img src="@/assets/img/vote/TeamFission/ic_share.png" />
-          <p>{{$t('vote.team.invite_btn')}}</p>
-        </div>
-      </div>
-    </div>
-    <div v-show="show_share" class="share-box">
-      <img src="@/assets/img/vote/TeamFission/ic_close.png" @click="show_share=false" />
-      <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
-      <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
-      <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
-      <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
-      <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
-    </div>
-    <div class="lottery box">
-      <div class="title">{{$t('vote.team.draw_title')}}</div>
-      <div class="contant">
-        <div class="lottery-type">
-          <ul class="clearfix">
-            <li v-for="(item,key) in lotteryList" :key="key" :class="indexs==key?'active':''">
-              <div>
-                <div class="prize">
-                  <img :src="item.picture_url" alt />
+      <div class="lottery box">
+        <div class="title">{{$t('vote.team.draw_title')}}</div>
+        <div class="contant">
+          <div class="lottery-type">
+            <ul class="clearfix">
+              <li v-for="(item,key) in lotteryList" :key="key" :class="indexs==key?'active':''">
+                <div>
+                  <div class="prize">
+                    <img :src="item.picture_url" alt />
+                  </div>
                 </div>
-              </div>
-            </li>
-            <div class="getLuck" @click="startLottery">{{$t('vote.team.draw_button')}}</div>
+              </li>
+              <div class="getLuck" @click="startLottery">{{$t('vote.team.draw_button')}}</div>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="msg-box">
+        <div class="msg">
+          <ul ref="msgul" :class="{anim:animates==true}">
+            <img src="@/assets/img/vote/TeamFission/ic-msg.png" alt />
+            <li
+              v-for="item in msgList"
+              :key="item.key"
+            >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} has won {{item.reward_name||''}}!</li>
           </ul>
         </div>
       </div>
     </div>
-    <div class="msg-box">
-      <div class="msg">
-        <ul ref="msgul" :class="{anim:animates==true}">
-          <img src="@/assets/img/vote/TeamFission/ic-msg.png" alt />
-          <li
-            v-for="item in msgList"
-            :key="item.key"
-          >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} has won {{item.reward_name||''}}!</li>
-        </ul>
+    <div v-else class="team-full">
+      <div class="text text1">{{$t('vote.team.full_team')}}</div>
+      <div class="invite">
+        <div v-show="mumberList.length>0" class="team clearfix">
+          <div v-for="(item,index) in mumberList" :key="index" class="mumber">
+            <div>
+              <img v-if="item.logo" :src="item.logo" />
+              <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+            </div>
+          </div>
+          <div v-for="(add) in (3-mumberList.length)" :key="add+3" class="mumber">
+            <span class="add">
+              <img src="@/assets/img/vote/TeamFission/bg-add.png" />
+            </span>
+          </div>
+        </div>
+        <span>{{$t('vote.team.invite_won',[number])}}</span>
+        <div class="team-btn">
+          <div @click="toCreate('full')">{{$t('vote.team.form_newbtn')}}</div>
+        </div>
+      </div>
+      <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
+      <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
+        <div class="team1 clearfix">
+          <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
+          <div class="team-box">
+            <div class="team clearfix">
+              <div v-for="(item,index) in moreList1" :key="index" class="mumber">
+                <img v-if="item.logo" :src="item.logo" />
+                <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+              </div>
+              <div v-for="(add) in (3-moreList1.length)" :key="add+3" class="mumber">
+                <span class="add">
+                  <img src="@/assets/img/vote/TeamFission/bg-add.png" />
+                </span>
+              </div>
+            </div>
+            <div class="join">
+              <div @click="toJoin(teamNum1,'full')">{{$t('vote.team.join_s')}}</div>
+            </div>
+          </div>
+        </div>
+        <div class="team2 clearfix">
+          <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum2}}</div>
+          <div class="team-box">
+            <div class="team clearfix">
+              <div v-for="(item,index) in moreList2" :key="index" class="mumber">
+                <img v-if="item.logo" :src="item.logo" />
+                <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+              </div>
+              <div v-for="(add) in (3-moreList2.length)" :key="add+3" class="mumber">
+                <span class="add">
+                  <img src="@/assets/img/vote/TeamFission/bg-add.png" />
+                </span>
+              </div>
+            </div>
+            <div class="join">
+              <div @click="toJoin(teamNum2,'full')">{{$t('vote.team.join_s')}}</div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
     <malert ref="malert" />
@@ -82,6 +147,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
+import { formatAmount } from '@/functions/utils'
 import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity/team/func'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, toNativePage, shareInvite, toNativeLogin } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
@@ -108,6 +174,13 @@ export default {
       team: [],
       teamNum: '',
       activity_id: getQuery('activiy') || 1,
+      isFull: false,
+      mumberList: [],
+      moreList1: [],
+      moreList2: [],
+      teamNum1: '',
+      teamNum2: '',
+      number: '',
 
       // 抽奖
       indexs: -1, // 当前转动到哪个位置，起点位置
@@ -151,6 +224,13 @@ export default {
       }
     }
   },
+  created() {
+    const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
+    const max = 10 * 10000
+    const speed = Math.floor((max / during) * 100) / 100
+    const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
+    this.number = formatAmount(10 + Math.floor(period * speed))
+  },
   mounted() {
     const teamno = getQuery('teamno')
 
@@ -168,7 +248,7 @@ export default {
             // can join
             const teamLeader = data.data.team_member_dtos[0].nick_name || data.data.team_member_dtos[0].id
             this.$refs.findTeamAlert.show(
-              'Here! You are going to join ' + teamLeader + '`s team',
+              this.$t('vote.team.newuser', teamLeader),
               () => {
                 if (this.$isLogin) {
                   this.toJoin(teamno)
@@ -181,10 +261,14 @@ export default {
             )
             this.fakeTeam()
           } else {
-            // team is full
-            this.$refs.malert.show(this.$t('vote.team.full_team') + '.' + this.$t('vote.team.to_change_team'), () => {
-              location.href = '/activity/team/search.html'
-            })
+            // 当前搜索的队伍是满队
+            this.isFull = true
+            this.mumberList = data.data.team_member_dtos
+            this.leader_name = this.mumberList[0].nick_name
+            this.teamNum1 = data.data.team_recommend_dtos[0].team_no
+            this.teamNum2 = data.data.team_recommend_dtos[1].team_no
+            this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
+            this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
           }
         } else {
           this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
@@ -217,15 +301,13 @@ export default {
     this.msgScroll()
   },
   methods: {
-    toJoin(teamno) {
+    toJoin(teamno, value) {
+      if (value) this.isFull = false
       joinTeam.call(this, teamno, data => {
         // TODO 确认data.code ==4 是否属于这个分支
-        if (data.code == 0 || data.code == 4) {
+        if (data.code == 0) {
           this.team = data.data.team_member_dtos
           this.teamNum = teamno
-          if (data.code == 4) {
-            this.$refs.malert.show(data.message)
-          }
           if (this.team.length >= 3) {
             this.canLottery = true
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
@@ -233,24 +315,37 @@ export default {
               this.startLottery()
             })
           }
+        } else if (data.code == 4) {
+          this.$refs.malert.show(this.$t('vote.team.have_team'), () => {
+            this.checkMyTeam()
+          })
         } else if (data.code == 1) {
           // 不是新用户，需要创建队伍
           this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
           this.toCreate()
         } else if (data.code == 2) {
           // 已经满了，再加入个别的吧
-          this.$refs.malert.show(this.$t('vote.team.full_team') + '.' + this.$t('vote.team.to_change_team'), () => {
-            window.location.href = '/activity/team/search.html'
-          })
+          this.isFull = true
+          this.mumberList = data.data.team_member_dtos
+          this.leader_name = this.mumberList[0].nick_name
+          this.teamNum1 = data.data.team_recommend_dtos[0].team_no
+          this.teamNum2 = data.data.team_recommend_dtos[1].team_no
+          this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
+          this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
         } else {
           this.$refs.malert.show(data.message)
         }
       })
     },
-    toCreate() {
+    toCreate(value) {
+      if (value) this.isFull = false
       createTeam.call(this, data => {
-        if (data.code == 0 || data.code == 1) {
+        if (data.code == 0) {
           this.checkMyTeam()
+        } else if (data.code == 1) {
+          this.$refs.malert.show(this.$t('vote.team.have_team'), () => {
+            this.checkMyTeam()
+          })
         } else if (data.code == 2) {
           // 已经达到了最高限制
           this.hasFinish = true
@@ -524,7 +619,7 @@ export default {
         } else if (this.times === this.cycle) {
           // 后台取得一个中奖位置
           this.$axios
-            .post(`/voting/team-award/v1/user/award?team_activity_id=${this.activity_id}&team_no=${this.teamNum}`)
+            .post(`/voting/team-award/v1/user/award?activity_id=${this.activity_id}&team_no=${this.teamNum}`)
             .then(res => {
               if (res.data.code == 0) {
                 this.award_day = res.data.data.award_day
@@ -586,242 +681,56 @@ export default {
   letter-spacing: -0.03rem;
   position: static;
   background-image: linear-gradient(#7c003d, #6c0049);
-  .box {
-    position: relative;
-    z-index: 2;
-    width: 95%;
-    margin: 0 auto;
-    .title {
-      background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
-      width: 80%;
-      height: 2rem;
-      color: #ffbc00;
-      border-top-right-radius: 1rem;
-      border-top-left-radius: 1rem;
-      padding-left: 0.8rem;
-      line-height: 2rem;
-      font-size: 0.9rem;
-    }
-    .contant {
-      padding: 0.5rem;
-      background-image: linear-gradient(rgba(165, 3, 80, 0.5), #600165);
-      border-radius: 1rem;
-      border-top-left-radius: 0;
-      color: #fff;
-    }
-  }
-  .invite {
-    margin-bottom: 0.5rem;
-    .title {
-      width: 100%;
-      background-color: #c20044;
-    }
-    .contant {
-      padding: 0.5rem 0.5rem 1.5rem;
+  .team-normal {
+    .box {
       position: relative;
-      > div {
-        display: inline-block;
-        width: 20%;
-        > div {
-          width: 100%;
-          position: relative;
-          border: 2px solid #8700b1;
-          border-radius: 50%;
-          overflow: hidden;
-          background-image: url('~@/assets/img/vote/TeamFission/bg-add.png');
-          background-size: 100% 100%;
-          img {
-            width: 100%;
-            height: 100%;
-            position: absolute;
-            top: 0;
-          }
-          &:before {
-            content: '';
-            display: inline-block;
-            padding-bottom: 100%;
-            width: 0;
-            vertical-align: middle;
-          }
-        }
-        span {
-          color: #9f00ee;
-          position: absolute;
-          left: 6%;
-        }
+      z-index: 2;
+      width: 95%;
+      margin: 0 auto;
+      .title {
+        background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
+        width: 80%;
+        height: 2rem;
+        color: #ffbc00;
+        border-top-right-radius: 1rem;
+        border-top-left-radius: 1rem;
+        padding-left: 0.8rem;
+        line-height: 2rem;
+        font-size: 0.9rem;
       }
-      :nth-child(1) {
-        margin-right: 5%;
-      }
-      :nth-child(2) {
-        margin-right: 6%;
-      }
-      :nth-child(3) {
-        margin-right: 10%;
-      }
-      > img {
-        width: 18%;
-        position: relative;
-        top: -1.4rem;
+      .contant {
+        padding: 0.5rem;
+        background-image: linear-gradient(rgba(165, 3, 80, 0.5), #600165);
+        border-radius: 1rem;
+        border-top-left-radius: 0;
+        color: #fff;
       }
     }
-    .finish {
-      color: #ffbc00;
-      height: 8rem;
-      line-height: 2rem;
-      font-size: 1.2rem;
-      padding: 2rem 0.5rem;
-      margin: 0.5rem auto;
-      border-radius: 1rem;
-      background-color: #a1014b;
-      text-align: center;
-      font-weight: bold;
-    }
-    .firends-box {
-      width: 100%;
-      margin-top: 0.5rem;
-      height: 3rem;
-      .img {
-        float: left;
-        width: 17%;
-        height: 3rem;
-        background-image: url('~@/assets/img/vote/TeamFission/btn-search.png');
-        background-size: contain;
-        background-repeat: no-repeat;
-      }
-      .friends {
-        float: left;
-        width: 83%;
-        height: 3rem;
-        position: relative;
-        background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
-        border-radius: 25px;
-        border: 0.2rem solid rgba(26, 1, 96, 0.75);
-        color: #ffffff;
-        height: 3rem;
-        line-height: 2.6rem;
-        img {
-          height: 1.2rem;
-          position: absolute;
-          left: 15%;
-          top: 0.7rem;
-        }
-        p {
-          text-align: center;
-          font-weight: bold;
-        }
-      }
-    }
-  }
-  .share-box {
-    width: 95%;
-    margin: 0.5rem auto;
-    padding: 0.5rem;
-    background-color: #a1014b;
-    height: 10rem;
-    border-radius: 1rem;
-    > img {
-      width: 20%;
-      &:first-child {
-        display: block;
-        margin-left: 93%;
-        margin-bottom: 1rem;
-        width: 7%;
-        background-image: url('~@/assets/img/vote/TeamFission/ic_download.png');
-      }
-    }
-  }
-  .lottery {
-    .contant {
-      .lottery-type {
+    .invite {
+      margin-bottom: 0.5rem;
+      .title {
         width: 100%;
-        margin: 0 auto;
-        background-image: url('~@/assets/img/vote/TeamFission/bg-lottery.png');
-        background-size: 100% 101%;
-        color: #ad5500;
-        ul {
-          width: 100%;
-          margin: 0 auto;
-          border-radius: 0.5rem;
-          position: relative;
-          &:before {
-            content: '';
-            display: inline-block;
-            padding-bottom: 100%;
-            width: 0;
-            vertical-align: middle;
-          }
-          li {
-            width: 28%;
-            display: block;
-            position: absolute;
+        background-color: #c20044;
+      }
+      .contant {
+        padding: 0.5rem 0.5rem 1.5rem;
+        position: relative;
+        > div {
+          display: inline-block;
+          width: 20%;
+          > div {
+            width: 100%;
+            position: relative;
+            border: 2px solid #8700b1;
+            border-radius: 50%;
             overflow: hidden;
-            background-color: #fff;
-            border: 0.25rem solid transparent;
-            border-radius: 0.5rem;
-            background-color: #a80044;
-            &:nth-child(1) {
-              left: 6%;
-              top: 6%;
-            }
-            &:nth-child(2) {
-              left: 36%;
-              top: 6%;
-            }
-            &:nth-child(3) {
-              left: 66%;
-              top: 6%;
-            }
-            &:nth-child(4) {
-              left: 66%;
-              top: 36%;
-            }
-            &:nth-child(5) {
-              left: 66%;
-              top: 66%;
-            }
-            &:nth-child(6) {
-              left: 36%;
-              top: 66%;
-            }
-            &:nth-child(7) {
-              left: 6%;
-              top: 66%;
-            }
-            &:nth-child(8) {
-              left: 6%;
-              top: 36%;
-            }
-            &.active {
-              background-color: #ff0090;
-            }
-            > div {
+            background-image: url('~@/assets/img/vote/TeamFission/bg-add.png');
+            background-size: 100% 100%;
+            img {
               width: 100%;
-              .prize {
-                img {
-                  display: block;
-                  width: 100%;
-                  height: 100%;
-                }
-              }
-            }
-          }
-          .getLuck {
-            width: 28%;
-            border-radius: 0.5rem;
-            text-align: center;
-            position: absolute;
-            top: 36%;
-            left: 36%;
-            font-size: 1.2rem;
-            font-weight: bold;
-            color: #fdf2ff;
-            background-color: #ff008a;
-            border: 0.25rem solid #ff4ca3;
-            &:active {
-              background-color: #8b0048;
-              border: 0.25rem solid #9f195f;
-              color: #e0aac9;
+              height: 100%;
+              position: absolute;
+              top: 0;
             }
             &:before {
               content: '';
@@ -831,47 +740,444 @@ export default {
               vertical-align: middle;
             }
           }
+          span {
+            color: #9f00ee;
+            position: absolute;
+            left: 6%;
+          }
+        }
+        :nth-child(1) {
+          margin-right: 5%;
+        }
+        :nth-child(2) {
+          margin-right: 6%;
+        }
+        :nth-child(3) {
+          margin-right: 10%;
+        }
+        > img {
+          width: 18%;
+          position: relative;
+          top: -1.4rem;
+        }
+      }
+      .finish {
+        color: #ffbc00;
+        height: 8rem;
+        line-height: 2rem;
+        font-size: 1.2rem;
+        padding: 2rem 0.5rem;
+        margin: 0.5rem auto;
+        border-radius: 1rem;
+        background-color: #a1014b;
+        text-align: center;
+        font-weight: bold;
+      }
+      .firends-box {
+        width: 100%;
+        margin-top: 0.5rem;
+        height: 3rem;
+        .img {
+          float: left;
+          width: 17%;
+          height: 3rem;
+          background-image: url('~@/assets/img/vote/TeamFission/btn-search.png');
+          background-size: contain;
+          background-repeat: no-repeat;
+        }
+        .friends {
+          float: left;
+          width: 83%;
+          height: 3rem;
+          position: relative;
+          background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
+          border-radius: 25px;
+          border: 0.2rem solid rgba(26, 1, 96, 0.75);
+          color: #ffffff;
+          height: 3rem;
+          line-height: 2.6rem;
+          img {
+            height: 1.2rem;
+            position: absolute;
+            left: 15%;
+            top: 0.7rem;
+          }
+          p {
+            text-align: center;
+            font-weight: bold;
+          }
+        }
+      }
+    }
+    .share-box {
+      width: 95%;
+      margin: 0.5rem auto;
+      padding: 0.5rem;
+      background-color: #a1014b;
+      height: 10rem;
+      border-radius: 1rem;
+      > img {
+        width: 20%;
+        &:first-child {
+          display: block;
+          margin-left: 93%;
+          margin-bottom: 1rem;
+          width: 7%;
+          background-image: url('~@/assets/img/vote/TeamFission/ic_download.png');
+        }
+      }
+    }
+    .lottery {
+      .contant {
+        .lottery-type {
+          width: 100%;
+          margin: 0 auto;
+          background-image: url('~@/assets/img/vote/TeamFission/bg-lottery.png');
+          background-size: 100% 101%;
+          color: #ad5500;
+          ul {
+            width: 100%;
+            margin: 0 auto;
+            border-radius: 0.5rem;
+            position: relative;
+            &:before {
+              content: '';
+              display: inline-block;
+              padding-bottom: 100%;
+              width: 0;
+              vertical-align: middle;
+            }
+            li {
+              width: 28%;
+              display: block;
+              position: absolute;
+              overflow: hidden;
+              background-color: #fff;
+              border: 0.25rem solid transparent;
+              border-radius: 0.5rem;
+              background-color: #a80044;
+              &:nth-child(1) {
+                left: 6%;
+                top: 6%;
+              }
+              &:nth-child(2) {
+                left: 36%;
+                top: 6%;
+              }
+              &:nth-child(3) {
+                left: 66%;
+                top: 6%;
+              }
+              &:nth-child(4) {
+                left: 66%;
+                top: 36%;
+              }
+              &:nth-child(5) {
+                left: 66%;
+                top: 66%;
+              }
+              &:nth-child(6) {
+                left: 36%;
+                top: 66%;
+              }
+              &:nth-child(7) {
+                left: 6%;
+                top: 66%;
+              }
+              &:nth-child(8) {
+                left: 6%;
+                top: 36%;
+              }
+              &.active {
+                background-color: #ff0090;
+              }
+              > div {
+                width: 100%;
+                .prize {
+                  img {
+                    display: block;
+                    width: 100%;
+                    height: 100%;
+                  }
+                }
+              }
+            }
+            .getLuck {
+              width: 28%;
+              border-radius: 0.5rem;
+              text-align: center;
+              position: absolute;
+              top: 36%;
+              left: 36%;
+              font-size: 1.2rem;
+              font-weight: bold;
+              color: #fdf2ff;
+              background-color: #ff008a;
+              border: 0.25rem solid #ff4ca3;
+              &:active {
+                background-color: #8b0048;
+                border: 0.25rem solid #9f195f;
+                color: #e0aac9;
+              }
+              &:before {
+                content: '';
+                display: inline-block;
+                padding-bottom: 100%;
+                width: 0;
+                vertical-align: middle;
+              }
+            }
+          }
+        }
+      }
+    }
+    .msg-box {
+      width: 95%;
+      margin: 0 auto;
+      padding: 0.5rem 0 1rem;
+      .msg {
+        width: 100%;
+        height: 2rem;
+        line-height: 2rem;
+        overflow: hidden;
+        transition: all 0.5s;
+        position: relative;
+        margin-bottom: 0.3rem;
+        background-color: #26010e;
+        border-radius: 1rem;
+        .anim {
+          transition: all 0.5s;
+        }
+        img {
+          position: absolute;
+          display: block;
+          width: 1.1rem;
+          height: 1.1rem;
+          left: 0.8rem;
+          top: 0.5rem;
+        }
+        ul {
+          width: 100%;
+          li {
+            width: 100%;
+            padding-left: 2.5rem;
+            line-height: 2rem;
+            height: 2rem;
+            font-size: 0.75rem;
+            color: #fff;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
         }
       }
     }
   }
-  .msg-box {
-    width: 95%;
-    margin: 0 auto;
-    padding: 0.5rem 0 1rem;
-    .msg {
-      width: 100%;
-      height: 2rem;
-      line-height: 2rem;
-      overflow: hidden;
-      transition: all 0.5s;
+  .team-full {
+    padding-bottom: 1rem;
+    .text {
+      width: 95%;
       position: relative;
-      margin-bottom: 0.3rem;
-      background-color: #26010e;
-      border-radius: 1rem;
-      .anim {
-        transition: all 0.5s;
+      height: 1.7rem;
+      line-height: 1.7rem;
+      font-size: 0.8rem;
+      padding-left: 0.5rem;
+      color: #fff;
+      border-top-right-radius: 1rem;
+      border-top-left-radius: 1rem;
+      background-color: #c20044;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      color: #ffbc00;
+      font-weight: bold;
+      &.text1 {
+        margin: 0 auto;
       }
-      img {
-        position: absolute;
+      &.text2 {
+        margin: 0.5rem auto 0;
+      }
+      &.text3 {
+        height: 3.4rem;
+        margin: 0.5rem auto 0;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
+        text-align: center;
+      }
+    }
+    .invite {
+      width: 95%;
+      margin: 0 auto;
+      position: relative;
+      background-image: linear-gradient(#94027d, #540173);
+      padding: 1rem 0.5rem;
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      .team {
+        width: 85%;
+        margin: 0 auto 0.5rem;
+        text-align: center;
+        .mumber {
+          width: 33%;
+          float: left;
+          > div {
+            width: 65%;
+            position: relative;
+            margin: 0 auto;
+            border: 2px solid #8600c8;
+            border-radius: 100%;
+            overflow: hidden;
+            img {
+              width: 100%;
+              height: 100%;
+              position: absolute;
+              left: 0;
+            }
+            &:before {
+              content: '';
+              display: inline-block;
+              padding-bottom: 100%;
+              width: 0;
+              vertical-align: middle;
+            }
+          }
+          p {
+            background: rgba(134, 0, 200, 1);
+            border-radius: 8px;
+            display: inline-block;
+            padding: 0 0.5rem;
+            position: relative;
+            top: -0.7rem;
+            color: #b360dd;
+            font-size: 0.9rem;
+            height: 1.1rem;
+            line-height: 1.1rem;
+          }
+        }
+      }
+      > span {
         display: block;
-        width: 1.1rem;
-        height: 1.1rem;
-        left: 0.8rem;
-        top: 0.5rem;
+        width: 95%;
+        margin: 0 auto;
+        padding-left: 0.5rem;
+        color: #b360dd;
+        font-size: 0.75rem;
+        text-align: center;
       }
-      ul {
-        width: 100%;
-        li {
-          width: 100%;
-          padding-left: 2.5rem;
-          line-height: 2rem;
-          height: 2rem;
-          font-size: 0.75rem;
+      .team-btn {
+        width: 85%;
+        margin: 0.5rem auto;
+        text-align: center;
+        span {
+          font-size: 0.9rem;
+          color: rgba(255, 255, 255, 0.8);
+        }
+        > div {
+          background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
+          border-radius: 25px;
+          border: 0.25rem solid rgba(26, 1, 96, 0.75);
+          color: #ffffff;
+          height: 2.75rem;
+          line-height: 2.25rem;
+          margin-top: 0.5rem;
+        }
+      }
+      .copy {
+        width: 85%;
+        position: relative;
+        margin: 0 auto;
+        :nth-child(1),
+        :nth-child(2),
+        :nth-child(3) {
           color: #fff;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+          display: inline-block;
+          height: 2rem;
+          line-height: 2rem;
+        }
+        :nth-child(1) {
+          width: 25%;
+          padding-left: 2%;
+          padding-right: 3%;
+          font-size: 0.75rem;
+        }
+        :nth-child(2) {
+          width: 75%;
+          background-color: #350052;
+          padding-right: 22%;
+          text-align: center;
+          border-radius: 1rem;
+          letter-spacing: 3px;
+        }
+        :nth-child(3) {
+          position: absolute;
+          right: 0;
+          top: -1px;
+          width: 25%;
+          color: #ffbc00;
+          background-color: #1c003e;
+          border: 1px solid #ffbc00;
+          border-radius: 1rem;
+          text-align: center;
+        }
+      }
+    }
+    .more-team {
+      width: 95%;
+      margin: 0 auto;
+      position: relative;
+      background-image: linear-gradient(#94027d, #540173);
+      padding: 1rem 0.5rem;
+      border-bottom-left-radius: 1rem;
+      border-bottom-right-radius: 1rem;
+      .team1,
+      .team2 {
+        color: #fff;
+        .team-id {
+          width: 90%;
+          font-size: 0.75rem;
+          height: 2rem;
+          line-height: 2rem;
+          margin: 0 auto;
+        }
+        .team-box {
+          .team {
+            width: 65%;
+            text-align: center;
+            display: inline-block;
+            .mumber {
+              width: 33%;
+              float: left;
+              img {
+                width: 65%;
+                position: relative;
+                margin: 0 auto;
+                border: 2px solid #8600c8;
+                border-radius: 100%;
+              }
+            }
+          }
+          .join {
+            width: 25%;
+            height: 2rem;
+            display: inline-block;
+            font-size: 0.75rem;
+            font-weight: bold;
+            position: relative;
+            right: -5%;
+            top: -1.5rem;
+            > div {
+              width: 80%;
+              height: 2rem;
+              line-height: 1.7rem;
+              border-radius: 1rem;
+              border: 0.15rem solid #fa7a00;
+              text-align: center;
+              background-color: #37006f;
+            }
+          }
         }
       }
     }
