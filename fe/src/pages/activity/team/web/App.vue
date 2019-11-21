@@ -22,7 +22,7 @@
         <div @click="callOrDownApp('new')">{{$t('vote.team.form_newbtn')}}</div>
       </div>
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="team-btn">
-        <div @click="callOrDownApp">
+        <div @click="callOrDownApp('join')">
           <div>{{$t('vote.team.join_s')}}</div>
         </div>
       </div>
@@ -173,6 +173,8 @@ export default {
         url = '?teamno=' + this.teamNum1
       } else if (value == 'second') {
         url = '?teamno=' + this.teamNum2
+      } else if (value == 'join') {
+        url = '?teamno=' + this.teamNum
       }
       callApp.call(
         this,
