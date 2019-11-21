@@ -301,7 +301,11 @@ export const getQueryVariable = function(query, key) {
   for (let i = 0; i < vars.length; i++) {
     const pair = vars[i].split('=')
     if (decodeURIComponent(pair[0]) == key) {
-      return decodeURIComponent(pair[1])
+      if (pair[1]) {
+        return decodeURIComponent(pair[1])
+      } else {
+        return null
+      }
     }
   }
 }
@@ -310,7 +314,11 @@ export const addTicketByDownload = function(vote_id) {
   const user = getQueryVariable(location.search, 'pin')
   const lastGetTicket = getCookie('get_ticket_time')
   if (user && !lastGetTicket) {
-    this.$axios.get('/hybrid/api/sign').then(({ data }) => {
+    let url = '/hybrid/api/sign'
+    if (env.apiUrl == 'http://upms.startimestv.com') {
+      url = 'http://m.startimestv.com' + url
+    }
+    this.$axios.get(url).then(({ data }) => {
       if (data.code == 200) {
         this.$axios({
           method: 'POST',
