@@ -876,8 +876,8 @@ export default {
       if (this.appType == 1) {
         const url =
           window.location.href.indexOf('?') >= 0
-            ? window.location.href + '&pin=' + (this.isLogin ? this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
-            : window.location.href + '?pin=' + (this.isLogin ? this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+            ? window.location.href + (this.isLogin ? ('&pin=' + this.$user.id) : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+            : window.location.href + (this.isLogin ? ('?pin=' + this.$user.id) : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
         shareInvite(url, this.shareTitle, this.shareText, this.imgUrl)
       } else if (this.appType == 0) {
         this.$refs.share.show()
