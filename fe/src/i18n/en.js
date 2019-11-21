@@ -63,6 +63,7 @@ export default {
             draw_none: 'Sorry,you have not won',
             have_team: 'you have a team before,so you can not join a new team',
             to_change_team: 'To search another Team?',
+            invite_btn2: 'Sign up & Tell friends',
         }
     }
 }

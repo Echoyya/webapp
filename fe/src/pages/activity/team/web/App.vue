@@ -6,8 +6,10 @@
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
         <div v-for="(item,index) in mumberList" :key="index" class="mumber">
-          <img v-if="item.logo" :src="item.logo" />
-          <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+          <div>
+            <img v-if="item.logo" :src="item.logo" />
+            <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+          </div>
         </div>
         <div v-for="(add) in (3-mumberList.length)" :key="add+3" class="mumber">
           <span class="add">
@@ -17,7 +19,7 @@
       </div>
       <span>{{$t('vote.team.invite_won',[number])}}</span>
       <div v-show="mumberList.length>=3" class="team-btn">
-        <div @click="callOrDownApp">{{$t('vote.team.form_newbtn')}}</div>
+        <div @click="callOrDownApp('new')">{{$t('vote.team.form_newbtn')}}</div>
       </div>
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="team-btn">
         <div @click="callOrDownApp">
@@ -46,7 +48,7 @@
               </span>
             </div>
           </div>
-          <div class="join" @click="callOrDownApp">
+          <div class="join" @click="callOrDownApp('first')">
             <div>{{$t('vote.team.join_s')}}</div>
           </div>
         </div>
@@ -65,7 +67,7 @@
               </span>
             </div>
           </div>
-          <div class="join" @click="callOrDownApp">
+          <div class="join" @click="callOrDownApp('second')">
             <div>{{$t('vote.team.join_s')}}</div>
           </div>
         </div>
@@ -165,10 +167,16 @@ export default {
     })
   },
   methods: {
-    callOrDownApp() {
+    callOrDownApp(value) {
+      let url = ''
+      if (value == 'first') {
+        url = '?teamno=' + this.teamNum1
+      } else if (value == 'second') {
+        url = '?teamno=' + this.teamNum2
+      }
       callApp.call(
         this,
-        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?teamno=${this.teamNum}`,
+        'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.origin + '/activity/team/home.html' + url,
         () => {
           callMarket.call(this, () => {
             this.$refs.confirm.show(
@@ -272,12 +280,26 @@ export default {
       .mumber {
         width: 33%;
         float: left;
-        img {
+        > div {
           width: 65%;
+          position: relative;
+          margin: 0 auto;
           border: 2px solid #8600c8;
           border-radius: 100%;
-          display: block;
-          margin: 0 auto;
+          overflow: hidden;
+          img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+          }
+          &:before {
+            content: '';
+            display: inline-block;
+            padding-bottom: 100%;
+            width: 0;
+            vertical-align: middle;
+          }
         }
         p {
           background: rgba(134, 0, 200, 1);
@@ -387,29 +409,10 @@ export default {
             float: left;
             img {
               width: 65%;
+              position: relative;
+              margin: 0 auto;
               border: 2px solid #8600c8;
               border-radius: 100%;
-              display: block;
-              margin: 0 auto;
-              &::before {
-                content: '';
-                display: inline-block;
-                padding-bottom: 100%;
-                width: 0;
-                vertical-align: middle;
-              }
-            }
-            p {
-              background: rgba(134, 0, 200, 1);
-              border-radius: 8px;
-              display: inline-block;
-              padding: 0 0.5rem;
-              position: relative;
-              top: -0.7rem;
-              color: #b360dd;
-              font-size: 0.9rem;
-              height: 1.1rem;
-              line-height: 1.1rem;
             }
           }
         }
@@ -421,7 +424,7 @@ export default {
           font-weight: bold;
           position: relative;
           right: -5%;
-          top: -1rem;
+          top: -1.5rem;
           > div {
             width: 80%;
             height: 2rem;

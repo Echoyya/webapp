@@ -4,17 +4,14 @@
     <div class="search-body">
       <div class="search">
         <input v-model="teamNum" :class="{'full':!showBtn}" type="number" />
-        <div
-          v-show="showBtn"
-          class="btn"
-          :class="{'can-submit':teamNum}"
-          @click="submit"
-        >{{$t('vote.team.search')}}</div>
+        <div v-show="showBtn" class="btn" :class="{'can-submit':teamNum}" @click="submit">{{$t('vote.team.search')}}</div>
       </div>
       <div v-show="mumberList.length>0" class="team clearfix">
         <div v-for="(item,index) in mumberList" :key="index" class="mumber">
-          <img v-if="item.logo" :src="item.logo" />
-          <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+          <div>
+            <img v-if="item.logo" :src="item.logo" />
+            <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+          </div>
           <p v-show="item.nick_name">{{item.nick_name}}</p>
         </div>
         <div v-for="(add) in 3-mumberList.length" :key="add+3" class="mumber">
@@ -164,12 +161,35 @@ export default {
     .mumber {
       width: 33%;
       float: left;
-      img {
+      > div {
         width: 65%;
+        position: relative;
+        margin: 0 auto;
         border: 2px solid #8600c8;
         border-radius: 100%;
-        display: block;
-        margin: 0 auto;
+        overflow: hidden;
+        img {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+        }
+        &:before {
+          content: '';
+          display: inline-block;
+          padding-bottom: 100%;
+          width: 0;
+          vertical-align: middle;
+        }
+      }
+      span {
+        img {
+          width: 65%;
+          margin: 0 auto;
+          border: 2px solid #8600c8;
+          border-radius: 100%;
+          display: block;
+        }
       }
       p {
         background: rgba(134, 0, 200, 1);
