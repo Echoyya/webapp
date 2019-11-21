@@ -105,7 +105,7 @@
       </div>
       <div v-else class="page-barrage">
         <div class="topic">
-          <img class="title" :src="topic+'?w=250'" alt />
+          <img class="title" :src="topic+'?w=350'" alt />
           <div class="pick-box">
             <div class="left">
               <div>
@@ -138,12 +138,7 @@
         </div>
         <div id="comment" class="comment">
           <div class="comment-box">
-            <ul v-show="commentListReady.length>0" id="ulList">
-              <li v-for="(item,key) in commentListReady" :id="key" :key="key" class="barrage">
-                <img :src="item.avatar" alt />
-                <p>{{item.content}}</p>
-              </li>
-            </ul>
+            <vue-baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></vue-baberrage>
           </div>
           <div class="send-box">
             <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
@@ -194,13 +189,15 @@ import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
 import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable } from '@/functions/app'
+import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
 import env from '@/functions/config'
 export default {
   components: {
     mShare,
     alertDialog,
     confirmDialog,
-    toastDialog
+    toastDialog,
+    vueBaberrage
   },
   data() {
     return {
@@ -212,7 +209,6 @@ export default {
       // appType: 1,
       // isLogin: true,
       firstTime: true,
-      msg: '',
       user_id: this.$user.id,
       share_num: 0,
       enroll_id: 2,
@@ -221,6 +217,14 @@ export default {
       pageVote: true,
       isOttVip: false,
       isLinkVip: false,
+
+      // msg: '',
+      currentId: 0,
+      i: 0,
+      barrageList: [],
+      t: null,
+      maxTime: 5,
+      minTime: 3,
 
       // 投票
       voteLeft: 0,
@@ -258,7 +262,6 @@ export default {
       // 弹幕
       barrage_id: 17,
       topic: '',
-      timer: null, // tab滚动定位定时器
       during: 5, // 发送弹幕后倒计时
       disabled: false, // send状态
       index: 0, // 当前所在的节目期数
@@ -277,21 +280,12 @@ export default {
       allNum: 0,
       picked: false, // 是否已经投票
       canVote: true, // 防多pick
-      lineSpace: 40,
-      pageWidth: 0, // 页面可视区域宽度
-      count: 0, // 当前完全滚入屏幕的弹幕下标
-      speed: 125, // 弹幕速度，越大越慢
-      minSp: 1.1, // 弹幕的最小速度
-      maxSp: 1.8, // 弹幕的最大速度
-      minSpace: 80, // 两行弹幕的最小间隔
-      maxSpace: 240, // 两行弹幕的最大间隔
       time: null, // 弹幕滚动定时器
       commentText: '', // 发送的内容
       loaded_page: false,
       loaded_comment: false,
       number: 20, // 每次请求的弹幕数量
       last_id: 0, // 上一次请求的最后一条弹幕id
-      timeNum: 0, // 记录已在当前页面上成功调用获取弹幕接口的次数
       canClickTab1: false,
       canClickTab2: false,
 
@@ -301,13 +295,6 @@ export default {
     }
   },
   computed: {
-    commentListReady() {
-      if (this.loaded_comment) {
-        return this.commentList
-      } else {
-        return []
-      }
-    },
     pageListReady() {
       if (this.loaded_page) {
         return this.pageList
@@ -351,6 +338,7 @@ export default {
     this.barrage_id = getQueryVariable(location.search.replace('?', ''), 'barrageid') || 17
   },
   mounted() {
+    this.barrageBox = document.getElementsByClassName('baberrage-stage')
     this.mSendEvLog('page_show', '', '')
     this.getAdvisorList()
     this.getVoteRemain()
@@ -359,10 +347,21 @@ export default {
     this.getLotteryType()
     this.getShareNum()
     this.msgScroll()
-    this.pageWidth = document.body.clientWidth
   },
 
   methods: {
+    addToList(v) {
+      let time = 75 / (10 + decodeURI(v.content).length * 0.5)
+      if (time > this.maxTime) time = this.maxTime
+      if (time < this.minTime) time = this.minTime
+      this.barrageList.push({
+        id: ++this.currentId,
+        avatar: v.avatar ? (v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar) : 'http://cdn.startimestv.com/banner/DD_user_icon.png',
+        msg: decodeURI(v.content),
+        time: time,
+        type: MESSAGE_TYPE.NORMAL
+      })
+    },
     msgScroll() {
       this.tmsg = setInterval(() => {
         if (this.$serverTime > this.endTime) clearInterval(this.tmsg)
@@ -393,20 +392,9 @@ export default {
         const addOnes = document.getElementsByClassName('add-one')
         addOnes[0].style.visibility = 'hidden'
         addOnes[1].style.visibility = 'hidden'
-        this.timeNum = 0
         this.last_id = 0
-        this.count = 0
-        if (this.$serverTime >= this.startTime && this.$serverTime <= this.endTime2) {
-          for (let j = 0; j < this.number * 2; j++) {
-            document.getElementById(j).style.right = 2000 + 'px'
-          }
-          const comment = document.getElementById('comment')
-          let spans = document.getElementsByClassName('new-barrage')
-          spans = Array.prototype.slice.call(spans)
-          for (let j = 0; j < spans.length; j++) {
-            comment.removeChild(spans[j])
-          }
-        }
+        clearInterval(this.t)
+        this.barrageList = []
         this.pageVote = true
         this.canClickTab2 = true
         this.$nextTick(() => {
@@ -429,6 +417,7 @@ export default {
             this.initPage()
           })
           setTimeout(() => {
+            this.barrageIsShow = true
             this.getCommentList()
           }, 1000)
         }
@@ -543,30 +532,27 @@ export default {
         .get(`/voting/v1/comments?comment_activity_id=${this.index + 13}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
-            this.timeNum++
             this.last_id = res.data.data[res.data.data.length - 1].id
-            if (this.timeNum == 1) {
-              res.data.data.forEach((item, index) => {
-                this.commentList[index] = item
-                this.commentList[index + this.number] = item
-              })
-            } else if (this.timeNum % 2 == 0) {
-              res.data.data.forEach((item, index) => {
-                this.commentList[index + this.number] = item
-              })
-            } else {
-              res.data.data.forEach((item, index) => {
-                this.commentList[index] = item
-              })
-            }
-            this.loaded_comment = true
+            this.commentList = res.data.data
             this.canClickTab1 = true
-            this.$nextTick(() => {
-              for (let j = 0; j < this.number * 2; j++) {
-                document.getElementById(j).style.right = -2000 + 'px'
+            this.i = 0
+            this.t = setInterval(() => {
+              this.addToList(this.commentList[this.i])
+              for (let j = 0; j < this.barrageBox[0].childNodes.length; j++) {
+                if (this.barrageBox[0].childNodes[j].nodeName == 'DIV') {
+                  this.barrageBox[0].childNodes[j].style.backgroundColor = '#848d34'
+                  this.barrageBox[0].childNodes[j].style.borderRadius = '100px'
+                  this.barrageBox[0].childNodes[j].style.color = '#fff'
+                }
               }
-              this.initComment()
-            })
+              this.i++
+              if (this.i >= this.number) {
+                this.i = 0
+                clearInterval(this.t)
+                this.barrageList = []
+                this.getCommentList()
+              }
+            }, 1500)
           } else {
             this.commentList = []
             this.$refs.alert.show('Get comment list error! ' + res.data.message)
@@ -576,58 +562,6 @@ export default {
           this.commentList = []
           this.$refs.alert.show('Get comment list error!! ' + err)
         })
-    },
-    initComment() {
-      for (let i = 0; i < this.commentList.length; i++) {
-        const commentItem = document.getElementById(i)
-        const img = commentItem.getElementsByTagName('img')[0]
-        const p = commentItem.getElementsByTagName('p')[0]
-        if (this.commentList[i].avatar) {
-          img.src =
-            this.commentList[i].avatar == 'http://cdn.startimestv.com/head/h_d.png'
-              ? 'http://cdn.startimestv.com/banner/DD_user_icon.png'
-              : this.commentList[i].avatar
-        } else {
-          img.src = 'http://cdn.startimestv.com/banner/DD_user_icon.png'
-        }
-        p.innerText = decodeURI(this.commentList[i].content)
-        const commentWidth = p.offsetWidth + 35
-        commentItem.style.width = commentWidth + 15 + 'px'
-      }
-      let s = document.getElementById(this.count).offsetWidth / this.speed
-      if (s < this.minSp) s = this.minSp
-      else if (s > this.maxSp) s = this.maxSp
-      this.animate(document.getElementById(this.count), -document.getElementById(this.count).offsetWidth, s)
-    },
-    animate(dom, num, speed) {
-      let flag = true
-      const time = setInterval(() => {
-        if (parseInt(dom.style.right) >= 2000) {
-          clearInterval(time)
-          return true
-        }
-        if ((dom.offsetWidth + num > this.maxSpace || num > this.minSpace) && flag) {
-          flag = false
-          this.count++
-          if (this.timeNum % 2 != 0 ? this.count >= this.number : this.count >= this.number * 2) {
-            if (this.timeNum != 0 && this.timeNum % 2 == 0) {
-              this.count = 0
-            }
-            this.getCommentList()
-            return true
-          }
-          let s = document.getElementById(this.count).offsetWidth / this.speed
-          if (s < this.minSp) s = this.minSp
-          else if (s > this.maxSp) s = this.maxSp
-          this.animate(document.getElementById(this.count), -document.getElementById(this.count).offsetWidth, s)
-        }
-        if (num <= this.pageWidth + 20) {
-          dom.style.right = num + 'px'
-          num += speed
-        } else {
-          clearInterval(time)
-        }
-      }, 5)
     },
     handlePick(local, advisorList) {
       if (!this.canVote) {
@@ -848,55 +782,11 @@ export default {
           if (res.data.code === 0) {
             this.mSendEvLog('send_click', this.commentText, '')
             const during = this.during
-            const item = document.createElement('span')
-            const img = document.createElement('img')
-            const p = document.createElement('p')
-            if (this.$head) {
-              img.src = this.$head == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : this.$head
-            } else {
-              img.src = 'http://cdn.startimestv.com/banner/DD_user_icon.png'
-            }
-            p.innerText = this.commentText
-            p.style.display = 'inline-block'
-            p.style.color = '#fff'
-            p.style.top = -6 + 'px'
-            p.style.position = 'relative'
-            p.style.marginLeft = 6 + 'px'
-            p.style.whiteSpace = 'nowrap'
-            img.style.display = 'inline-block'
-            img.style.width = '26px'
-            img.style.height = '26px'
-            img.style.backgroundColor = '#bfbfbf'
-            img.style.borderRadius = '14px'
-            img.style.position = 'relative'
-            img.style.top = '2px'
-            img.style.left = '2.2px'
-            item.appendChild(img)
-            item.appendChild(p)
-            document.getElementsByClassName('comment')[0].appendChild(item)
-            const itemWidth = p.offsetWidth + 28
-            item.style.backgroundColor = '#838d34'
-            item.style.borderRadius = 15 + 'px'
-            item.style.height = 30 + 'px'
-            item.style.lineHeight = 30 + 'px'
-            item.style.position = 'absolute'
-            item.style.right = -2000 + 'px'
-            item.style.width = itemWidth + 25 + 'px'
-            item.setAttribute('class', 'new-barrage')
-            const lineNum = this.count >= 2 ? this.count - 2 : this.count + this.commentList.length - 2
-            item.style.top = (lineNum % 4) * this.lineSpace + 13.5 + 'px'
-            let sp = itemWidth / this.speed
-            if (sp < this.minSp) sp = this.minSp
-            else if (sp > this.maxSp) sp = this.maxSp
-            let num = -itemWidth
-            const time = setInterval(() => {
-              if (num <= this.pageWidth + 20) {
-                item.style.right = num + 'px'
-                num += sp
-              } else {
-                clearInterval(time)
-              }
-            }, 5)
+            this.addToList({
+              id: this.currentId++,
+              avatar: this.$user.head || 'http://cdn.startimestv.com/banner/DD_user_icon.png',
+              content: this.commentText
+            })
             const duringTime = setInterval(() => {
               this.during--
               if (this.during == 0) {
@@ -933,9 +823,11 @@ export default {
         } else if (this.isLogin) {
           if (vip == 'dvbvip') {
             // 原生DVB
+            this.mSendEvLog('dvb_click', '', '')
             toNativePage('com.star.mobile.video.smartcard.changebouquet.ChangeBouquetActivity')
           } else if (vip == 'ottvip') {
             // 原生OTT
+            this.mSendEvLog('ott_click', '', '')
             toNativePage('com.star.mobile.video.me.product.MembershipListActivity')
           }
         }
@@ -984,8 +876,8 @@ export default {
       if (this.appType == 1) {
         const url =
           window.location.href.indexOf('?') >= 0
-            ? window.location.href + '&pin=' + (this.isLogin ? this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
-            : window.location.href + '?pin=' + (this.isLogin ? this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+            ? window.location.href + (this.isLogin ? ('&pin=' + this.$user.id) : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+            : window.location.href + (this.isLogin ? ('?pin=' + this.$user.id) : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
         shareInvite(url, this.shareTitle, this.shareText, this.imgUrl)
       } else if (this.appType == 0) {
         this.$refs.share.show()
@@ -1146,7 +1038,7 @@ export default {
             this.voteLeft -= value
             this.getLeftLottery()
             if (this.voteLeft > 0) {
-              this.$refs.toast.show('Upigaji umefanikiwa! Umepata nafasi ya kucheza bahati nasibu.')
+              this.$refs.toast.show('Upigaji umefanikiwa! Umepata nafasi ya kupata zawadi kwa kupitia mchezo wa ukurasa huu.')
             } else {
               this.$refs.confirm.show(
                 'Upigaji umefanikiwa! Shirikisha marafiki kupata kura zaidi.',
@@ -1304,7 +1196,7 @@ export default {
         return
       }
       // 票不够不能抽奖
-      this.$refs.alert.show('Piga kura ili upate nafasi ya kushinda bahati nasibu! Kila kura 5 kwa mchezo 1', () => {}, 'SAWA')
+      this.$refs.alert.show('Piga kura ili upate nafasi ya kupata zawadi! Kila kura 5 kwa mchezo 1', () => {}, 'SAWA')
     },
     // 开始抽奖
     startLottery() {
@@ -1528,15 +1420,15 @@ export default {
     transform: scale(5);
   }
 }
+
 .wrapper {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   img,
   div,
   li {
     box-sizing: border-box;
   }
-  textarea::-webkit-input-placeholder {
-    color: #acacac;
-  }
+
   background-image: url('~@/assets/img/vote/BSSVote2/bg-img.jpg');
   background-size: contain;
   background-repeat: repeat-y;
@@ -1666,6 +1558,7 @@ export default {
                   width: 100%;
                   height: 100%;
                   position: absolute;
+                  border-radius: 50%;
                   top: 0;
                 }
                 &::before {
@@ -2222,51 +2115,23 @@ export default {
         position: relative;
         overflow: hidden;
         .comment-box {
-          width: 90%;
-          height: 200px;
-          margin: 0 auto;
-          ul {
-            position: relative;
-            top: 13.5px;
-            .barrage {
-              background-color: #838d34;
-              border-radius: 15px;
-              position: absolute;
-              right: -2000px;
-              height: 30px;
-              line-height: 30px;
-              &:nth-child(4n) {
-                top: 120px;
-              }
-              &:nth-child(4n-1) {
-                top: 80px;
-              }
-              &:nth-child(4n-2) {
-                top: 40px;
-              }
-              &:nth-child(4n-3) {
-                top: 0px;
-              }
-              img {
-                display: inline-block;
-                width: 26px;
-                height: 26px;
-                background-color: #bfbfbf;
-                border-radius: 14px;
-                position: relative;
-                top: 2px;
-                left: 2.2px;
-              }
-              p {
-                display: inline-block;
-                white-space: nowrap;
-                color: #fff;
-                margin-left: 6px;
-                position: relative;
-                left: 0;
-                top: -6px;
-              }
-            }
+          width: 150%;
+          height: 212px;
+          position: relative;
+          left: 0;
+          .baberrage-stage {
+            width: 100%;
+            position: absolute;
+            padding-top: 15px;
+            width: 100%;
+            height: 212px;
+            overflow: hidden;
+            top: 0;
+            // .red{
+            //   color: red;
+            //   background: rgba(0,0,0,0.7);
+            //   border-radius: 100px;
+            // }
           }
         }
         .send-box {
@@ -2301,6 +2166,9 @@ export default {
             overflow: hidden;
             overflow-x: auto;
             resize: none;
+            &::-webkit-input-placeholder {
+              color: #acacac;
+            }
           }
           .btn {
             display: block;
