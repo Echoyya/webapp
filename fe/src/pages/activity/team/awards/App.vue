@@ -3,7 +3,8 @@
     <mBanner />
     <div v-if="have_no_result" class="no-result">{{$t('vote.team.no_awards')}}</div>
     <div v-if="!have_no_result" v-show="!show_share" class="invite">
-      <div class="title">{{$t('vote.team.my_won',[allDays])}}</div>
+      <div v-if="allDays>1" class="title">{{$t('vote.team.my_won',[allDays])}}</div>
+      <div v-if="allDays<=1" class="title">{{$t('vote.team.my_won_one',[allDays])}}</div>
       <div class="contant">
         <div v-show="teams.length>0" v-for="(item,index) in teams" :key="index" class="items">
           <div>
