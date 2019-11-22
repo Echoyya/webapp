@@ -105,7 +105,10 @@
           <div @click="toCreate('full')">{{$t('vote.team.form_newbtn')}}</div>
         </div>
       </div>
-      <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
+      <div
+        v-show="moreList1.length>0&&moreList2.length>0"
+        class="text text2"
+      >{{$t('vote.team.follow_team')}}</div>
       <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
         <div class="team1 clearfix">
           <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
@@ -246,7 +249,9 @@ export default {
       history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
 
       searchTeam.call(this, teamno, data => {
-        // TODO  活动时间
+        // 活动时间从后台拿
+        this.activityStart = data.data.start_date
+        this.activityEnd = data.data.end_date
         if (data.code >= 2) {
           this.$refs.malert.show(data.message)
           return
@@ -254,19 +259,16 @@ export default {
         if (data.data.newcomer) {
           if (data.code > 0) {
             // can join
-            
+
             const teamLeader = data.data.team_member_dtos[0].nick_name || data.data.team_member_dtos[0].id
-            this.$refs.findTeamAlert.show(
-              `Here! You are going to join ${teamLeader}'s team`,
-              () => {
-                if (this.$isLogin) {
-                  this.toJoin(teamno)
-                } else {
-                  localStorage.setItem('join_teamno', teamno)
-                  toNativeLogin(this.$appType)
-                }
+            this.$refs.findTeamAlert.show(`Here! You are going to join ${teamLeader}'s team`, () => {
+              if (this.$isLogin) {
+                this.toJoin(teamno)
+              } else {
+                localStorage.setItem('join_teamno', teamno)
+                toNativeLogin(this.$appType)
               }
-            )
+            })
             this.fakeTeam()
           } else {
             // 当前搜索的队伍是满队
@@ -371,9 +373,11 @@ export default {
     checkMyTeam(failback) {
       searchMyTeam.call(this, data => {
         if (data.code == 0) {
+          this.activityStart = data.data.start_date
+          this.activityEnd = data.data.end_date
           // 搜索页跳转登录，老用户有队提示
-          if(localStorage.getItem('join_teamno')) {
-            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser')) 
+          if (localStorage.getItem('join_teamno')) {
+            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
             localStorage.removeItem('join_teamno')
           }
           this.team = data.data.team_member_dtos
