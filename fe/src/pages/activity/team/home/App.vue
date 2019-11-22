@@ -168,20 +168,20 @@ export default {
   },
   data() {
     return {
-      // 页面
+      activity_id: getQuery('activiy') || 1,
+      activityStart: new Date('2019-11-15T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
+      activityEnd: new Date('2019-11-25T04:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.shareText'),
 
-      activityStart: new Date('2019-11-15T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
-      activityEnd: new Date('2019-11-25T04:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
       show_share: false,
       hasFinish: false,
 
       //team
       team: [],
       teamNum: '',
-      activity_id: getQuery('activiy') || 1,
+
       isFull: false,
       mumberList: [],
       moreList1: [],
@@ -682,7 +682,7 @@ export default {
         } else if (this.times === this.cycle) {
           // 后台取得一个中奖位置
           this.$axios
-            .post(`/voting/team-award/v1/user/award?activity_id=${this.activity_id}&team_no=${this.teamNum}`)
+            .post(`/voting/team-award/v1/user/award?team_activity_id=${this.activity_id}&team_no=${this.teamNum}`)
             .then(res => {
               if (res.data.code == 0) {
                 this.award_day = res.data.data.award_day
