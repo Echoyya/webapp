@@ -241,7 +241,6 @@ export default {
   },
   mounted() {
     const teamno = getQuery('teamno')
-
     if (teamno && !isNaN(teamno)) {
       history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
 
@@ -258,7 +257,9 @@ export default {
             // can join
 
             const teamLeader = data.data.team_member_dtos[0].nick_name || data.data.team_member_dtos[0].id
-            this.$refs.findTeamAlert.show(`Here! You are going to join ${teamLeader}'s team`, () => {
+            this.$refs.findTeamAlert.show(
+              this.$t('vote.team.newuser',[teamLeader]), 
+              () => {
               if (this.$isLogin) {
                 this.toJoin(teamno)
               } else {
@@ -596,7 +597,6 @@ export default {
         .then(res => {
           if (res.data.code === 0) {
             this.lotteryType = res.data.data
-            console.log(this.lotteryType.picture_url)
           } else {
             this.lotteryType = [] // 服务器端计算数据错误时
             this.$refs.malert.show('Get rewards error!')
