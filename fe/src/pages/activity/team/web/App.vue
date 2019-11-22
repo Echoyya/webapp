@@ -75,34 +75,7 @@
     </div>
     <div class="text text3" v-html="$t('vote.team.invite_infotit')"></div>
     <div class="video">
-      <div class="item">
-        <div class="video-item">
-          <p>GAMES</p>
-          <img src="@/assets/img/vote/TeamFission/verline.png" alt />
-          <img src="@/assets/img/vote/TeamFission/verline2.png" alt />
-        </div>
-        <div class="video-item">
-          <p>SERIES</p>
-          <img src="@/assets/img/vote/TeamFission/verline.png" alt />
-          <img src="@/assets/img/vote/TeamFission/verline2.png" alt />
-        </div>
-        <div class="video-item">
-          <p>VARIETY</p>
-          <img src="@/assets/img/vote/TeamFission/verline2.png" alt />
-        </div>
-        <div class="video-item">
-          <p>KIDS</p>
-          <img src="@/assets/img/vote/TeamFission/verline.png" alt />
-        </div>
-        <div class="video-item">
-          <p>MOVIE</p>
-          <img src="@/assets/img/vote/TeamFission/verline.png" alt />
-        </div>
-        <div class="video-item">
-          <p>DVB</p>
-        </div>
-      </div>
-      <div class="img"></div>
+      <div class="item"></div>
     </div>
     <confirm-dialog ref="confirm" />
     <malert ref="malert" />
@@ -451,67 +424,25 @@ export default {
   }
   .video {
     width: 95%;
-    height: 8.5rem;
     margin: 0 auto;
     position: relative;
-    background-image: linear-gradient(rgba(234, 4, 4, 0.3), rgba(57, 3, 157, 0.5));
-    padding: 0 2.5%;
+    background-image: linear-gradient(#8E0044, #3C0003);
+    padding: 0 2.5% 0.5rem;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
     .item {
       position: relative;
-      z-index: 2;
-      border-bottom-left-radius: 1rem;
-      border-bottom-right-radius: 1rem;
-      overflow: hidden;
-      .video-item {
-        position: relative;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+      background-image: url('~@/assets/img/vote/TeamFission/down-banner.png');
+      background-size: 100% 100%;
+      &:before {
+        content: '';
         display: inline-block;
-        width: 33.3%;
-        height: 4rem;
-        line-height: 4rem;
-        text-align: center;
-        background-color: rgba(0, 0, 0, 0.5);
-        p {
-          color: #fff;
-        }
-        img:nth-child(2) {
-          position: absolute;
-          width: 0.05rem;
-          height: 1.2rem;
-          top: 1.4rem;
-          right: 0;
-        }
-        img:nth-child(3) {
-          width: 1.2rem;
-          height: 0.05rem;
-          position: absolute;
-          left: 42%;
-          bottom: 0;
-        }
-        &:nth-child(3) {
-          img:nth-child(2) {
-            width: 1.2rem;
-            height: 0.05rem;
-            position: absolute;
-            left: 42%;
-            top: 3.95rem;
-            bottom: 0;
-          }
-        }
+        padding-bottom: 57%;
+        width: 0;
+        vertical-align: middle;
       }
-    }
-    .img {
-      width: 94%;
-      height: 8rem;
-      position: absolute;
-      left: 3%;
-      top: 0;
-      background-image: url('~@/assets/img/vote/TeamFission/bg-banner.png');
-      background-size: cover;
-      background-position: center;
-      border-bottom-left-radius: 1rem;
-      border-bottom-right-radius: 1rem;
     }
   }
 }
