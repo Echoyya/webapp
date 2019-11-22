@@ -246,9 +246,6 @@ export default {
       history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
 
       searchTeam.call(this, teamno, data => {
-        // 活动时间从后台拿
-        this.activityStart = data.data.start_date
-        this.activityEnd = data.data.end_date
         if (data.code >= 2) {
           this.$refs.malert.show(data.message)
           return
@@ -398,8 +395,6 @@ export default {
     checkMyTeam(failback) {
       searchMyTeam.call(this, data => {
         if (data.code == 0) {
-          this.activityStart = data.data.start_date
-          this.activityEnd = data.data.end_date
           // 搜索页跳转登录，老用户有队提示
           if (localStorage.getItem('join_teamno')) {
             this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
