@@ -32,6 +32,14 @@ export default {
     this.lang = getCookie('lang') || 'en'
   },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
     down() {
       this.mSendEvLog('callApp', 'landingpage', '')
       callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html`, () => {

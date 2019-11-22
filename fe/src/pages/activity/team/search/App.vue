@@ -50,6 +50,14 @@ export default {
     }
   },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
     submit() {
       const teamno = ('' + this.teamNum).trim()
       if (teamno) {

@@ -25,18 +25,15 @@ export default {
       show_rules: false
     }
   },
-  computed: {
-    platform() {
-      if (this.appType == 1) {
-        return 'Android'
-      } else if (this.appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
-    }
-  },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
     showRule() {
       this.mSendEvLog("rulesbtn_click", "", "");
       this.show_rules = true
