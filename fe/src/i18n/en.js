@@ -64,8 +64,13 @@ export default {
             have_team: 'you have a team before, so you can not create or join a new team',
             to_change_team: 'To search another Team?',
             invite_btn2: 'Sign up & Tell friends',
-            newuser: 'Here! You are going to join {0}\'s team',
+            newuser: "Here! You are going to join {0}'s team",
             my_won_one: 'WON: {0} Day VIP',
+            facebook: 'facebook',
+            whatsapp: 'whatsapp',
+            xender: 'xender',
+            download: 'download image',
+            copy: 'copy link',
         }
     }
 }

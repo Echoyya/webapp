@@ -47,6 +47,13 @@
         <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
         <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
         <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
+        <div>
+          <span>{{$t('vote.team.facebook')}}</span>
+          <span>{{$t('vote.team.whatsapp')}}</span>
+          <span>{{$t('vote.team.xender')}}</span>
+          <span>{{$t('vote.team.download')}}</span>
+          <span>{{$t('vote.team.copy')}}</span>
+        </div>
       </div>
       <div class="lottery box">
         <div class="title">{{$t('vote.team.draw_title')}}</div>
@@ -247,9 +254,10 @@ export default {
         if (data.data.newcomer) {
           if (data.code > 0) {
             // can join
+            
             const teamLeader = data.data.team_member_dtos[0].nick_name || data.data.team_member_dtos[0].id
             this.$refs.findTeamAlert.show(
-              this.$t('vote.team.newuser', teamLeader),
+              `Here! You are going to join ${teamLeader}'s team`,
               () => {
                 if (this.$isLogin) {
                   this.toJoin(teamno)
@@ -257,8 +265,7 @@ export default {
                   localStorage.setItem('join_teamno', teamno)
                   toNativeLogin(this.$appType)
                 }
-              },
-              'OK'
+              }
             )
             this.fakeTeam()
           } else {
@@ -344,7 +351,7 @@ export default {
         if (data.code == 0) {
           this.checkMyTeam()
         } else if (data.code == 1) {
-            this.checkMyTeam()
+          this.checkMyTeam()
         } else if (data.code == 2) {
           // 已经达到了最高限制
           this.hasFinish = true
@@ -364,6 +371,11 @@ export default {
     checkMyTeam(failback) {
       searchMyTeam.call(this, data => {
         if (data.code == 0) {
+          // 搜索页跳转登录，老用户有队提示
+          if(localStorage.getItem('join_teamno')) {
+            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser')) 
+            localStorage.removeItem('join_teamno')
+          }
           this.team = data.data.team_member_dtos
           this.teamNum = data.data.team_no
           if (this.team.length >= 3 && data.data.allow_lottery) {
@@ -814,7 +826,7 @@ export default {
       margin: 0.5rem auto;
       padding: 0.5rem;
       background-color: #a1014b;
-      height: 10rem;
+      height: 11rem;
       border-radius: 1rem;
       > img {
         width: 20%;
@@ -824,6 +836,17 @@ export default {
           margin-bottom: 1rem;
           width: 7%;
           background-image: url('~@/assets/img/vote/TeamFission/ic_download.png');
+        }
+      }
+      > div {
+        span {
+          display: inline-block;
+          width: 20%;
+          vertical-align: top;
+          text-align: center;
+          line-height: 1rem;
+          font-size: 0.75rem;
+          color: #fff;
         }
       }
     }

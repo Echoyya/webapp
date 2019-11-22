@@ -15,6 +15,12 @@
       <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
       <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
       <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
+      <div class="name">
+        <span>{{$t('vote.team.facebook')}}</span>
+        <span>{{$t('vote.team.whatsapp')}}</span>
+        <span>{{$t('vote.team.xender')}}</span>
+        <span>{{$t('vote.team.copy')}}</span>
+      </div>
     </div>
     <div class="team-btn">
       <div @click="create">{{$t('vote.team.form_newbtn')}}</div>
@@ -176,7 +182,7 @@ export default {
         top: 0.5rem;
       }
     }
-    > div {
+    .text {
       width: 100%;
       height: 2rem;
       line-height: 2rem;
@@ -184,6 +190,17 @@ export default {
       color: #fff;
       padding-left: 15%;
       margin-bottom: 1rem;
+    }
+    .name {
+      span {
+        display: inline-block;
+        width: 25%;
+        vertical-align: top;
+        text-align: center;
+        line-height: 1rem;
+        font-size: 0.75rem;
+        color: #fff;
+      }
     }
   }
   .team-btn {
