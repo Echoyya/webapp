@@ -343,9 +343,7 @@ export default {
         if (data.code == 0) {
           this.checkMyTeam()
         } else if (data.code == 1) {
-          this.$refs.malert.show(this.$t('vote.team.have_team'), () => {
             this.checkMyTeam()
-          })
         } else if (data.code == 2) {
           // 已经达到了最高限制
           this.hasFinish = true
