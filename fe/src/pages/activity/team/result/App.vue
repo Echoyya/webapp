@@ -59,6 +59,14 @@ export default {
     this.award_day = getQuery('prize')
   },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
     create() {
       window.location.href = '/activity/team/home.html'
     },
@@ -71,6 +79,7 @@ export default {
       )
     },
     toFacebook() {
+      this.mSendEvLog('sharelucky_click', 'Facebook', '')
       if (this.$appType == 1) {
         if (this.$appVersion) {
           shareByFacebook(
@@ -83,6 +92,7 @@ export default {
       }
     },
     toWhatsApp() {
+      this.mSendEvLog('sharelucky_click', 'WhatsApp', '')
       if (this.$appType == 1) {
         if (this.$appVersion) {
           shareByWhatsApp(
@@ -97,6 +107,7 @@ export default {
       }
     },
     toXender() {
+      this.mSendEvLog('sharelucky_click', 'Xender', '')
       if (this.$appType == 1) {
         if (this.$appVersion) {
           shareByXender(this.teamNum)
@@ -106,6 +117,7 @@ export default {
       }
     },
     toCopylink() {
+      this.mSendEvLog('sharelucky_click', 'copylink', '')
       if (this.$appType == 1) {
         if (this.$appVersion) {
           shareByCopyLink(

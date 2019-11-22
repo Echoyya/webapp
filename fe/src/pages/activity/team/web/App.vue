@@ -111,17 +111,6 @@ export default {
       leader_name: 'leader_name'
     }
   },
-  computed: {
-    platform() {
-      if (this.appType == 1) {
-        return 'Android'
-      } else if (this.appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
-    }
-  },
   created() {
     const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
     const max = 10 * 10000
@@ -140,26 +129,52 @@ export default {
     })
   },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
     callOrDownApp(value) {
       let url = ''
       if (value == 'first') {
+        this.mSendEvLog('joinbtn_click', 'h5recommend', '')
+        this.mSendEvLog('callApp', 'jointeamfull', '')
         url = '?teamno=' + this.teamNum1
       } else if (value == 'second') {
+        this.mSendEvLog('joinbtn_click', 'h5recommend', '')
+        this.mSendEvLog('callApp', 'jointeamfull', '')
         url = '?teamno=' + this.teamNum2
       } else if (value == 'join') {
+        this.mSendEvLog('callApp', 'jointeam', '')
         url = '?teamno=' + this.teamNum
+      } else {
+        this.mSendEvLog('callApp', 'formnew', '')
+        this.mSendEvLog('teamoverpage_formnew', '', '')
       }
       callApp.call(
         this,
         'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.origin + '/activity/team/home.html' + url,
         () => {
           callMarket.call(this, () => {
+            if (value == 'join') this.mSendEvLog('downloadpopup_show', 'jointeam', '')
+            else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_show', 'jointeamfull', '')
+            else this.mSendEvLog('downloadpopup_show', 'formnew', '')
             this.$refs.confirm.show(
               this.$t('vote.team.download_tip'),
               () => {
+                if (value == 'join') this.mSendEvLog('downloadpopup_clickok', 'jointeam', '')
+                else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clickok', 'jointeamfull', '')
+                else this.mSendEvLog('downloadpopup_clickok', 'formnew', '')
                 downApk.call(this)
               },
-              () => {},
+              () => {
+                if (value == 'join') this.mSendEvLog('downloadpopup_clicknot', 'jointeam', '')
+                else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clicknot', 'jointeamfull', '')
+                else this.mSendEvLog('downloadpopup_clicknot', 'formnew', '')
+              },
               'OK',
               'NOT NOW'
             )
@@ -170,9 +185,13 @@ export default {
     search() {
       searchTeam.call(this, this.teamNum, data => {
         if (data && (data.code == 1 || data.code == 0)) {
+          if (data.code == 1) {
+            this.mSendEvLog('teaminvpage_show', '', '')
+          }
           this.mumberList = data.data.team_member_dtos
           this.leader_name = this.mumberList[0].nick_name
           if (data.code == 0) {
+            this.mSendEvLog('teamfullpage_show', '', '')
             this.teamNum1 = data.data.team_recommend_dtos[0].team_no
             this.teamNum2 = data.data.team_recommend_dtos[1].team_no
             this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
@@ -426,7 +445,7 @@ export default {
     width: 95%;
     margin: 0 auto;
     position: relative;
-    background-image: linear-gradient(#8E0044, #3C0003);
+    background-image: linear-gradient(#8e0044, #3c0003);
     padding: 0 2.5% 0.5rem;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;

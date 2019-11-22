@@ -31,7 +31,7 @@
           <div v-if="item.my_award_day!=0&&item.my_award_day!=1" class="vip">VIP {{item.my_award_day}} DAYS</div>
         </div>
       </div>
-      <div class="friends" @click="show_share=true">
+      <div class="friends" @click="showShare">
         <img src="@/assets/img/vote/TeamFission/ic_share.png" />
         <p>{{$t('vote.team.invite_btn',[allDays])}}</p>
       </div>
@@ -48,7 +48,7 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, shareInvite, getQuery } from '@/functions/app'
 import { searchTeam } from '@/pages/activity/team/func'
 export default {
   components: {
@@ -82,7 +82,41 @@ export default {
     })
   },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
+    shareOldVersion() {
+      if (this.teams.length >= 10) {
+        shareInvite(
+          `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
+      } else {
+        shareInvite(
+          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+          this.shareTitle,
+          this.shareText,
+          this.imgUrl
+        )
+      }
+    },
+    showShare() {
+      if (this.$appVersion) {
+        this.show_share = true
+        this.mSendEvLog('invitebtn_click', 'myprize', '')
+        this.mSendEvLog('myprize_inv_click', '', '')
+      }
+      this.shareOldVersion()
+    },
     toFacebook() {
+      this.mSendEvLog('inviteway_click', 'Facebook', '')
       if (this.$appType == 1) {
         if (this.teams.length >= 10) {
           shareByFacebook(
@@ -98,6 +132,7 @@ export default {
       }
     },
     toWhatsApp() {
+      this.mSendEvLog('inviteway_click', 'WhatsApp', '')
       if (this.$appType == 1) {
         if (this.teams.length >= 10) {
           shareByWhatsApp(
@@ -117,6 +152,7 @@ export default {
       }
     },
     toXender() {
+      this.mSendEvLog('inviteway_click', 'Xender', '')
       if (this.$appType == 1) {
         if (this.teamNum) {
           shareByXender(this.teamNum)
@@ -124,6 +160,7 @@ export default {
       }
     },
     toDownload() {
+      this.mSendEvLog('inviteway_click', 'download', '')
       if (window.getChannelId && window.getChannelId.shareDownload) {
         searchTeam.call(this, this.teamNum, data => {
           const team = data.data.team_member_dtos
@@ -139,6 +176,7 @@ export default {
       }
     },
     toCopylink() {
+      this.mSendEvLog('inviteway_click', 'copylink', '')
       if (this.$appType == 1) {
         if (this.teams.length >= 10) {
           shareByCopyLink(`${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`)

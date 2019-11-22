@@ -102,12 +102,12 @@
         </div>
         <span>{{$t('vote.team.invite_won',[number])}}</span>
         <div class="team-btn">
-          <div @click="toCreate2()">{{$t('vote.team.form_newbtn')}}</div>
+          <div @click="toCreateFull()">{{$t('vote.team.form_newbtn')}}</div>
         </div>
       </div>
-      <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
-      <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
-        <div class="team1 clearfix">
+      <div v-show="moreList1.length>0||moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
+      <div class="more-team">
+        <div v-show="moreList1.length>0" class="team1 clearfix">
           <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
           <div class="team-box">
             <div class="team clearfix">
@@ -122,11 +122,11 @@
               </div>
             </div>
             <div class="join">
-              <div @click="toJoin2(teamNum1)">{{$t('vote.team.join_s')}}</div>
+              <div @click="toJoinFull(teamNum1)">{{$t('vote.team.join_s')}}</div>
             </div>
           </div>
         </div>
-        <div class="team2 clearfix">
+        <div v-show="moreList2.length>0" class="team2 clearfix">
           <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum2}}</div>
           <div class="team-box">
             <div class="team clearfix">
@@ -141,7 +141,7 @@
               </div>
             </div>
             <div class="join">
-              <div @click="toJoin2(teamNum2)">{{$t('vote.team.join_s')}}</div>
+              <div @click="toJoinFull(teamNum2)">{{$t('vote.team.join_s')}}</div>
             </div>
           </div>
         </div>
@@ -149,7 +149,7 @@
     </div>
     <malert ref="malert" />
     <malert ref="findTeamAlert">
-      <a slot="link" href="/activity/team/search.html">CHANGE</a>
+      <div slot="link" @click="changeTeam">CHANGE</div>
     </malert>
   </div>
 </template>
@@ -254,9 +254,9 @@ export default {
             // can join
 
             const teamLeader = data.data.team_member_dtos[0].nick_name || data.data.team_member_dtos[0].id
-            this.$refs.findTeamAlert.show(
-              this.$t('vote.team.newuser',[teamLeader]), 
-              () => {
+            this.mSendEvLog('teammatch_show','new','')
+            this.$refs.findTeamAlert.show(this.$t('vote.team.newuser', [teamLeader]), () => {
+              this.mSendEvLog('teammatch_click','ok','')
               if (this.$isLogin) {
                 this.toJoin(teamno)
               } else {
@@ -276,6 +276,7 @@ export default {
             this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
           }
         } else {
+          this.mSendEvLog('teammatch_show','old','')
           this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
             if (this.$isLogin) {
               this.toCreate()
@@ -313,13 +314,18 @@ export default {
   methods: {
     mSendEvLog(action, label, value) {
       this.$sendEvLog({
-        category: 'referral_team_' + this.platform,
+        category: 'referral_team_' + this.$platform,
         action: action,
         label: label,
         value: value
       })
     },
-    toJoin2(teamno) {
+    changeTeam() {
+      this.mSendEvLog('teammatch_click','change','')
+      window.location.href = '/activity/team/search.html'
+    },
+    toJoinFull(teamno) {
+      this.mSendEvLog('joinbtn_click','h5recommend','')
       this.isFull = false
       if (this.$isLogin) {
         this.toJoin(teamno)
@@ -336,6 +342,7 @@ export default {
           this.teamNum = teamno
           if (this.team.length >= 3) {
             this.canLottery = true
+            this.mSendEvLog('teamsucc_show','','')
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
               window.scrollTo(0, 1500)
               this.startLottery()
@@ -363,9 +370,9 @@ export default {
         }
       })
     },
-    toCreate2() {
+    toCreateFull() {
       this.isFull = false
-      if(this.$isLogin) {
+      if (this.$isLogin) {
         this.toCreate()
       } else {
         toNativeLogin(this.$appType)
@@ -419,6 +426,7 @@ export default {
       })
     },
     toFacebook() {
+      this.mSendEvLog('inviteway_click', 'Facebook', '')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByFacebook(
@@ -434,6 +442,7 @@ export default {
       }
     },
     toWhatsApp() {
+      this.mSendEvLog('inviteway_click', 'WhatsApp', '')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByWhatsApp(
@@ -453,6 +462,7 @@ export default {
       }
     },
     toXender() {
+      this.mSendEvLog('inviteway_click', 'Xender', '')
       if (this.$appType == 1) {
         if (this.teamNum) {
           shareByXender(this.teamNum)
@@ -460,6 +470,7 @@ export default {
       }
     },
     toDownload() {
+      this.mSendEvLog('inviteway_click', 'download', '')
       if (window.getChannelId && window.getChannelId.shareDownload) {
         if (this.teamNum) {
           searchTeam.call(this, this.teamNum, data => {
@@ -477,6 +488,7 @@ export default {
       }
     },
     toCopylink() {
+      this.mSendEvLog('inviteway_click', 'copylink', '')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByCopyLink(`${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`)
@@ -488,9 +500,19 @@ export default {
       }
     },
     toSearch() {
+      this.mSendEvLog('searchbtn_click', '', '')
       window.location.href = '/activity/team/search.html'
     },
     showShare() {
+      if (this.hasFinish) {
+        this.mSendEvLog('invitebtn_click', 'teamover', '')
+      } else {
+        if (this.isFull) {
+          this.mSendEvLog('invitebtn_click', 'teamfull', '')
+        } else {
+          this.mSendEvLog('invitebtn_click', 'teaminvpage', '')
+        }
+      }
       if (this.$isLogin) {
         if (this.$appVersion) {
           // 5.20版本
@@ -560,12 +582,14 @@ export default {
             }
           } else {
             this.items = [] // 服务器端计算数据错误时
-            this.$refs.malert.show('Get winnings error!')
+            console.log('Get winnings error!')
+            // this.$refs.malert.show('Get winnings error!')
           }
         })
         .catch(err => {
           this.items = []
-          this.$refs.malert.show('Get winnings error!! ' + err)
+          console.log('Get winnings error!! ' + err)
+          // this.$refs.malert.show('Get winnings error!! ' + err)
         })
     },
     msgScroll() {
@@ -611,6 +635,7 @@ export default {
           this.click = false
           this.startRoll()
         } else {
+          this.mSendEvLog('drawbtn_click','','0')
           this.$refs.malert.show(this.$t('vote.team.form_noform'), () => {
             window.scrollTo(0, 0)
             this.showShare()
@@ -634,6 +659,9 @@ export default {
         console.log('你已经中奖了，奖品' + this.lotteryType[this.indexs].name)
         if (this.prize < 3) {
           setTimeout(() => {
+            if(this.prize==0) this.mSendEvLog('teamsucc_result','1day','')
+            else if(this.prize==1) this.mSendEvLog('teamsucc_result','7day','')
+            else if(this.prize==2) this.mSendEvLog('teamsucc_result','30day','')
             location.replace('/activity/team/result.html?teamno=' + tmpTeamId + '&prize=' + this.award_day)
           }, 1000)
         } else if (this.prize == 3) {
@@ -643,6 +671,7 @@ export default {
             }, 1000)
           } else {
             setTimeout(() => {
+              this.mSendEvLog('teamsucc_result','thanks','')
               this.$refs.malert.show(this.$t('vote.team.draw_none'))
             }, 1000)
           }

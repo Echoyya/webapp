@@ -38,7 +38,7 @@ export default {
   },
   methods: {
     showRule() {
-      //   this.mSendEvLog("rule_click", "", "");
+      this.mSendEvLog("rulesbtn_click", "", "");
       this.show_rules = true
       document.body.style.overflow = 'hidden'
       document.body.style.position = 'fixed'

@@ -128,7 +128,7 @@ export default {
 }
 .link {
   text-align: center;
-  a {
+  div {
     color: #fabe00;
   }
 }
