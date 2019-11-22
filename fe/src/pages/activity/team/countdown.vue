@@ -104,6 +104,14 @@ export default {
     }, 300)
   },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
     toAwards() {
       if (this.$isLogin) {
         this.mSendEvLog('myprize_click', '', '')
