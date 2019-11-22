@@ -456,7 +456,6 @@ export default {
     },
     showShare() {
       if (this.$isLogin) {
-        this.show_share = true
         if (this.$appVersion) {
           // 5.20版本
           this.show_share = true
