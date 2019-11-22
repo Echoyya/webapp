@@ -35,7 +35,8 @@
           <div class="img" @click="toSearch"></div>
           <div class="friends" @click="showShare">
             <img src="@/assets/img/vote/TeamFission/ic_share.png" />
-            <p>{{$t('vote.team.invite_btn')}}</p>
+            <p v-if="$isLogin">{{$t('vote.team.invite_btn')}}</p>
+            <p v-else>{{$t('vote.team.invite_btn2')}}</p>
           </div>
         </div>
       </div>
@@ -343,9 +344,7 @@ export default {
         if (data.code == 0) {
           this.checkMyTeam()
         } else if (data.code == 1) {
-          this.$refs.malert.show(this.$t('vote.team.have_team'), () => {
             this.checkMyTeam()
-          })
         } else if (data.code == 2) {
           // 已经达到了最高限制
           this.hasFinish = true
@@ -714,6 +713,7 @@ export default {
       .contant {
         padding: 0.5rem 0.5rem 1.5rem;
         position: relative;
+        border-top-right-radius: 0;
         > div {
           display: inline-block;
           width: 20%;
