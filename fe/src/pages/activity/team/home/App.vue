@@ -102,13 +102,10 @@
         </div>
         <span>{{$t('vote.team.invite_won',[number])}}</span>
         <div class="team-btn">
-          <div @click="toCreate('full')">{{$t('vote.team.form_newbtn')}}</div>
+          <div @click="toCreate2()">{{$t('vote.team.form_newbtn')}}</div>
         </div>
       </div>
-      <div
-        v-show="moreList1.length>0&&moreList2.length>0"
-        class="text text2"
-      >{{$t('vote.team.follow_team')}}</div>
+      <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
       <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
         <div class="team1 clearfix">
           <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
@@ -125,7 +122,7 @@
               </div>
             </div>
             <div class="join">
-              <div @click="toJoin(teamNum1,'full')">{{$t('vote.team.join_s')}}</div>
+              <div @click="toJoin2(teamNum1)">{{$t('vote.team.join_s')}}</div>
             </div>
           </div>
         </div>
@@ -144,7 +141,7 @@
               </div>
             </div>
             <div class="join">
-              <div @click="toJoin(teamNum2,'full')">{{$t('vote.team.join_s')}}</div>
+              <div @click="toJoin2(teamNum2)">{{$t('vote.team.join_s')}}</div>
             </div>
           </div>
         </div>
@@ -306,13 +303,34 @@ export default {
         this.fakeTeam()
       }
     }
+    if (this.hasFinish) {
+      this.mSendEvLog('homepage_show', 'finish', '')
+    } else {
+      this.mSendEvLog('homepage_show', 'continue', '')
+    }
     this.getLotteryType()
     this.getMsgList()
     this.msgScroll()
   },
   methods: {
-    toJoin(teamno, value) {
-      if (value) this.isFull = false
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
+    toJoin2(teamno) {
+      this.isFull = false
+      if (this.$isLogin) {
+        this.toJoin(teamno)
+      } else {
+        localStorage.setItem('join_teamno', teamno)
+        toNativeLogin(this.$appType)
+      }
+    },
+    toJoin(teamno) {
       joinTeam.call(this, teamno, data => {
         // TODO 确认data.code ==4 是否属于这个分支
         if (data.code == 0) {
@@ -347,8 +365,15 @@ export default {
         }
       })
     },
-    toCreate(value) {
-      if (value) this.isFull = false
+    toCreate2() {
+      this.isFull = false
+      if(this.$isLogin) {
+        this.toCreate()
+      } else {
+        toNativeLogin(this.$appType)
+      }
+    },
+    toCreate() {
       createTeam.call(this, data => {
         if (data.code == 0) {
           this.checkMyTeam()
