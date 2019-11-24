@@ -254,8 +254,9 @@ export default {
   mounted() {
     const teamno = getQuery('teamno')
     const cacheTeamNo = localStorage.getItem('join_teamno')
+    const createInfo = localStorage.getItem('create')
 
-    if (teamno && !isNaN(teamno) && !cacheTeamNo) {
+    if (teamno && !isNaN(teamno) && !cacheTeamNo &&! createInfo) {
       history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
@@ -391,14 +392,18 @@ export default {
       if (this.$isLogin) {
         this.toCreate()
       } else {
+        localStorage.setItem('create', 'true')
         toNativeLogin(this.$appType)
       }
     },
     toCreate() {
       createTeam.call(this, data => {
         if (data.code == 0) {
+          // 创建成功
           this.checkMyTeam()
         } else if (data.code == 1) {
+          // 当前有队不能创建
+          
           this.checkMyTeam()
         } else if (data.code == 2) {
           // 已经达到了最高限制
@@ -421,8 +426,13 @@ export default {
         if (data.code == 0) {
           // 搜索页跳转登录，老用户有队提示
           if (localStorage.getItem('join_teamno')) {
-            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
+            this.$refs.malert.show(this.$t('vote.team.have_team'))
             localStorage.removeItem('join_teamno')
+          }
+          // 满队创建新队跳转登录，老用户有队提示
+          if (localStorage.getItem('create')) {
+            this.$refs.malert.show(this.$t('vote.team.have_team'))
+            localStorage.removeItem('create')
           }
           this.team = data.data.team_member_dtos
           this.teamNum = data.data.team_no
