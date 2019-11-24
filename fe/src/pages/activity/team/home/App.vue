@@ -255,7 +255,7 @@ export default {
     const teamno = getQuery('teamno')
     const cacheTeamNo = localStorage.getItem('join_teamno')
 
-    if (teamno && !isNaN(teamno)&&!cacheTeamNo) {
+    if (teamno && !isNaN(teamno) && !cacheTeamNo) {
       history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
@@ -360,9 +360,14 @@ export default {
             })
           }
         } else if (data.code == 4) {
-          this.$refs.malert.show(this.$t('vote.team.have_team'), () => {
-            this.checkMyTeam()
-          })
+          // 已参加过队伍，不能参加队伍
+          if (this.hasFinish) {
+            this.$refs.malert.show(this.$t('vote.team.have_team'))
+          } else {
+            this.$refs.malert.show(this.$t('vote.team.have_team'), () => {
+              this.checkMyTeam()
+            })
+          }
         } else if (data.code == 1) {
           // 不是新用户，需要创建队伍
           this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
@@ -459,7 +464,7 @@ export default {
     toXender() {
       if (this.hasFinish) {
         this.mSendEvLog('inviteway_click', 'Xender', '0')
-        this.$refs.malert.show('vote.team.share10_2')
+        this.$refs.malert.show(this.$t('vote.team.share10_2'))
         return
       }
       this.mSendEvLog('inviteway_click', 'Xender', '1')
@@ -472,7 +477,7 @@ export default {
     toDownload() {
       if (this.hasFinish) {
         this.mSendEvLog('inviteway_click', 'download', '0')
-        this.$refs.malert.show('vote.team.share10_2')
+        this.$refs.malert.show(this.$t('vote.team.share10_2'))
         return
       }
       this.mSendEvLog('inviteway_click', 'download', '1')

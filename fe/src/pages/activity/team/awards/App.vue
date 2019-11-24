@@ -139,7 +139,7 @@ export default {
     toXender() {
       if (this.hasFinish) {
         this.mSendEvLog('inviteway_click', 'Xender', '0')
-        this.$refs.malert.show('vote.team.share10_2')
+        this.$refs.malert.show(this.$t('vote.team.share10_2'))
         return
       }
       this.mSendEvLog('inviteway_click', 'Xender', '1')
@@ -152,7 +152,7 @@ export default {
     toDownload() {
       if (this.hasFinish) {
         this.mSendEvLog('inviteway_click', 'download', '0')
-        this.$refs.malert.show('vote.team.share10_2')
+        this.$refs.malert.show(this.$t('vote.team.share10_2'))
         return
       }
       this.mSendEvLog('inviteway_click', 'download', '1')
