@@ -151,7 +151,7 @@ export const callMarket = function(failback) {
   let source = utmParam.str
 
   // 对组队活动特殊处理teamno
-  const activity_id = getQuery('activity')
+  const activity_id = getQuery('activity') || 1
   const teamno = getQuery('teamno')
   if (teamno) {
     source =
