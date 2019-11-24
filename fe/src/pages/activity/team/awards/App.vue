@@ -66,7 +66,6 @@ export default {
   data() {
     return {
       activity_id: getQuery('activiy') || 1,
-      show_share: false,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.invite_con'),
@@ -76,13 +75,14 @@ export default {
       teams: [],
       teamNum: '',
       allDays: 0,
+      show_share: false,
       have_no_result: false
     }
   },
   created() {
     this.teamNum = getQuery('teamno')
-    this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-    this.shareLandUrl = `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+    ;(this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`),
+      (this.shareLandUrl = `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`)
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.activity_id}`).then(({ data }) => {
       if (data.code == 0) {
         this.teams = data.data.my_award_team_dtos
@@ -101,20 +101,18 @@ export default {
         value: value
       })
     },
-    shareOldVersion() {
-      if (this.teams.length >= 10) {
-        shareInvite(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
-      } else {
-        shareInvite(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
-      }
-    },
     showShare() {
       if (this.$appVersion) {
         this.show_share = true
         this.mSendEvLog('invitebtn_click', 'myprize', '1')
         this.mSendEvLog('myprize_inv_click', '', '1')
+      } else {
+        if (this.teams.length >= 10) {
+          shareInvite(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
+        } else {
+          shareInvite(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
+        }
       }
-      this.shareOldVersion()
     },
     toFacebook() {
       this.mSendEvLog('inviteway_click', 'Facebook', '1')
