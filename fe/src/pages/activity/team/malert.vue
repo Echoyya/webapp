@@ -1,8 +1,17 @@
 <template>
   <div class="alert-box">
     <div :style="{display:style}" class="shadow-box"></div>
-    <div :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}" ref="alerts" class="dialog">
-      <img v-if="closeback" class="close" @click="close" src="@/assets/img/vote/TeamFission/ic_close.png" />
+    <div
+      :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}"
+      ref="alerts"
+      class="dialog"
+    >
+      <img
+        v-if="closeback"
+        class="close"
+        @click="close"
+        src="@/assets/img/vote/TeamFission/ic_close.png"
+      />
       <div class="dialog-body">
         <div class="pop-default">
           <p>

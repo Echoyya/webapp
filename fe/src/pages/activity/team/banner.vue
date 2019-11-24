@@ -2,7 +2,7 @@
   <div class="banner">
     <div class="top">
       <div class="img">
-        <img src="@/assets/img/vote/TeamFission/ic_startimeson.png" alt="" class="icon">
+        <img src="@/assets/img/vote/TeamFission/ic_startimeson.png" alt class="icon" />
         <img src="@/assets/img/vote/TeamFission/bg-banner.png" alt="bg-img" class="bg-img" />
       </div>
       <div class="about" @click="showRule">{{$t('vote.team.about_title')}}</div>
@@ -21,7 +21,6 @@
 export default {
   data() {
     return {
-      // 页面
       show_rules: false
     }
   },
@@ -50,7 +49,6 @@ export default {
   }
 }
 </script>
-
 <style lang="less">
 .banner {
   img,
@@ -59,7 +57,6 @@ export default {
     box-sizing: border-box;
   }
   width: 100%;
-  // background-image: linear-gradient(#a90828, #930537, #7c003d);
   overflow: hidden;
   .top {
     width: 100%;

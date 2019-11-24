@@ -8,9 +8,10 @@
       <img v-if="award_day==30" src="@/assets/img/vote/TeamFission/vip30.png" alt />
       <img v-if="award_day==0" src="@/assets/img/vote/TeamFission/thanks.png" alt />
     </div>
-    <div class="share-box">
+    <div class="share-box" v-show="show_share">
       <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
       <div class="text">{{$t('vote.team.show_lucky')}}</div>
+      <img src="@/assets/img/vote/TeamFission/ic_close.png" class="close" @click="show_share=false" />
       <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
       <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
       <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
@@ -20,6 +21,12 @@
         <span>{{$t('vote.team.whatsapp')}}</span>
         <span>{{$t('vote.team.xender')}}</span>
         <span>{{$t('vote.team.copy')}}</span>
+      </div>
+    </div>
+    <div class="team-btn">
+      <div class="friends" @click="showShare">
+        <img src="@/assets/img/vote/TeamFission/ic_share.png" />
+        <p>{{$t('vote.team.invite_btn')}}</p>
       </div>
     </div>
     <div class="team-btn">
@@ -51,6 +58,7 @@ export default {
       shareShowoffUrl: '',
 
       teamNum: '',
+      show_share: false,
       award_day: ''
     }
   },
@@ -80,47 +88,36 @@ export default {
     create() {
       window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
     },
-    shareOldVersion() {
-      shareInvite(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
+    showShare() {
+      if (this.$appVersion) {
+        // 5.20版本
+        this.show_share = true
+      } else {
+        shareInvite(this.shareShowoffUrl, this.shareTitle, this.shareText, this.imgUrl)
+      }
     },
     toFacebook() {
       this.mSendEvLog('sharelucky_click', 'Facebook', '')
       if (this.$appType == 1) {
-        if (this.$appVersion) {
-          shareByFacebook(this.shareShowoffUrl, `【${this.shareTitle}】 ${this.shareText} `)
-        } else {
-          this.shareOldVersion()
-        }
+        shareByFacebook(this.shareShowoffUrl, `【${this.shareTitle}】 ${this.shareText} `)
       }
     },
     toWhatsApp() {
       this.mSendEvLog('sharelucky_click', 'WhatsApp', '')
       if (this.$appType == 1) {
-        if (this.$appVersion) {
-          shareByWhatsApp(this.shareShowoffUrl, this.shareTitle, this.shareText, this.imgUrl)
-        } else {
-          this.shareOldVersion()
-        }
+        shareByWhatsApp(this.shareShowoffUrl, this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     toXender() {
       this.mSendEvLog('sharelucky_click', 'Xender', '')
       if (this.$appType == 1) {
-        if (this.$appVersion) {
-          shareByXender(this.teamNum)
-        } else {
-          this.shareOldVersion()
-        }
+        shareByXender(this.teamNum)
       }
     },
     toCopylink() {
       this.mSendEvLog('sharelucky_click', 'copylink', '')
       if (this.$appType == 1) {
-        if (this.$appVersion) {
-          shareByCopyLink(this.shareShowoffUrl)
-        } else {
-          this.shareOldVersion()
-        }
+        shareByCopyLink(this.shareShowoffUrl)
       }
     }
   }
@@ -171,14 +168,40 @@ export default {
       width: 100%;
     }
   }
+  .friends {
+    width: 100%;
+    height: 3rem;
+    position: relative;
+    background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
+    border-radius: 25px;
+    border: 0.2rem solid rgba(26, 1, 96, 0.75);
+    color: #ffffff;
+    height: 3rem;
+    line-height: 2.6rem;
+    img {
+      height: 1.2rem;
+      position: absolute;
+      left: 15%;
+      top: 0.5rem;
+    }
+    p {
+      text-align: center;
+    }
+  }
   .share-box {
     width: 95%;
     margin: 0.5rem auto;
     padding: 0.5rem;
     background-color: #a1014b;
-    // height: 10rem;
     border-radius: 1rem;
     position: relative;
+    .close {
+      width: 2rem;
+      height: 2rem;
+      position: absolute;
+      right: 0.5rem;
+      top: 0.5rem;
+    }
     > img {
       width: 25%;
       &:nth-child(1) {
