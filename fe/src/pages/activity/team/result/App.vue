@@ -26,7 +26,7 @@
       <div @click="create">{{$t('vote.team.form_newbtn')}}</div>
     </div>
     <div class="tip">
-      <div class="text" v-html="$t('vote.team.tips',[award_day])"></div>
+      <div class="text" v-html="$t('vote.team.tips')"></div>
     </div>
   </div>
 </template>
@@ -47,8 +47,8 @@ export default {
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.invite_con'),
-      shareWebUrl: `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-      shareShowoffUrl: `${window.location.origin}/activity/team/showoff.html?activity=${this.activity_id}&prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+      shareWebUrl: '',
+      shareShowoffUrl: '',
 
       teamNum: '',
       award_day: ''
@@ -57,6 +57,10 @@ export default {
   created() {
     this.teamNum = getQuery('teamno')
     this.award_day = getQuery('prize')
+
+    this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+    this.shareShowoffUrl = `${window.location.origin}/activity/team/showoff.html?activity=${this.activity_id}&prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+
     this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
       if (data.code == 0) {
         this.activityStart = data.data.start_date

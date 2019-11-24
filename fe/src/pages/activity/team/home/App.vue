@@ -174,8 +174,8 @@ export default {
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.shareText'),
-      shareWebUrl: `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-      shareLandUrl: `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+      shareWebUrl: '',
+      shareLandUrl: '',
 
       show_share: false,
       hasFinish: false,
@@ -250,8 +250,12 @@ export default {
   },
   mounted() {
     const teamno = getQuery('teamno')
-    history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
+
+    this.$refs.malert.show(window.location.href,()=>{
+      this.shareLandUrl = `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+
     if (teamno && !isNaN(teamno)) {
+      history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
           this.$refs.malert.show(data.message)
@@ -283,7 +287,7 @@ export default {
           }
         } else {
           this.mSendEvLog('teammatch_show', 'old', '1')
-          this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
+          this.$refs.malert.show(1+this.$t('vote.team.joinpop_olduser'), () => {
             if (this.$isLogin) {
               this.toCreate()
             } else {
@@ -313,6 +317,9 @@ export default {
     } else {
       this.mSendEvLog('homepage_show', 'continue', '1')
     }
+    })
+
+    
     this.getLotteryType()
     this.getMsgList()
     this.msgScroll()
@@ -411,7 +418,7 @@ export default {
         if (data.code == 0) {
           // 搜索页跳转登录，老用户有队提示
           if (localStorage.getItem('join_teamno')) {
-            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
+            this.$refs.malert.show(3+this.$t('vote.team.joinpop_olduser'))
             localStorage.removeItem('join_teamno')
           }
           this.team = data.data.team_member_dtos
@@ -432,6 +439,7 @@ export default {
       })
     },
     toFacebook() {
+      this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
       this.mSendEvLog('inviteway_click', 'Facebook', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
@@ -442,6 +450,7 @@ export default {
       }
     },
     toWhatsApp() {
+      this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
       this.mSendEvLog('inviteway_click', 'WhatsApp', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
@@ -488,6 +497,7 @@ export default {
       }
     },
     toCopylink() {
+      this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
       this.mSendEvLog('inviteway_click', 'copylink', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {

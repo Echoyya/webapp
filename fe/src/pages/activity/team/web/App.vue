@@ -148,19 +148,21 @@ export default {
       if (value == 'first') {
         this.mSendEvLog('joinbtn_click', 'h5recommend', '')
         this.mSendEvLog('callApp', 'jointeamfull', '')
-        url = '?teamno=' + this.teamNum1
+        url = '&teamno=' + this.teamNum1
       } else if (value == 'second') {
         this.mSendEvLog('joinbtn_click', 'h5recommend', '')
         this.mSendEvLog('callApp', 'jointeamfull', '')
-        url = '?teamno=' + this.teamNum2
+        url = '&teamno=' + this.teamNum2
       } else if (value == 'join') {
         this.mSendEvLog('callApp', 'jointeam', '')
-        url = '?teamno=' + this.teamNum
+        url = '&teamno=' + this.teamNum
       } else {
         this.mSendEvLog('callApp', 'formnew', '')
         this.mSendEvLog('teamoverpage_formnew', '', '')
       }
-      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html${url}`, () => {
+
+      const loadURl = window.location.origin + '/activity/team/home.html?activity=' + this.activity_id + url
+      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${encodeURIComponent(loadURl)}`, () => {
         callMarket.call(this, () => {
           if (value == 'join') this.mSendEvLog('downloadpopup_show', 'jointeam', '')
           else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_show', 'jointeamfull', '')

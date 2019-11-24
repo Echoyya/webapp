@@ -70,8 +70,8 @@ export default {
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.invite_con'),
-      shareWebUrl: `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-      shareLandUrl: `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+      shareWebUrl: '',
+      shareLandUrl: '',
 
       teams: [],
       teamNum: '',
@@ -81,6 +81,8 @@ export default {
   },
   created() {
     this.teamNum = getQuery('teamno')
+    this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+    this.shareLandUrl = `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.activity_id}`).then(({ data }) => {
       if (data.code == 0) {
         this.teams = data.data.my_award_team_dtos
