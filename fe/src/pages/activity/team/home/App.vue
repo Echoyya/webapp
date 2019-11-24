@@ -253,72 +253,71 @@ export default {
   },
   mounted() {
     const teamno = getQuery('teamno')
+    const cacheTeamNo = localStorage.getItem('join_teamno')
 
-    this.$refs.malert.show(window.location.href, () => {
-      if (teamno && !isNaN(teamno)) {
-        history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
-        searchTeam.call(this, teamno, data => {
-          if (data.code >= 2) {
-            this.$refs.malert.show(data.message)
-            return
-          }
-          if (data.data.newcomer) {
-            if (data.code > 0) {
-              // can join
-              this.mSendEvLog('teammatch_show', 'new', '1')
-              this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
-                this.mSendEvLog('teammatch_click', 'ok', '1')
-                if (this.$isLogin) {
-                  this.toJoin(teamno)
-                } else {
-                  localStorage.setItem('join_teamno', teamno)
-                  toNativeLogin(this.$appType)
-                }
-              })
-              this.fakeTeam()
-            } else {
-              // 当前搜索的队伍是满队
-              this.isFull = true
-              this.mumberList = data.data.team_member_dtos
-              this.leader_name = this.mumberList[0].nick_name
-              this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
-              this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
-              this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
-              this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
-            }
-          } else {
-            this.mSendEvLog('teammatch_show', 'old', '1')
-            this.$refs.malert.show(1 + this.$t('vote.team.joinpop_olduser'), () => {
+    if (teamno && !isNaN(teamno)&&!cacheTeamNo) {
+      history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
+      searchTeam.call(this, teamno, data => {
+        if (data.code >= 2) {
+          this.$refs.malert.show(data.message)
+          return
+        }
+        if (data.data.newcomer) {
+          if (data.code > 0) {
+            // can join
+            this.mSendEvLog('teammatch_show', 'new', '1')
+            this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
+              this.mSendEvLog('teammatch_click', 'ok', '1')
               if (this.$isLogin) {
-                this.toCreate()
+                this.toJoin(teamno)
               } else {
-                this.fakeTeam()
+                localStorage.setItem('join_teamno', teamno)
+                toNativeLogin(this.$appType)
               }
             })
+            this.fakeTeam()
+          } else {
+            // 当前搜索的队伍是满队
+            this.isFull = true
+            this.mumberList = data.data.team_member_dtos
+            this.leader_name = this.mumberList[0].nick_name
+            this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
+            this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
+            this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
+            this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
+          }
+        } else {
+          this.mSendEvLog('teammatch_show', 'old', '1')
+          this.$refs.malert.show(1 + this.$t('vote.team.joinpop_olduser'), () => {
+            if (this.$isLogin) {
+              this.toCreate()
+            } else {
+              this.fakeTeam()
+            }
+          })
+        }
+      })
+    } else {
+      if (this.$isLogin) {
+        const cacheTeamNo = localStorage.getItem('join_teamno')
+        this.checkMyTeam(() => {
+          // check my team failed
+          if (cacheTeamNo) {
+            localStorage.removeItem('join_teamno')
+            this.toJoin(cacheTeamNo)
+          } else {
+            this.toCreate()
           }
         })
       } else {
-        if (this.$isLogin) {
-          const cacheTeamNo = localStorage.getItem('join_teamno')
-          this.checkMyTeam(() => {
-            // check my team failed
-            if (cacheTeamNo) {
-              localStorage.removeItem('join_teamno')
-              this.toJoin(cacheTeamNo)
-            } else {
-              this.toCreate()
-            }
-          })
-        } else {
-          this.fakeTeam()
-        }
+        this.fakeTeam()
       }
-      if (this.hasFinish) {
-        this.mSendEvLog('homepage_show', 'finish', '1')
-      } else {
-        this.mSendEvLog('homepage_show', 'continue', '1')
-      }
-    })
+    }
+    if (this.hasFinish) {
+      this.mSendEvLog('homepage_show', 'finish', '1')
+    } else {
+      this.mSendEvLog('homepage_show', 'continue', '1')
+    }
 
     this.getLotteryType()
     this.getMsgList()
@@ -449,7 +448,7 @@ export default {
       }
     },
     toWhatsApp() {
-        this.mSendEvLog('inviteway_click', 'WhatsApp', '1')
+      this.mSendEvLog('inviteway_click', 'WhatsApp', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByWhatsApp(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
@@ -495,7 +494,7 @@ export default {
       }
     },
     toCopylink() {
-        this.mSendEvLog('inviteway_click', 'copylink', '1')
+      this.mSendEvLog('inviteway_click', 'copylink', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByCopyLink(this.shareLandUrl)
