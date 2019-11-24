@@ -254,9 +254,9 @@ export default {
   mounted() {
     const teamno = getQuery('teamno')
     const cacheTeamNo = localStorage.getItem('join_teamno')
-
-    if (teamno && !isNaN(teamno) && !cacheTeamNo) {
-      history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
+    const createInfo = localStorage.getItem('create')
+    history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
+    if (teamno && !isNaN(teamno) && !cacheTeamNo && !createInfo) {
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
           this.$refs.malert.show(data.message)
