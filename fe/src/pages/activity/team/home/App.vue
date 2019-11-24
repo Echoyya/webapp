@@ -306,6 +306,9 @@ export default {
             localStorage.removeItem('join_teamno')
             this.toJoin(cacheTeamNo)
           } else {
+            if (createInfo) {
+              localStorage.removeItem('create')
+            }
             this.toCreate()
           }
         })
@@ -403,7 +406,6 @@ export default {
           this.checkMyTeam()
         } else if (data.code == 1) {
           // 当前有队不能创建
-
           this.checkMyTeam()
         } else if (data.code == 2) {
           // 已经达到了最高限制
