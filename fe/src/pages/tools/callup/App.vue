@@ -4,15 +4,11 @@
   </div>
 </template>
 <script>
-import { invokeByHref, invokeByIframe, createScheme,callApp } from '@/functions/app'
+import { invokeByHref, invokeByIframe, createScheme, callApp } from '@/functions/app'
 export default {
   methods: {
     callup() {
-      callApp.call(
-        this,
-        createScheme('com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.origin + '/activity/team/home.html')
-      )
-      // invokeByIframe.call(this,createScheme('com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.origin + '/activity/team/home.html'))
+      callApp.call(this, createScheme('com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.href))
       console.log(invokeByIframe)
       console.log(invokeByHref)
     }

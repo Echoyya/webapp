@@ -17,12 +17,13 @@
   </div>
 </template>
 <script>
-import { downApk, callApp, callMarket } from '@/functions/app'
-import { getBrowser,getCookie } from '@/functions/utils'
+import { downApk, callApp, callMarket, getQuery } from '@/functions/app'
+import { getBrowser, getCookie } from '@/functions/utils'
 export default {
   components: {},
   data() {
     return {
+      activity_id: getQuery('activiy') || 1,
       appType: 0,
       lang: 'en'
     }
@@ -42,11 +43,15 @@ export default {
     },
     down() {
       this.mSendEvLog('callApp', 'landingpage', '')
-      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html`, () => {
-        callMarket.call(this, () => {
-          downApk.call(this)
-        })
-      })
+      callApp.call(
+        this,
+        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?activity=${this.activity_id}`,
+        () => {
+          callMarket.call(this, () => {
+            downApk.call(this)
+          })
+        }
+      )
     }
   }
 }

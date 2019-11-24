@@ -41,22 +41,28 @@ export default {
   },
   data() {
     return {
-      // 页面
+      activity_id: getQuery('activiy') || 1,
+      activityStart: 0,
+      activityEnd: 0,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.invite_con'),
-      award_day: '',
+      shareWebUrl: `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+      shareShowoffUrl: `${window.location.origin}/activity/team/showoff.html?activity=${this.activity_id}&prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
 
-      activityStart: new Date('2019-11-15 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-25 04:00:00').getTime(),
-      //team
       teamNum: '',
-      team_activity_id: 1
+      award_day: ''
     }
   },
-  mounted() {
+  created() {
     this.teamNum = getQuery('teamno')
     this.award_day = getQuery('prize')
+    this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
+      if (data.code == 0) {
+        this.activityStart = data.data.start_date
+        this.activityEnd = data.data.end_date
+      }
+    })
   },
   methods: {
     mSendEvLog(action, label, value) {
@@ -68,24 +74,16 @@ export default {
       })
     },
     create() {
-      window.location.href = '/activity/team/home.html'
+      window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
     },
     shareOldVersion() {
-      shareInvite(
-        `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-        this.shareTitle,
-        this.shareText,
-        this.imgUrl
-      )
+      shareInvite(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
     },
     toFacebook() {
       this.mSendEvLog('sharelucky_click', 'Facebook', '')
       if (this.$appType == 1) {
         if (this.$appVersion) {
-          shareByFacebook(
-            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            `【${this.shareTitle}】 ${this.shareText} `
-          )
+          shareByFacebook(this.shareShowoffUrl, `【${this.shareTitle}】 ${this.shareText} `)
         } else {
           this.shareOldVersion()
         }
@@ -95,12 +93,7 @@ export default {
       this.mSendEvLog('sharelucky_click', 'WhatsApp', '')
       if (this.$appType == 1) {
         if (this.$appVersion) {
-          shareByWhatsApp(
-            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            this.shareTitle,
-            this.shareText,
-            this.imgUrl
-          )
+          shareByWhatsApp(this.shareShowoffUrl, this.shareTitle, this.shareText, this.imgUrl)
         } else {
           this.shareOldVersion()
         }
@@ -120,9 +113,7 @@ export default {
       this.mSendEvLog('sharelucky_click', 'copylink', '')
       if (this.$appType == 1) {
         if (this.$appVersion) {
-          shareByCopyLink(
-            `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
-          )
+          shareByCopyLink(this.shareShowoffUrl)
         } else {
           this.shareOldVersion()
         }

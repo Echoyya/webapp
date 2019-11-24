@@ -1,7 +1,11 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div v-if="mumberList.length<3" class="text text0" v-html="$t('vote.team.invite_tip',[leader_name])"></div>
+    <div
+      v-if="mumberList.length<3"
+      class="text text0"
+      v-html="$t('vote.team.invite_tip',[leader_name])"
+    ></div>
     <div v-else class="text text1">{{$t('vote.team.full_team')}}</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
@@ -97,9 +101,9 @@ export default {
   },
   data() {
     return {
-      // 页面
-      activityStart: new Date('2019-11-15 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-25 04:00:00').getTime(),
+      activity_id: getQuery('activiy') || 1,
+      activityStart: 0,
+      activityEnd: 0,
 
       mumberList: [],
       moreList1: [],
@@ -112,11 +116,17 @@ export default {
     }
   },
   created() {
-    const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
-    const max = 10 * 10000
-    const speed = Math.floor((max / during) * 100) / 100
-    const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
-    this.number = formatAmount(10 + Math.floor(period * speed))
+    this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
+      if (data.code == 0) {
+        this.activityStart = data.data.start_date
+        this.activityEnd = data.data.end_date
+        const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
+        const max = 10 * 10000
+        const speed = Math.floor((max / during) * 100) / 100
+        const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
+        this.number = formatAmount(10 + Math.floor(period * speed))
+      }
+    })
 
     this.teamNum = getQuery('teamno')
     if (this.teamNum) {
@@ -142,21 +152,21 @@ export default {
       if (value == 'first') {
         this.mSendEvLog('joinbtn_click', 'h5recommend', '')
         this.mSendEvLog('callApp', 'jointeamfull', '')
-        url = '?teamno=' + this.teamNum1
+        url = 'teamno=' + this.teamNum1
       } else if (value == 'second') {
         this.mSendEvLog('joinbtn_click', 'h5recommend', '')
         this.mSendEvLog('callApp', 'jointeamfull', '')
-        url = '?teamno=' + this.teamNum2
+        url = 'teamno=' + this.teamNum2
       } else if (value == 'join') {
         this.mSendEvLog('callApp', 'jointeam', '')
-        url = '?teamno=' + this.teamNum
+        url = 'teamno=' + this.teamNum
       } else {
         this.mSendEvLog('callApp', 'formnew', '')
         this.mSendEvLog('teamoverpage_formnew', '', '')
       }
       callApp.call(
         this,
-        'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.origin + '/activity/team/home.html' + url,
+        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?activity=${this.activity_id}&${url}`,
         () => {
           callMarket.call(this, () => {
             if (value == 'join') this.mSendEvLog('downloadpopup_show', 'jointeam', '')

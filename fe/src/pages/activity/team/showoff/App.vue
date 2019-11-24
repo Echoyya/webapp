@@ -52,11 +52,8 @@ export default {
   },
   data() {
     return {
-      // 页面
-      award_day: '',
-
-      activityStart: new Date('2019-11-15 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-25 04:00:00').getTime()
+      activity_id: getQuery('activiy') || 1,
+      award_day: ''
     }
   },
   computed: {
@@ -75,22 +72,26 @@ export default {
   },
   methods: {
     create() {
-      window.location.href = '/activity/team/home.html'
+      window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
     },
     callOrDownApp() {
-      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html`, () => {
-        callMarket.call(this, () => {
-          this.$refs.confirm.show(
-            this.$t('vote.team.download_tip'),
-            () => {
-              downApk.call(this)
-            },
-            () => {},
-            'OK',
-            'NOT NOW'
-          )
-        })
-      })
+      callApp.call(
+        this,
+        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?activity=${this.activity_id}`,
+        () => {
+          callMarket.call(this, () => {
+            this.$refs.confirm.show(
+              this.$t('vote.team.download_tip'),
+              () => {
+                downApk.call(this)
+              },
+              () => {},
+              'OK',
+              'NOT NOW'
+            )
+          })
+        }
+      )
     }
   }
 }

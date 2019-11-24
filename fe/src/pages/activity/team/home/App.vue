@@ -169,11 +169,13 @@ export default {
   data() {
     return {
       activity_id: getQuery('activiy') || 1,
-      activityStart: new Date('2019-11-15T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
-      activityEnd: new Date('2019-11-25T04:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
+      activityStart: 0,
+      activityEnd: 0,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.shareText'),
+      shareWebUrl: `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
+      shareLandUrl: `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
 
       show_share: false,
       hasFinish: false,
@@ -233,16 +235,22 @@ export default {
     }
   },
   created() {
-    const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
-    const max = 10 * 10000
-    const speed = Math.floor((max / during) * 100) / 100
-    const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
-    this.number = formatAmount(10 + Math.floor(period * speed))
+    this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
+      if (data.code == 0) {
+        this.activityStart = data.data.start_date
+        this.activityEnd = data.data.end_date
+        const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
+        const max = 10 * 10000
+        const speed = Math.floor((max / during) * 100) / 100
+        const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
+        this.number = formatAmount(10 + Math.floor(period * speed))
+      }
+    })
   },
   mounted() {
     const teamno = getQuery('teamno')
     if (teamno && !isNaN(teamno)) {
-      history.replaceState({ origin: 1 }, '', '/activity/team/home.html')
+      history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
 
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
@@ -320,7 +328,7 @@ export default {
     },
     changeTeam() {
       this.mSendEvLog('teammatch_click', 'change', '')
-      window.location.href = '/activity/team/search.html'
+      window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
     },
     toJoinFull(teamno) {
       this.mSendEvLog('joinbtn_click', 'h5recommend', '')
@@ -427,15 +435,9 @@ export default {
       this.mSendEvLog('inviteway_click', 'Facebook', '')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
-          shareByFacebook(
-            `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            `【${this.shareTitle}】 ${this.shareText} `
-          )
+          shareByFacebook(this.shareLandUrl, `【${this.shareTitle}】 ${this.shareText} `)
         } else {
-          shareByFacebook(
-            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            `【${this.shareTitle}】 ${this.shareText} `
-          )
+          shareByFacebook(this.shareLandUrl, `【${this.shareTitle}】 ${this.shareText} `)
         }
       }
     },
@@ -443,19 +445,9 @@ export default {
       this.mSendEvLog('inviteway_click', 'WhatsApp', '')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
-          shareByWhatsApp(
-            `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            this.shareTitle,
-            this.shareText,
-            this.imgUrl
-          )
+          shareByWhatsApp(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
         } else {
-          shareByWhatsApp(
-            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-            this.shareTitle,
-            this.shareText,
-            this.imgUrl
-          )
+          shareByWhatsApp(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
         }
       }
     },
@@ -489,17 +481,15 @@ export default {
       this.mSendEvLog('inviteway_click', 'copylink', '')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
-          shareByCopyLink(`${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`)
+          shareByCopyLink(this.shareLandUrl)
         } else {
-          shareByCopyLink(
-            `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
-          )
+          shareByCopyLink(this.shareLandUrl)
         }
       }
     },
     toSearch() {
       this.mSendEvLog('searchbtn_click', '', '')
-      window.location.href = '/activity/team/search.html'
+      window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
     },
     showShare() {
       if (this.hasFinish) {
@@ -517,19 +507,9 @@ export default {
           this.show_share = true
         } else {
           if (this.hasFinish == true) {
-            shareInvite(
-              `${window.location.origin}/activity/team/land.html?utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-              this.shareTitle,
-              this.shareText,
-              this.imgUrl
-            )
+            shareInvite(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
           } else {
-            shareInvite(
-              `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-              this.shareTitle,
-              this.shareText,
-              this.imgUrl
-            )
+            shareInvite(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
           }
         }
       } else {
@@ -660,7 +640,7 @@ export default {
             if (this.prize == 0) this.mSendEvLog('teamsucc_result', '1day', '')
             else if (this.prize == 1) this.mSendEvLog('teamsucc_result', '7day', '')
             else if (this.prize == 2) this.mSendEvLog('teamsucc_result', '30day', '')
-            location.replace('/activity/team/result.html?teamno=' + tmpTeamId + '&prize=' + this.award_day)
+            location.replace(`/activity/team/result.html?activity=${this.activity_id}&teamno=${tmpTeamId}&prize=${this.award_day}`)
           }, 1000)
         } else if (this.prize == 3) {
           if (this.fail) {
