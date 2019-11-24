@@ -288,7 +288,7 @@ export default {
           }
         } else {
           this.mSendEvLog('teammatch_show', 'old', '1')
-          this.$refs.malert.show(1 + this.$t('vote.team.joinpop_olduser'), () => {
+          this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
             if (this.$isLogin) {
               this.toCreate()
             } else {
@@ -299,7 +299,6 @@ export default {
       })
     } else {
       if (this.$isLogin) {
-        const cacheTeamNo = localStorage.getItem('join_teamno')
         this.checkMyTeam(() => {
           // check my team failed
           if (cacheTeamNo) {
@@ -417,7 +416,7 @@ export default {
         if (data.code == 0) {
           // 搜索页跳转登录，老用户有队提示
           if (localStorage.getItem('join_teamno')) {
-            this.$refs.malert.show(3 + this.$t('vote.team.joinpop_olduser'))
+            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
             localStorage.removeItem('join_teamno')
           }
           this.team = data.data.team_member_dtos
