@@ -109,13 +109,13 @@ export default {
     showShare() {
       if (this.$appVersion) {
         this.show_share = true
-        this.mSendEvLog('invitebtn_click', 'myprize', '')
-        this.mSendEvLog('myprize_inv_click', '', '')
+        this.mSendEvLog('invitebtn_click', 'myprize', '1')
+        this.mSendEvLog('myprize_inv_click', '', '1')
       }
       this.shareOldVersion()
     },
     toFacebook() {
-      this.mSendEvLog('inviteway_click', 'Facebook', '')
+      this.mSendEvLog('inviteway_click', 'Facebook', '1')
       if (this.$appType == 1) {
         if (this.teams.length >= 10) {
           shareByFacebook(this.shareLandUrl, `【${this.shareTitle}】 ${this.shareText} `)
@@ -125,7 +125,7 @@ export default {
       }
     },
     toWhatsApp() {
-      this.mSendEvLog('inviteway_click', 'WhatsApp', '')
+      this.mSendEvLog('inviteway_click', 'WhatsApp', '1')
       if (this.$appType == 1) {
         if (this.teams.length >= 10) {
           shareByWhatsApp(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
@@ -135,7 +135,12 @@ export default {
       }
     },
     toXender() {
-      this.mSendEvLog('inviteway_click', 'Xender', '')
+      if(this.hasFinish) {
+        this.mSendEvLog('inviteway_click', 'Xender', '0')
+        this.$refs.malert.show('vote.team.share10_2')
+        return
+      }
+      this.mSendEvLog('inviteway_click', 'Xender', '1')
       if (this.$appType == 1) {
         if (this.teamNum) {
           shareByXender(this.teamNum)
@@ -143,7 +148,12 @@ export default {
       }
     },
     toDownload() {
-      this.mSendEvLog('inviteway_click', 'download', '')
+      if(this.hasFinish) {
+        this.mSendEvLog('inviteway_click', 'download', '0')
+        this.$refs.malert.show('vote.team.share10_2')
+        return
+      }
+      this.mSendEvLog('inviteway_click', 'download', '1')
       if (window.getChannelId && window.getChannelId.shareDownload) {
         searchTeam.call(this, this.teamNum, data => {
           const team = data.data.team_member_dtos
@@ -159,7 +169,7 @@ export default {
       }
     },
     toCopylink() {
-      this.mSendEvLog('inviteway_click', 'copylink', '')
+      this.mSendEvLog('inviteway_click', 'copylink', '1')
       if (this.$appType == 1) {
         if (this.teams.length >= 10) {
           shareByCopyLink(this.shareLandUrl)

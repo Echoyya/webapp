@@ -1,11 +1,7 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div
-      v-if="mumberList.length<3"
-      class="text text0"
-      v-html="$t('vote.team.invite_tip',[leader_name])"
-    ></div>
+    <div v-if="mumberList.length<3" class="text text0" v-html="$t('vote.team.invite_tip',[leader_name])"></div>
     <div v-else class="text text1">{{$t('vote.team.full_team')}}</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
@@ -33,15 +29,12 @@
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="copy">
         <div>Team ID:</div>
         <div id="teamno">{{teamNum}}</div>
-        <div id="copy" data-clipboard-target="#teamno">COPY</div>
+        <div id="copy" data-clipboard-target="#teamno">{{$t('vote.team.copy_text')}}</div>
       </div>
     </div>
-    <div
-      v-show="moreList1.length>0&&moreList2.length>0"
-      class="text text2"
-    >{{$t('vote.team.follow_team')}}</div>
-    <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
-      <div class="team1 clearfix">
+    <div v-show="moreList1.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
+    <div class="more-team">
+      <div v-show="moreList1.length>0" class="team1 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
         <div class="team-box">
           <div class="team clearfix">
@@ -60,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div class="team2 clearfix">
+      <div v-show="moreList1.length>0&&moreList2.length>0" class="team2 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum2}}</div>
         <div class="team-box">
           <div class="team clearfix">
@@ -155,60 +148,57 @@ export default {
       if (value == 'first') {
         this.mSendEvLog('joinbtn_click', 'h5recommend', '')
         this.mSendEvLog('callApp', 'jointeamfull', '')
-        url = 'teamno=' + this.teamNum1
+        url = '?teamno=' + this.teamNum1
       } else if (value == 'second') {
         this.mSendEvLog('joinbtn_click', 'h5recommend', '')
         this.mSendEvLog('callApp', 'jointeamfull', '')
-        url = 'teamno=' + this.teamNum2
+        url = '?teamno=' + this.teamNum2
       } else if (value == 'join') {
         this.mSendEvLog('callApp', 'jointeam', '')
-        url = 'teamno=' + this.teamNum
+        url = '?teamno=' + this.teamNum
       } else {
         this.mSendEvLog('callApp', 'formnew', '')
         this.mSendEvLog('teamoverpage_formnew', '', '')
       }
-      callApp.call(
-        this,
-        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?activity=${this.activity_id}&${url}`,
-        () => {
-          callMarket.call(this, () => {
-            if (value == 'join') this.mSendEvLog('downloadpopup_show', 'jointeam', '')
-            else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_show', 'jointeamfull', '')
-            else this.mSendEvLog('downloadpopup_show', 'formnew', '')
-            this.$refs.confirm.show(
-              this.$t('vote.team.download_tip'),
-              () => {
-                if (value == 'join') this.mSendEvLog('downloadpopup_clickok', 'jointeam', '')
-                else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clickok', 'jointeamfull', '')
-                else this.mSendEvLog('downloadpopup_clickok', 'formnew', '')
-                downApk.call(this)
-              },
-              () => {
-                if (value == 'join') this.mSendEvLog('downloadpopup_clicknot', 'jointeam', '')
-                else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clicknot', 'jointeamfull', '')
-                else this.mSendEvLog('downloadpopup_clicknot', 'formnew', '')
-              },
-              'OK',
-              'NOT NOW'
-            )
-          })
-        }
-      )
+      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html${url}`, () => {
+        callMarket.call(this, () => {
+          if (value == 'join') this.mSendEvLog('downloadpopup_show', 'jointeam', '')
+          else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_show', 'jointeamfull', '')
+          else this.mSendEvLog('downloadpopup_show', 'formnew', '')
+          this.$refs.confirm.show(
+            this.$t('vote.team.download_tip'),
+            () => {
+              if (value == 'join') this.mSendEvLog('downloadpopup_clickok', 'jointeam', '')
+              else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clickok', 'jointeamfull', '')
+              else this.mSendEvLog('downloadpopup_clickok', 'formnew', '')
+              downApk.call(this)
+            },
+            () => {
+              if (value == 'join') this.mSendEvLog('downloadpopup_clicknot', 'jointeam', '')
+              else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clicknot', 'jointeamfull', '')
+              else this.mSendEvLog('downloadpopup_clicknot', 'formnew', '')
+            },
+            'OK',
+            'NOT NOW'
+          )
+        })
+      })
     },
     search() {
       searchTeam.call(this, this.teamNum, data => {
-        if (data && (data.code == 1 || data.code == 0)) {
+        console.log(data.code)
+        if (data.code == 1 || data.code == 0) {
+          this.mumberList = data.data.team_member_dtos
+          this.leader_name = this.mumberList[0].nick_name
           if (data.code == 1) {
             this.mSendEvLog('teaminvpage_show', '', '')
           }
-          this.mumberList = data.data.team_member_dtos
-          this.leader_name = this.mumberList[0].nick_name
           if (data.code == 0) {
             this.mSendEvLog('teamfullpage_show', '', '')
-            this.teamNum1 = data.data.team_recommend_dtos[0].team_no
-            this.teamNum2 = data.data.team_recommend_dtos[1].team_no
-            this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
-            this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
+            this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
+            this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
+            this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
+            this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
           }
         } else if (data.code == 2) {
           this.$refs.malert.show(this.$t('vote.team.search_nores'))
@@ -262,12 +252,12 @@ export default {
       margin: 0.5rem auto 0;
     }
     &.text3 {
-      height: 3.4rem;
+      height: 1.7rem;
       margin: 0.5rem auto 0;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       text-align: center;
     }
