@@ -256,7 +256,7 @@ export default {
     const cacheTeamNo = localStorage.getItem('join_teamno')
     const createInfo = localStorage.getItem('create')
 
-    if (teamno && !isNaN(teamno) && !cacheTeamNo &&! createInfo) {
+    if (teamno && !isNaN(teamno) && !cacheTeamNo && !createInfo) {
       history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
@@ -403,7 +403,7 @@ export default {
           this.checkMyTeam()
         } else if (data.code == 1) {
           // 当前有队不能创建
-          
+
           this.checkMyTeam()
         } else if (data.code == 2) {
           // 已经达到了最高限制
