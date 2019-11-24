@@ -1,11 +1,7 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div
-      v-if="mumberList.length<3"
-      class="text text0"
-      v-html="$t('vote.team.invite_tip',[leader_name])"
-    ></div>
+    <div v-if="mumberList.length<3" class="text text0" v-html="$t('vote.team.invite_tip',[leader_name])"></div>
     <div v-else class="text text1">{{$t('vote.team.full_team')}}</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
@@ -152,45 +148,41 @@ export default {
       if (value == 'first') {
         this.mSendEvLog('joinbtn_click', 'h5recommend', '')
         this.mSendEvLog('callApp', 'jointeamfull', '')
-        url = 'teamno=' + this.teamNum1
+        url = '?teamno=' + this.teamNum1
       } else if (value == 'second') {
         this.mSendEvLog('joinbtn_click', 'h5recommend', '')
         this.mSendEvLog('callApp', 'jointeamfull', '')
-        url = 'teamno=' + this.teamNum2
+        url = '?teamno=' + this.teamNum2
       } else if (value == 'join') {
         this.mSendEvLog('callApp', 'jointeam', '')
-        url = 'teamno=' + this.teamNum
+        url = '?teamno=' + this.teamNum
       } else {
         this.mSendEvLog('callApp', 'formnew', '')
         this.mSendEvLog('teamoverpage_formnew', '', '')
       }
-      callApp.call(
-        this,
-        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?activity=${this.activity_id}&${url}`,
-        () => {
-          callMarket.call(this, () => {
-            if (value == 'join') this.mSendEvLog('downloadpopup_show', 'jointeam', '')
-            else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_show', 'jointeamfull', '')
-            else this.mSendEvLog('downloadpopup_show', 'formnew', '')
-            this.$refs.confirm.show(
-              this.$t('vote.team.download_tip'),
-              () => {
-                if (value == 'join') this.mSendEvLog('downloadpopup_clickok', 'jointeam', '')
-                else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clickok', 'jointeamfull', '')
-                else this.mSendEvLog('downloadpopup_clickok', 'formnew', '')
-                downApk.call(this)
-              },
-              () => {
-                if (value == 'join') this.mSendEvLog('downloadpopup_clicknot', 'jointeam', '')
-                else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clicknot', 'jointeamfull', '')
-                else this.mSendEvLog('downloadpopup_clicknot', 'formnew', '')
-              },
-              'OK',
-              'NOT NOW'
-            )
-          })
-        }
-      )
+      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html${url}`, () => {
+        callMarket.call(this, () => {
+          if (value == 'join') this.mSendEvLog('downloadpopup_show', 'jointeam', '')
+          else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_show', 'jointeamfull', '')
+          else this.mSendEvLog('downloadpopup_show', 'formnew', '')
+          this.$refs.confirm.show(
+            this.$t('vote.team.download_tip'),
+            () => {
+              if (value == 'join') this.mSendEvLog('downloadpopup_clickok', 'jointeam', '')
+              else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clickok', 'jointeamfull', '')
+              else this.mSendEvLog('downloadpopup_clickok', 'formnew', '')
+              downApk.call(this)
+            },
+            () => {
+              if (value == 'join') this.mSendEvLog('downloadpopup_clicknot', 'jointeam', '')
+              else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clicknot', 'jointeamfull', '')
+              else this.mSendEvLog('downloadpopup_clicknot', 'formnew', '')
+            },
+            'OK',
+            'NOT NOW'
+          )
+        })
+      })
     },
     search() {
       searchTeam.call(this, this.teamNum, data => {
@@ -203,10 +195,10 @@ export default {
           }
           if (data.code == 0) {
             this.mSendEvLog('teamfullpage_show', '', '')
-            this.teamNum1 = data.data.team_recommend_dtos[0]?data.data.team_recommend_dtos[0].team_no:0
-            this.teamNum2 = data.data.team_recommend_dtos[1]?data.data.team_recommend_dtos[1].team_no:0
-            this.moreList1 = data.data.team_recommend_dtos[0]?data.data.team_recommend_dtos[0].team_member_dtos:[]
-            this.moreList2 = data.data.team_recommend_dtos[1]?data.data.team_recommend_dtos[1].team_member_dtos:[]
+            this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
+            this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
+            this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
+            this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
           }
         } else if (data.code == 2) {
           this.$refs.malert.show(this.$t('vote.team.search_nores'))

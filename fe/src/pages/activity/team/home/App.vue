@@ -235,6 +235,7 @@ export default {
     }
   },
   created() {
+    
     this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
       if (data.code == 0) {
         this.activityStart = data.data.start_date
@@ -249,9 +250,8 @@ export default {
   },
   mounted() {
     const teamno = getQuery('teamno')
+    history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
     if (teamno && !isNaN(teamno)) {
-      history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
-
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
           this.$refs.malert.show(data.message)
@@ -260,9 +260,9 @@ export default {
         if (data.data.newcomer) {
           if (data.code > 0) {
             // can join
-            this.mSendEvLog('teammatch_show', 'new', '')
+            this.mSendEvLog('teammatch_show', 'new', '1')
             this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
-              this.mSendEvLog('teammatch_click', 'ok', '')
+              this.mSendEvLog('teammatch_click', 'ok', '1')
               if (this.$isLogin) {
                 this.toJoin(teamno)
               } else {
@@ -282,7 +282,7 @@ export default {
             this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
           }
         } else {
-          this.mSendEvLog('teammatch_show', 'old', '')
+          this.mSendEvLog('teammatch_show', 'old', '1')
           this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
             if (this.$isLogin) {
               this.toCreate()
@@ -309,9 +309,9 @@ export default {
       }
     }
     if (this.hasFinish) {
-      this.mSendEvLog('homepage_show', 'finish', '')
+      this.mSendEvLog('homepage_show', 'finish', '1')
     } else {
-      this.mSendEvLog('homepage_show', 'continue', '')
+      this.mSendEvLog('homepage_show', 'continue', '1')
     }
     this.getLotteryType()
     this.getMsgList()
@@ -327,11 +327,11 @@ export default {
       })
     },
     changeTeam() {
-      this.mSendEvLog('teammatch_click', 'change', '')
+      this.mSendEvLog('teammatch_click', 'change', '1')
       window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
     },
     toJoinFull(teamno) {
-      this.mSendEvLog('joinbtn_click', 'h5recommend', '')
+      this.mSendEvLog('joinbtn_click', 'h5recommend', '1')
       this.isFull = false
       if (this.$isLogin) {
         this.toJoin(teamno)
@@ -348,7 +348,7 @@ export default {
           this.teamNum = teamno
           if (this.team.length >= 3) {
             this.canLottery = true
-            this.mSendEvLog('teamsucc_show', '', '')
+            this.mSendEvLog('teamsucc_show', '', '1')
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
               window.scrollTo(0, 1500)
               this.startLottery()
@@ -432,27 +432,32 @@ export default {
       })
     },
     toFacebook() {
-      this.mSendEvLog('inviteway_click', 'Facebook', '')
+      this.mSendEvLog('inviteway_click', 'Facebook', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByFacebook(this.shareLandUrl, `【${this.shareTitle}】 ${this.shareText} `)
         } else {
-          shareByFacebook(this.shareLandUrl, `【${this.shareTitle}】 ${this.shareText} `)
+          shareByFacebook(this.shareWebUrl, `【${this.shareTitle}】 ${this.shareText} `)
         }
       }
     },
     toWhatsApp() {
-      this.mSendEvLog('inviteway_click', 'WhatsApp', '')
+      this.mSendEvLog('inviteway_click', 'WhatsApp', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByWhatsApp(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
         } else {
-          shareByWhatsApp(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
+          shareByWhatsApp(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
         }
       }
     },
     toXender() {
-      this.mSendEvLog('inviteway_click', 'Xender', '')
+      if(this.hasFinish) {
+        this.mSendEvLog('inviteway_click', 'Xender', '0')
+        this.$refs.malert.show('vote.team.share10_2')
+        return
+      }
+      this.mSendEvLog('inviteway_click', 'Xender', '1')
       if (this.$appType == 1) {
         if (this.teamNum) {
           shareByXender(this.teamNum)
@@ -460,7 +465,12 @@ export default {
       }
     },
     toDownload() {
-      this.mSendEvLog('inviteway_click', 'download', '')
+      if(this.hasFinish) {
+        this.mSendEvLog('inviteway_click', 'download', '0')
+        this.$refs.malert.show('vote.team.share10_2')
+        return
+      }
+      this.mSendEvLog('inviteway_click', 'download', '1')
       if (window.getChannelId && window.getChannelId.shareDownload) {
         if (this.teamNum) {
           searchTeam.call(this, this.teamNum, data => {
@@ -478,27 +488,27 @@ export default {
       }
     },
     toCopylink() {
-      this.mSendEvLog('inviteway_click', 'copylink', '')
+      this.mSendEvLog('inviteway_click', 'copylink', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByCopyLink(this.shareLandUrl)
         } else {
-          shareByCopyLink(this.shareLandUrl)
+          shareByCopyLink(this.shareWebUrl)
         }
       }
     },
     toSearch() {
-      this.mSendEvLog('searchbtn_click', '', '')
+      this.mSendEvLog('searchbtn_click', '', '1')
       window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
     },
     showShare() {
       if (this.hasFinish) {
-        this.mSendEvLog('invitebtn_click', 'teamover', '')
+        this.mSendEvLog('invitebtn_click', 'teamover', '1')
       } else {
         if (this.isFull) {
-          this.mSendEvLog('invitebtn_click', 'teamfull', '')
+          this.mSendEvLog('invitebtn_click', 'teamfull', '1')
         } else {
-          this.mSendEvLog('invitebtn_click', 'teaminvpage', '')
+          this.mSendEvLog('invitebtn_click', 'teaminvpage', '1')
         }
       }
       if (this.$isLogin) {
@@ -509,7 +519,7 @@ export default {
           if (this.hasFinish == true) {
             shareInvite(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
           } else {
-            shareInvite(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
+            shareInvite(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
           }
         }
       } else {
@@ -614,10 +624,14 @@ export default {
           this.startRoll()
         } else {
           this.mSendEvLog('drawbtn_click', '', '0')
-          this.$refs.malert.show(this.$t('vote.team.form_noform'), () => {
-            window.scrollTo(0, 0)
-            this.showShare()
-          })
+          if (this.hasFinish) {
+            this.$refs.malert.show(this.$t('vote.team.share10_2'))
+          } else {
+            this.$refs.malert.show(this.$t('vote.team.form_noform'), () => {
+              window.scrollTo(0, 0)
+              this.showShare()
+            })
+          }
         }
       } else {
         this.$refs.malert.show(this.$t('vote.team.invite_tips'))
@@ -637,9 +651,9 @@ export default {
         console.log('你已经中奖了，奖品' + this.lotteryType[this.indexs].name)
         if (this.prize < 3) {
           setTimeout(() => {
-            if (this.prize == 0) this.mSendEvLog('teamsucc_result', '1day', '')
-            else if (this.prize == 1) this.mSendEvLog('teamsucc_result', '7day', '')
-            else if (this.prize == 2) this.mSendEvLog('teamsucc_result', '30day', '')
+            if (this.prize == 0) this.mSendEvLog('teamsucc_result', '1day', '1')
+            else if (this.prize == 1) this.mSendEvLog('teamsucc_result', '7day', '1')
+            else if (this.prize == 2) this.mSendEvLog('teamsucc_result', '30day', '1')
             location.replace(`/activity/team/result.html?activity=${this.activity_id}&teamno=${tmpTeamId}&prize=${this.award_day}`)
           }, 1000)
         } else if (this.prize == 3) {
@@ -649,7 +663,7 @@ export default {
             }, 1000)
           } else {
             setTimeout(() => {
-              this.mSendEvLog('teamsucc_result', 'thanks', '')
+              this.mSendEvLog('teamsucc_result', 'thanks', '1')
               this.$refs.malert.show(this.$t('vote.team.draw_none'))
             }, 1000)
           }

@@ -113,6 +113,10 @@ export default {
         createTeam.call(this, data => {
           if (data.code == 0) {
             window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
+          } else if(data.code == 1) {
+            this.$refs.malert.show(this.$t('vote.team.have_team'))
+          } else if(data.code == 2) {
+            this.$refs.malert.show(this.$t('vote.team.share10_2'))
           } else {
             this.$refs.malert.show(data.message)
           }

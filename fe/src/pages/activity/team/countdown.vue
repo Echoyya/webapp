@@ -126,7 +126,7 @@ export default {
     },
     toAwards() {
       if (this.$isLogin) {
-        this.mSendEvLog('myprize_click', '', '')
+        this.mSendEvLog('myprize_click', '', '1')
         window.location.href = `/activity/team/awards.html?activity=${this.activity_id}&teamno=${this.teamNo}`
       } else {
         toNativePage('com.star.mobile.video.account.LoginActivity')
