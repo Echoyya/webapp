@@ -4,7 +4,12 @@
     <div class="search-body">
       <div class="search">
         <input v-model="teamNum" :class="{'full':!showBtn}" type="number" />
-        <div v-show="showBtn" class="btn" :class="{'can-submit':teamNum}" @click="submit">{{$t('vote.team.search')}}</div>
+        <div
+          v-show="showBtn"
+          class="btn"
+          :class="{'can-submit':teamNum}"
+          @click="submit"
+        >{{$t('vote.team.search')}}</div>
       </div>
       <div v-show="mumberList.length>0" class="team clearfix">
         <div v-for="(item,index) in mumberList" :key="index" class="mumber">
@@ -34,7 +39,7 @@
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
-import { toNativePage } from '@/functions/app'
+import { toNativePage, getQuery } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
 export default {
   components: {
@@ -43,6 +48,7 @@ export default {
   },
   data() {
     return {
+      activity_id: getQuery('activiy') || 1,
       appType: this.$appType,
       teamNum: '',
       mumberList: [],
@@ -69,14 +75,14 @@ export default {
         searchTeam.call(this, teamno, data => {
           if (data && (data.code == 1 || data.code == 0)) {
             this.mumberList = data.data.team_member_dtos
-            if(data.code==0) {
+            if (data.code == 0) {
               this.mSendEvLog('search_click', 'full', '')
             } else {
               this.mSendEvLog('search_click', 'ok', '')
             }
           } else if (data.code == 2) {
             this.$refs.malert.show(this.$t('vote.team.search_nores'))
-              this.mSendEvLog('search_click', 'noresult', '')
+            this.mSendEvLog('search_click', 'noresult', '')
           } else {
             this.$refs.malert.show(this.$t('vote.team.network_error'))
           }
@@ -84,11 +90,11 @@ export default {
       }
     },
     join() {
-      this.mSendEvLog('joinbtn_click','search','')
+      this.mSendEvLog('joinbtn_click', 'search', '')
       if (this.$isLogin) {
         joinTeam.call(this, this.teamNum, data => {
           if (data.code == 0) {
-            window.location.href = '/activity/team/home.html'
+            window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
           } else if (data.code == 1) {
             this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
           } else {
@@ -104,7 +110,7 @@ export default {
       if (this.$isLogin) {
         createTeam.call(this, data => {
           if (data.code == 0) {
-            window.location.href = '/activity/team/home.html'
+            window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
           } else {
             this.$refs.malert.show(data.message)
           }

@@ -151,6 +151,7 @@ export const callMarket = function(failback) {
   let source = utmParam.str
 
   // 对组队活动特殊处理teamno
+  const activity_id = getQuery('activity')
   const teamno = getQuery('teamno')
   if (teamno) {
     source =
@@ -159,7 +160,7 @@ export const callMarket = function(failback) {
         '&utm_term=' +
           encodeURIComponent(
             'com.star.mobile.video.activity.BrowserActivity?loadUrl=' +
-              encodeURIComponent(location.origin + '/activity/team/home.html?teamno=' + teamno)
+              encodeURIComponent(location.origin + `/activity/team/home.html?activity=${activity_id}&teamno=${teamno}`)
           )
       )
   }
