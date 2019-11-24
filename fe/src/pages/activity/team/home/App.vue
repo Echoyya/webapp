@@ -362,7 +362,7 @@ export default {
         } else if (data.code == 4) {
           // 已参加过队伍，不能参加队伍
           if (this.hasFinish) {
-            this.$refs.malert.show(this.$t('vote.team.have_team'))
+            this.$refs.malert.show(this.$t('vote.team.share10_2'))
           } else {
             this.$refs.malert.show(this.$t('vote.team.have_team'), () => {
               this.checkMyTeam()
