@@ -29,12 +29,12 @@
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="copy">
         <div>Team ID:</div>
         <div id="teamno">{{teamNum}}</div>
-        <div id="copy" data-clipboard-target="#teamno">COPY</div>
+        <div id="copy" data-clipboard-target="#teamno">{{$t('vote.team.copy_text')}}</div>
       </div>
     </div>
-    <div v-show="moreList1.length>0&&moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
-    <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
-      <div class="team1 clearfix">
+    <div v-show="moreList1.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
+    <div class="more-team">
+      <div v-show="moreList1.length>0" class="team1 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
         <div class="team-box">
           <div class="team clearfix">
@@ -53,7 +53,7 @@
           </div>
         </div>
       </div>
-      <div class="team2 clearfix">
+      <div v-show="moreList1.length>0&&moreList2.length>0" class="team2 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum2}}</div>
         <div class="team-box">
           <div class="team clearfix">
@@ -184,18 +184,19 @@ export default {
     },
     search() {
       searchTeam.call(this, this.teamNum, data => {
-        if (data && (data.code == 1 || data.code == 0)) {
+        console.log(data.code)
+        if (data.code == 1 || data.code == 0) {
+          this.mumberList = data.data.team_member_dtos
+          this.leader_name = this.mumberList[0].nick_name
           if (data.code == 1) {
             this.mSendEvLog('teaminvpage_show', '', '')
           }
-          this.mumberList = data.data.team_member_dtos
-          this.leader_name = this.mumberList[0].nick_name
           if (data.code == 0) {
             this.mSendEvLog('teamfullpage_show', '', '')
-            this.teamNum1 = data.data.team_recommend_dtos[0].team_no
-            this.teamNum2 = data.data.team_recommend_dtos[1].team_no
-            this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
-            this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
+            this.teamNum1 = data.data.team_recommend_dtos[0]?data.data.team_recommend_dtos[0].team_no:0
+            this.teamNum2 = data.data.team_recommend_dtos[1]?data.data.team_recommend_dtos[1].team_no:0
+            this.moreList1 = data.data.team_recommend_dtos[0]?data.data.team_recommend_dtos[0].team_member_dtos:[]
+            this.moreList2 = data.data.team_recommend_dtos[1]?data.data.team_recommend_dtos[1].team_member_dtos:[]
           }
         } else if (data.code == 2) {
           this.$refs.malert.show(this.$t('vote.team.search_nores'))
@@ -249,12 +250,12 @@ export default {
       margin: 0.5rem auto 0;
     }
     &.text3 {
-      height: 3.4rem;
+      height: 1.7rem;
       margin: 0.5rem auto 0;
       overflow: hidden;
       text-overflow: ellipsis;
       display: -webkit-box;
-      -webkit-line-clamp: 2;
+      -webkit-line-clamp: 1;
       -webkit-box-orient: vertical;
       text-align: center;
     }

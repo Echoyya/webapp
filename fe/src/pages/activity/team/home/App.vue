@@ -105,7 +105,7 @@
           <div @click="toCreateFull()">{{$t('vote.team.form_newbtn')}}</div>
         </div>
       </div>
-      <div v-show="moreList1.length>0||moreList2.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
+      <div v-show="moreList1.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
       <div class="more-team">
         <div v-show="moreList1.length>0" class="team1 clearfix">
           <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
@@ -126,7 +126,7 @@
             </div>
           </div>
         </div>
-        <div v-show="moreList2.length>0" class="team2 clearfix">
+        <div v-show="moreList1.length>0&&moreList2.length>0" class="team2 clearfix">
           <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum2}}</div>
           <div class="team-box">
             <div class="team clearfix">
@@ -252,11 +252,9 @@ export default {
         if (data.data.newcomer) {
           if (data.code > 0) {
             // can join
-
-            const teamLeader = data.data.team_member_dtos[0].nick_name || data.data.team_member_dtos[0].id
-            this.mSendEvLog('teammatch_show','new','')
-            this.$refs.findTeamAlert.show(this.$t('vote.team.newuser', [teamLeader]), () => {
-              this.mSendEvLog('teammatch_click','ok','')
+            this.mSendEvLog('teammatch_show', 'new', '')
+            this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
+              this.mSendEvLog('teammatch_click', 'ok', '')
               if (this.$isLogin) {
                 this.toJoin(teamno)
               } else {
@@ -270,13 +268,13 @@ export default {
             this.isFull = true
             this.mumberList = data.data.team_member_dtos
             this.leader_name = this.mumberList[0].nick_name
-            this.teamNum1 = data.data.team_recommend_dtos[0].team_no
-            this.teamNum2 = data.data.team_recommend_dtos[1].team_no
-            this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
-            this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
+            this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
+            this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
+            this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
+            this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
           }
         } else {
-          this.mSendEvLog('teammatch_show','old','')
+          this.mSendEvLog('teammatch_show', 'old', '')
           this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
             if (this.$isLogin) {
               this.toCreate()
@@ -292,8 +290,8 @@ export default {
         this.checkMyTeam(() => {
           // check my team failed
           if (cacheTeamNo) {
-            this.toJoin(cacheTeamNo)
             localStorage.removeItem('join_teamno')
+            this.toJoin(cacheTeamNo)
           } else {
             this.toCreate()
           }
@@ -321,11 +319,11 @@ export default {
       })
     },
     changeTeam() {
-      this.mSendEvLog('teammatch_click','change','')
+      this.mSendEvLog('teammatch_click', 'change', '')
       window.location.href = '/activity/team/search.html'
     },
     toJoinFull(teamno) {
-      this.mSendEvLog('joinbtn_click','h5recommend','')
+      this.mSendEvLog('joinbtn_click', 'h5recommend', '')
       this.isFull = false
       if (this.$isLogin) {
         this.toJoin(teamno)
@@ -342,7 +340,7 @@ export default {
           this.teamNum = teamno
           if (this.team.length >= 3) {
             this.canLottery = true
-            this.mSendEvLog('teamsucc_show','','')
+            this.mSendEvLog('teamsucc_show', '', '')
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
               window.scrollTo(0, 1500)
               this.startLottery()
@@ -361,10 +359,10 @@ export default {
           this.isFull = true
           this.mumberList = data.data.team_member_dtos
           this.leader_name = this.mumberList[0].nick_name
-          this.teamNum1 = data.data.team_recommend_dtos[0].team_no
-          this.teamNum2 = data.data.team_recommend_dtos[1].team_no
-          this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
-          this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
+          this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
+          this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
+          this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
+          this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
         } else {
           this.$refs.malert.show(data.message)
         }
@@ -635,7 +633,7 @@ export default {
           this.click = false
           this.startRoll()
         } else {
-          this.mSendEvLog('drawbtn_click','','0')
+          this.mSendEvLog('drawbtn_click', '', '0')
           this.$refs.malert.show(this.$t('vote.team.form_noform'), () => {
             window.scrollTo(0, 0)
             this.showShare()
@@ -659,9 +657,9 @@ export default {
         console.log('你已经中奖了，奖品' + this.lotteryType[this.indexs].name)
         if (this.prize < 3) {
           setTimeout(() => {
-            if(this.prize==0) this.mSendEvLog('teamsucc_result','1day','')
-            else if(this.prize==1) this.mSendEvLog('teamsucc_result','7day','')
-            else if(this.prize==2) this.mSendEvLog('teamsucc_result','30day','')
+            if (this.prize == 0) this.mSendEvLog('teamsucc_result', '1day', '')
+            else if (this.prize == 1) this.mSendEvLog('teamsucc_result', '7day', '')
+            else if (this.prize == 2) this.mSendEvLog('teamsucc_result', '30day', '')
             location.replace('/activity/team/result.html?teamno=' + tmpTeamId + '&prize=' + this.award_day)
           }, 1000)
         } else if (this.prize == 3) {
@@ -671,7 +669,7 @@ export default {
             }, 1000)
           } else {
             setTimeout(() => {
-              this.mSendEvLog('teamsucc_result','thanks','')
+              this.mSendEvLog('teamsucc_result', 'thanks', '')
               this.$refs.malert.show(this.$t('vote.team.draw_none'))
             }, 1000)
           }

@@ -91,6 +91,8 @@ export default {
             window.location.href = '/activity/team/home.html'
           } else if (data.code == 1) {
             this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
+          } else if (data.code == 4) {
+            this.$refs.malert.show(this.$t('vote.team.have_team'))
           } else {
             this.$refs.malert.show(data.message)
           }
