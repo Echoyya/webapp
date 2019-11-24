@@ -174,8 +174,6 @@ export default {
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.shareText'),
-      shareWebUrl: '',
-      shareLandUrl: '',
 
       show_share: false,
       hasFinish: false,
@@ -232,10 +230,15 @@ export default {
       } else {
         return []
       }
+    },
+    shareWebUrl() {
+      return `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+    },
+    shareLandUrl() {
+      return `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
     }
   },
   created() {
-    
     this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
       if (data.code == 0) {
         this.activityStart = data.data.start_date
@@ -251,75 +254,72 @@ export default {
   mounted() {
     const teamno = getQuery('teamno')
 
-    this.$refs.malert.show(window.location.href,()=>{
-      this.shareLandUrl = `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
-
-    if (teamno && !isNaN(teamno)) {
-      history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
-      searchTeam.call(this, teamno, data => {
-        if (data.code >= 2) {
-          this.$refs.malert.show(data.message)
-          return
-        }
-        if (data.data.newcomer) {
-          if (data.code > 0) {
-            // can join
-            this.mSendEvLog('teammatch_show', 'new', '1')
-            this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
-              this.mSendEvLog('teammatch_click', 'ok', '1')
+    this.$refs.malert.show(window.location.href, () => {
+      if (teamno && !isNaN(teamno)) {
+        history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
+        searchTeam.call(this, teamno, data => {
+          if (data.code >= 2) {
+            this.$refs.malert.show(data.message)
+            return
+          }
+          if (data.data.newcomer) {
+            if (data.code > 0) {
+              // can join
+              this.mSendEvLog('teammatch_show', 'new', '1')
+              this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
+                this.mSendEvLog('teammatch_click', 'ok', '1')
+                if (this.$isLogin) {
+                  this.toJoin(teamno)
+                } else {
+                  localStorage.setItem('join_teamno', teamno)
+                  toNativeLogin(this.$appType)
+                }
+              })
+              this.fakeTeam()
+            } else {
+              // 当前搜索的队伍是满队
+              this.isFull = true
+              this.mumberList = data.data.team_member_dtos
+              this.leader_name = this.mumberList[0].nick_name
+              this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
+              this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
+              this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
+              this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
+            }
+          } else {
+            this.mSendEvLog('teammatch_show', 'old', '1')
+            this.$refs.malert.show(1 + this.$t('vote.team.joinpop_olduser'), () => {
               if (this.$isLogin) {
-                this.toJoin(teamno)
+                this.toCreate()
               } else {
-                localStorage.setItem('join_teamno', teamno)
-                toNativeLogin(this.$appType)
+                this.fakeTeam()
               }
             })
-            this.fakeTeam()
-          } else {
-            // 当前搜索的队伍是满队
-            this.isFull = true
-            this.mumberList = data.data.team_member_dtos
-            this.leader_name = this.mumberList[0].nick_name
-            this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
-            this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
-            this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
-            this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
-          }
-        } else {
-          this.mSendEvLog('teammatch_show', 'old', '1')
-          this.$refs.malert.show(1+this.$t('vote.team.joinpop_olduser'), () => {
-            if (this.$isLogin) {
-              this.toCreate()
-            } else {
-              this.fakeTeam()
-            }
-          })
-        }
-      })
-    } else {
-      if (this.$isLogin) {
-        const cacheTeamNo = localStorage.getItem('join_teamno')
-        this.checkMyTeam(() => {
-          // check my team failed
-          if (cacheTeamNo) {
-            localStorage.removeItem('join_teamno')
-            this.toJoin(cacheTeamNo)
-          } else {
-            this.toCreate()
           }
         })
       } else {
-        this.fakeTeam()
+        if (this.$isLogin) {
+          const cacheTeamNo = localStorage.getItem('join_teamno')
+          this.checkMyTeam(() => {
+            // check my team failed
+            if (cacheTeamNo) {
+              localStorage.removeItem('join_teamno')
+              this.toJoin(cacheTeamNo)
+            } else {
+              this.toCreate()
+            }
+          })
+        } else {
+          this.fakeTeam()
+        }
       }
-    }
-    if (this.hasFinish) {
-      this.mSendEvLog('homepage_show', 'finish', '1')
-    } else {
-      this.mSendEvLog('homepage_show', 'continue', '1')
-    }
+      if (this.hasFinish) {
+        this.mSendEvLog('homepage_show', 'finish', '1')
+      } else {
+        this.mSendEvLog('homepage_show', 'continue', '1')
+      }
     })
 
-    
     this.getLotteryType()
     this.getMsgList()
     this.msgScroll()
@@ -418,7 +418,7 @@ export default {
         if (data.code == 0) {
           // 搜索页跳转登录，老用户有队提示
           if (localStorage.getItem('join_teamno')) {
-            this.$refs.malert.show(3+this.$t('vote.team.joinpop_olduser'))
+            this.$refs.malert.show(3 + this.$t('vote.team.joinpop_olduser'))
             localStorage.removeItem('join_teamno')
           }
           this.team = data.data.team_member_dtos
@@ -439,7 +439,6 @@ export default {
       })
     },
     toFacebook() {
-      this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
       this.mSendEvLog('inviteway_click', 'Facebook', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
@@ -450,8 +449,7 @@ export default {
       }
     },
     toWhatsApp() {
-      this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-      this.mSendEvLog('inviteway_click', 'WhatsApp', '1')
+        this.mSendEvLog('inviteway_click', 'WhatsApp', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByWhatsApp(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
@@ -461,7 +459,7 @@ export default {
       }
     },
     toXender() {
-      if(this.hasFinish) {
+      if (this.hasFinish) {
         this.mSendEvLog('inviteway_click', 'Xender', '0')
         this.$refs.malert.show('vote.team.share10_2')
         return
@@ -474,7 +472,7 @@ export default {
       }
     },
     toDownload() {
-      if(this.hasFinish) {
+      if (this.hasFinish) {
         this.mSendEvLog('inviteway_click', 'download', '0')
         this.$refs.malert.show('vote.team.share10_2')
         return
@@ -497,8 +495,7 @@ export default {
       }
     },
     toCopylink() {
-      this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`,
-      this.mSendEvLog('inviteway_click', 'copylink', '1')
+        this.mSendEvLog('inviteway_click', 'copylink', '1')
       if (this.$appType == 1) {
         if (this.hasFinish == true) {
           shareByCopyLink(this.shareLandUrl)
