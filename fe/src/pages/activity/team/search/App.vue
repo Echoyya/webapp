@@ -76,13 +76,13 @@ export default {
           if (data && (data.code == 1 || data.code == 0)) {
             this.mumberList = data.data.team_member_dtos
             if (data.code == 0) {
-              this.mSendEvLog('search_click', 'full', '')
+              this.mSendEvLog('search_click', 'full', '1')
             } else {
-              this.mSendEvLog('search_click', 'ok', '')
+              this.mSendEvLog('search_click', 'ok', '1')
             }
           } else if (data.code == 2) {
             this.$refs.malert.show(this.$t('vote.team.search_nores'))
-            this.mSendEvLog('search_click', 'noresult', '')
+            this.mSendEvLog('search_click', 'noresult', '1')
           } else {
             this.$refs.malert.show(this.$t('vote.team.network_error'))
           }
@@ -90,7 +90,7 @@ export default {
       }
     },
     join() {
-      this.mSendEvLog('joinbtn_click', 'search', '')
+      this.mSendEvLog('joinbtn_click', 'search', '1')
       if (this.$isLogin) {
         joinTeam.call(this, this.teamNum, data => {
           if (data.code == 0) {

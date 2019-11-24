@@ -97,25 +97,25 @@ export default {
       }
     },
     toFacebook() {
-      this.mSendEvLog('sharelucky_click', 'Facebook', '')
+      this.mSendEvLog('sharelucky_click', 'Facebook', '1')
       if (this.$appType == 1) {
         shareByFacebook(this.shareShowoffUrl, `【${this.shareTitle}】 ${this.shareText} `)
       }
     },
     toWhatsApp() {
-      this.mSendEvLog('sharelucky_click', 'WhatsApp', '')
+      this.mSendEvLog('sharelucky_click', 'WhatsApp', '1')
       if (this.$appType == 1) {
         shareByWhatsApp(this.shareShowoffUrl, this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     toXender() {
-      this.mSendEvLog('sharelucky_click', 'Xender', '')
+      this.mSendEvLog('sharelucky_click', 'Xender', '1')
       if (this.$appType == 1) {
         shareByXender(this.teamNum)
       }
     },
     toCopylink() {
-      this.mSendEvLog('sharelucky_click', 'copylink', '')
+      this.mSendEvLog('sharelucky_click', 'copylink', '1')
       if (this.$appType == 1) {
         shareByCopyLink(this.shareShowoffUrl)
       }
