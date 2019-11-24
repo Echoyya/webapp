@@ -1,7 +1,11 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div v-if="mumberList.length<3" class="text text0" v-html="$t('vote.team.invite_tip',[leader_name])"></div>
+    <div
+      v-if="mumberList.length<3"
+      class="text text0"
+      v-html="$t('vote.team.invite_tip',[leader_name])"
+    ></div>
     <div v-else class="text text1">{{$t('vote.team.full_team')}}</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
@@ -78,6 +82,7 @@
       <div class="item"></div>
     </div>
     <confirm-dialog ref="confirm" />
+    <toast-dialog ref="toast" />
     <malert ref="malert" />
   </div>
 </template>
@@ -89,10 +94,12 @@ import { getQuery, callApp, callMarket, downApk } from '@/functions/app'
 import confirmDialog from '@/components/confirm'
 import malert from '@/pages/activity/team/malert'
 import ClipboardJS from 'clipboard'
+import toastDialog from '@/components/toast'
 export default {
   components: {
     mBanner,
     confirmDialog,
+    toastDialog,
     malert
   },
   data() {
@@ -131,7 +138,15 @@ export default {
   },
   mounted() {
     this.$nextTick(() => {
-      new ClipboardJS('#copy')
+      const clipboard = new ClipboardJS('#copy')
+      clipboard.on('success', e => {
+        this.$refs.toast.show('Copied')
+        e.clearSelection()
+      })
+
+      clipboard.on('error', () => {
+        this.$refs.toast.show('Copy is not supported on your browser, please try to make a long press to copy')
+      })
     })
   },
   methods: {
