@@ -252,10 +252,9 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     &.text0 {
-      height: 3.4rem;
       margin: -18% auto 0;
       text-align: center;
     }
