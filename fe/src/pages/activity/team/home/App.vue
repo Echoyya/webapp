@@ -273,6 +273,7 @@ export default {
             this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
               this.mSendEvLog('teammatch_click', 'ok', '1')
               if (this.$isLogin) {
+                this.$refs.findTeamAlert.hide()
                 this.toJoin(teamno)
               } else {
                 toNativeLogin(this.$appType)
