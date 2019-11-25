@@ -1,6 +1,9 @@
 <template>
   <div class="remaining box1" v-if="activityStart>0">
-    <img src="@/assets/img/vote/TeamFission/ic-awards.png" @click="toAwards" />
+    <img v-if="lang=='fr'" src="@/assets/img/vote/TeamFission/prize-fr.png" @click="toAwards" />
+    <img v-if="lang=='pt'" src="@/assets/img/vote/TeamFission/prize-pt.png" @click="toAwards" />
+    <img v-if="lang=='sw'" src="@/assets/img/vote/TeamFission/prize-sw.png" @click="toAwards" />
+    <img v-if="lang!='fr'&&lang!='pt'&&lang!='sw'" src="@/assets/img/vote/TeamFission/prize-en.png" @click="toAwards" />
     <div class="title">{{$t('vote.team.countdownTitle')}}</div>
     <div class="contant">
       <div class="day">
@@ -24,7 +27,7 @@
 </template>
 <script>
 import { toNativePage, getQuery } from '@/functions/app'
-import { formatAmount } from '@/functions/utils'
+import { formatAmount, getCookie } from '@/functions/utils'
 export default {
   props: {
     activityStart: {
@@ -56,7 +59,8 @@ export default {
       days: '1000000',
       hour: '',
       min: '',
-      sed: ''
+      sed: '',
+      lang: getCookie('lang') || 'en'
     }
   },
   filters: {

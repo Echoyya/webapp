@@ -50,7 +50,7 @@ export default {
             tips: `Tips: <br/>O VIP que ganhaste será efectivo à partir de hoje.`,
             no_awards: "Ainda não tem prémio.",
             draw_title: 'Tira à sorte!',
-            draw_button: 'TIRA À SORTE',
+            draw_button: 'SORTE',
             draw_none: 'Obrigado, da próxima vez será melhor.',
             my_won_one: 'GANHOU: {0} Dia VIP',
             facebook: 'Facebook',

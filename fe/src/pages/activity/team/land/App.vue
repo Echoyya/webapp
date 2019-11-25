@@ -60,7 +60,7 @@ export default {
 @import '~@/assets/less/vote/normal.less';
 .wrapper {
   background-image: linear-gradient(#a70720, #710045);
-  height: 100vh;
+  height: 100%;
   position: fixed;
   .banner {
     width: 100%;

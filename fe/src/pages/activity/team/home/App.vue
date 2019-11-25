@@ -773,6 +773,9 @@ export default {
         padding-left: 0.8rem;
         line-height: 2rem;
         font-size: 0.9rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
       .contant {
         padding: 0.5rem;
@@ -876,12 +879,17 @@ export default {
           img {
             height: 1.2rem;
             position: absolute;
-            left: 15%;
+            left: 7%;
             top: 0.7rem;
           }
           p {
+            width: 80%;
             text-align: center;
             font-weight: bold;
+            margin-left: 17%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
           }
         }
       }
@@ -997,7 +1005,7 @@ export default {
               position: absolute;
               top: 36%;
               left: 36%;
-              font-size: 1.2rem;
+              font-size: 1.1rem;
               font-weight: bold;
               color: #fdf2ff;
               background-color: #ff008a;
