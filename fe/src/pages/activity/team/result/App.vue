@@ -25,8 +25,8 @@
     </div>
     <div class="team-btn" v-show="!show_share">
       <div class="friends" @click="showShare">
-        <img src="@/assets/img/vote/TeamFission/ic_share.png" />
-        <p>{{$t('vote.team.invite_btn')}}</p>
+        <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
+        <p>{{$t('vote.team.show_lucky')}}</p>
       </div>
     </div>
     <div class="team-btn">
@@ -87,6 +87,7 @@ export default {
       window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
     },
     showShare() {
+      this.show_share = true
       if (this.$appVersion) {
         // 5.20版本
         this.show_share = true
