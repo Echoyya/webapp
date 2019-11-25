@@ -257,7 +257,7 @@ export default {
     })
   },
   mounted() {
-    if (this.activity_id == 1) this.lottery_id = 5
+    if (this.activity_id == 2) this.lottery_id = 5
     const teamno = getQuery('teamno')
     const searchFullTeamStatus = sessionStorage.getItem('search_full_team')
     if ((teamno && !isNaN(teamno) && window.history.length <= 1) || searchFullTeamStatus) {
