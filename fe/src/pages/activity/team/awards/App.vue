@@ -33,7 +33,7 @@
       </div>
       <div class="friends" @click="showShare">
         <img src="@/assets/img/vote/TeamFission/ic_share.png" />
-        <p>{{$t('vote.team.invite_btn',[allDays])}}</p>
+        <p>{{$t('vote.team.share_btn')}}</p>
       </div>
     </div>
     <div v-if="!have_no_result" v-show="show_share" class="share-box">
@@ -74,17 +74,21 @@ export default {
       teamNum: '',
       allDays: 0,
       show_share: false,
-      have_no_result: false
+      have_no_result: false,
+      hasFinish: false
     }
   },
   created() {
     this.teamNum = getQuery('teamno')
-    ;(this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`),
-      (this.shareLandUrl = `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`)
+    this.shareLandUrl = `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+    this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
     this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.activity_id}`).then(({ data }) => {
       if (data.code == 0) {
         this.teams = data.data.my_award_team_dtos
         this.allDays = data.data.all_award_days
+        if(this.teams.length>=10) {
+          this.hasFinish = true
+        }
       } else {
         this.have_no_result = true
       }
@@ -105,7 +109,7 @@ export default {
         this.mSendEvLog('invitebtn_click', 'myprize', '1')
         this.mSendEvLog('myprize_inv_click', '', '1')
       } else {
-        if (this.teams.length >= 10) {
+        if (this.hasFinish) {
           shareInvite(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
         } else {
           shareInvite(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
@@ -115,7 +119,7 @@ export default {
     toFacebook() {
       this.mSendEvLog('inviteway_click', 'Facebook', '1')
       if (this.$appType == 1) {
-        if (this.teams.length >= 10) {
+        if (this.hasFinish) {
           shareByFacebook(this.shareLandUrl, `【${this.shareTitle}】 ${this.shareText} `)
         } else {
           shareByFacebook(this.shareWebUrl, `【${this.shareTitle}】 ${this.shareText} `)
@@ -125,7 +129,7 @@ export default {
     toWhatsApp() {
       this.mSendEvLog('inviteway_click', 'WhatsApp', '1')
       if (this.$appType == 1) {
-        if (this.teams.length >= 10) {
+        if (this.hasFinish) {
           shareByWhatsApp(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
         } else {
           shareByWhatsApp(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
@@ -169,7 +173,7 @@ export default {
     toCopylink() {
       this.mSendEvLog('inviteway_click', 'copylink', '1')
       if (this.$appType == 1) {
-        if (this.teams.length >= 10) {
+        if (this.hasFinish) {
           shareByCopyLink(this.shareLandUrl)
         } else {
           shareByCopyLink(this.shareWebUrl)

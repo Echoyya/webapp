@@ -2,10 +2,10 @@
   <div class="wrapper">
     <mBanner />
     <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
-    <div v-if="team.length>0" class="team-normal">
+    <div v-if="team.length>0 || hasFinish" class="team-normal">
       <div v-show="!show_share" class="invite box">
-        <div class="title">{{$t('vote.team.invite_tips')}}</div>
-        <div class="contant">
+        <div v-if="!hasFinish" class="title">{{$t('vote.team.invite_tips')}}</div>
+        <div v-if="!hasFinish" class="contant">
           <div>
             <div>
               <img :src="team[0].logo" />
@@ -26,12 +26,12 @@
             </div>
           </div>
         </div>
-        <div v-show="hasFinish" class="finish">
+        <div v-if="hasFinish" class="finish">
           {{$t('vote.team.share10_1')}}
           <br />
           {{$t('vote.team.share10_2')}}
         </div>
-        <div class="firends-box clearfix">
+        <div class="friends-box clearfix" :class="hasFinish?'finished':'normal'">
           <div class="img" @click="toSearch"></div>
           <div class="friends" @click="showShare">
             <img src="@/assets/img/vote/TeamFission/ic_share.png" />
@@ -320,13 +320,6 @@ export default {
       }
     }
 
-    // TODO 埋点有问题
-    if (this.hasFinish) {
-      this.mSendEvLog('homepage_show', 'finish', '1')
-    } else {
-      this.mSendEvLog('homepage_show', 'continue', '1')
-    }
-
     this.getLotteryType()
     this.getMsgList()
   },
@@ -362,6 +355,7 @@ export default {
         if (data.code == 0) {
           this.team = data.data.team_member_dtos
           this.teamNum = teamno
+          this.mSendEvLog('homepage_show', 'continue', '1')
           this.$nextTick(() => {
             this.msgScroll()
           })
@@ -419,6 +413,7 @@ export default {
         } else if (data.code == 2) {
           // 已经达到了最高限制
           this.hasFinish = true
+          this.mSendEvLog('homepage_show', 'finish', '1')
         } else {
           this.$refs.malert.show(data.message)
         }
@@ -440,6 +435,7 @@ export default {
         if (data.code == 0) {
           this.team = data.data.team_member_dtos
           this.teamNum = data.data.team_no
+          this.mSendEvLog('homepage_show', 'continue', '1')
           this.$nextTick(() => {
             this.msgScroll()
           })
@@ -453,6 +449,7 @@ export default {
         } else {
           if (data.data.team_limit_arrived) {
             this.hasFinish = true
+            this.mSendEvLog('homepage_show', 'finish', '1')
           }
           failback && failback(data.data.newcomer)
         }
@@ -867,43 +864,76 @@ export default {
         font-weight: bold;
       }
     }
-    .firends-box {
+    .friends-box {
       width: 100%;
       margin-top: 0.5rem;
       height: 3rem;
-      .img {
-        float: left;
-        width: 17%;
-        height: 3rem;
-        background-image: url('~@/assets/img/vote/TeamFission/btn-search.png');
-        background-size: contain;
-        background-repeat: no-repeat;
-      }
-      .friends {
-        float: left;
-        width: 83%;
-        height: 3rem;
-        position: relative;
-        background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
-        border-radius: 25px;
-        border: 0.2rem solid rgba(26, 1, 96, 0.75);
-        color: #ffffff;
-        height: 3rem;
-        line-height: 2.6rem;
-        img {
-          height: 1.2rem;
-          position: absolute;
-          left: 7%;
-          top: 0.7rem;
+      &.normal {
+        .img {
+          float: left;
+          width: 17%;
+          height: 3rem;
+          background-image: url('~@/assets/img/vote/TeamFission/btn-search.png');
+          background-size: contain;
+          background-repeat: no-repeat;
         }
-        p {
-          width: 80%;
-          text-align: center;
-          font-weight: bold;
-          margin-left: 17%;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          white-space: nowrap;
+        .friends {
+          float: left;
+          width: 83%;
+          height: 3rem;
+          position: relative;
+          background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
+          border-radius: 25px;
+          border: 0.2rem solid rgba(26, 1, 96, 0.75);
+          color: #ffffff;
+          height: 3rem;
+          line-height: 2.6rem;
+          img {
+            height: 1.2rem;
+            position: absolute;
+            left: 7%;
+            top: 0.7rem;
+          }
+          p {
+            width: 80%;
+            text-align: center;
+            font-weight: bold;
+            margin-left: 17%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
+        }
+      }
+      &.finished {
+        .img {
+          display: none;
+        }
+        .friends {
+          width: 100%;
+          height: 3rem;
+          position: relative;
+          background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
+          border-radius: 25px;
+          border: 0.2rem solid rgba(26, 1, 96, 0.75);
+          color: #ffffff;
+          height: 3rem;
+          line-height: 2.6rem;
+          img {
+            height: 1.2rem;
+            position: absolute;
+            left: 7%;
+            top: 0.7rem;
+          }
+          p {
+            width: 80%;
+            text-align: center;
+            font-weight: bold;
+            margin-left: 17%;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+          }
         }
       }
     }
