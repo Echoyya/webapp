@@ -778,16 +778,17 @@ export default {
       .title {
         background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
         width: 80%;
-        height: 2rem;
         color: #ffbc00;
         border-top-right-radius: 1rem;
         border-top-left-radius: 1rem;
         padding-left: 0.8rem;
-        line-height: 2rem;
+        line-height: 1.8rem;
         font-size: 0.9rem;
         overflow: hidden;
         text-overflow: ellipsis;
-        white-space: nowrap;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        -webkit-box-orient: vertical;
       }
       .contant {
         padding: 0.5rem;
@@ -1086,7 +1087,6 @@ export default {
     .text {
       width: 95%;
       position: relative;
-      height: 1.7rem;
       line-height: 1.7rem;
       font-size: 0.8rem;
       padding-left: 0.5rem;
@@ -1096,7 +1096,9 @@ export default {
       background-color: #c20044;
       overflow: hidden;
       text-overflow: ellipsis;
-      white-space: nowrap;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
       color: #ffbc00;
       font-weight: bold;
       &.text1 {
@@ -1106,11 +1108,7 @@ export default {
         margin: 0.5rem auto 0;
       }
       &.text3 {
-        height: 1.7rem;
         margin: 0.5rem auto 0;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        white-space: nowrap;
         text-align: center;
       }
     }
