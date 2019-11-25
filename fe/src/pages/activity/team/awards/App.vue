@@ -51,15 +51,18 @@
         <span>{{$t('vote.team.copy')}}</span>
       </div>
     </div>
+    <malert ref="malert" />
   </div>
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
+import malert from '@/pages/activity/team/malert'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, shareInvite, getQuery } from '@/functions/app'
 import { searchTeam } from '@/pages/activity/team/func'
 export default {
   components: {
-    mBanner
+    mBanner,
+    malert
   },
   data() {
     return {

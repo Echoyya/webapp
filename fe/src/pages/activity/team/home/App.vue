@@ -324,7 +324,6 @@ export default {
     }
 
     this.getLotteryType()
-    this.getMsgList()
   },
   methods: {
     mSendEvLog(action, label, value) {
@@ -642,6 +641,7 @@ export default {
             this.$refs.malert.show('Get rewards error!')
           }
           this.loaded_l = true
+          this.getMsgList()
         })
         .catch(err => {
           this.lotteryType = []
