@@ -65,6 +65,9 @@ export default {
             shareText: 'Join my team and send you VIP to watch it all for free',
             countdownTitle: 'Remaining',
             enterID: 'ingiza kitambulisho cha timu',
+            welcome: 'Karibu',
+            newuser_popup: 'ikiwa ulialikwa na marafiki',
+            or: 'au',
 
             //no need 
             prize_step: 'Fuata hatua hapa chini kupata zawadi sasa.',

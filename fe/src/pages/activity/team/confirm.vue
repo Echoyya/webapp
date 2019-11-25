@@ -8,18 +8,18 @@ c<template>
     >
       <div class="dialog-body">
         <div class="pop-default">
-          <div class="title">Welcome</div>
-          <p>if you were invited by friends</p>
+          <div class="title">{{$t('vote.team.welcome')}}</div>
+          <p>{{$t('vote.team.newuser_popup')}}</p>
         </div>
       </div>
       <div class="team-btn" style="margin-top:0">
-        <div @click="join">JOIN TEAM</div>
+        <div @click="join">{{$t('vote.team.join_s')}}</div>
       </div>
       <div class="or">
-        <a href="javascript:void(0)">or</a>
+        <a href="javascript:void(0)">{{$t('vote.team.or')}}</a>
       </div>
       <div class="team-btn">
-        <div @click="create">FORM A NEW TEAM</div>
+        <div @click="create">{{$t('vote.team.form_newbtn')}}</div>
       </div>
     </div>
   </div>

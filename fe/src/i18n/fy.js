@@ -65,6 +65,9 @@ export default {
             shareText: 'Join my team and send you VIP to watch it all for free',
             countdownTitle: 'Remaining',
             enterID: "entrer l'ID de l'équipe",
+            welcome: 'Bienvenue',
+            newuser_popup: 'si vous avez été invité par des amis',
+            or: 'ou',
 
             //no need 
             prize_step: 'Suivez les étapes ci-dessous pour gaganer le prix.',

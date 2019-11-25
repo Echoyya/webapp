@@ -1,11 +1,7 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div
-      v-if="mumberList.length<3"
-      class="text text0"
-      v-html="$t('vote.team.invite_tip',[leader_name])"
-    ></div>
+    <div v-if="mumberList.length<3" class="text text0" v-html="$t('vote.team.invite_tip',[leader_name])"></div>
     <div v-else class="text text1">{{$t('vote.team.full_team')}}</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
@@ -244,7 +240,6 @@ export default {
   .text {
     width: 95%;
     position: relative;
-    height: 1.7rem;
     line-height: 1.7rem;
     font-size: 0.8rem;
     padding-left: 0.5rem;
@@ -252,13 +247,14 @@ export default {
     border-top-right-radius: 1rem;
     border-top-left-radius: 1rem;
     background-color: #c20044;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
     color: #ffbc00;
     font-weight: bold;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
     &.text0 {
-      height: 3.4rem;
       margin: -18% auto 0;
       text-align: center;
     }
@@ -269,13 +265,7 @@ export default {
       margin: 0.5rem auto 0;
     }
     &.text3 {
-      height: 1.7rem;
       margin: 0.5rem auto 0;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      display: -webkit-box;
-      -webkit-line-clamp: 1;
-      -webkit-box-orient: vertical;
       text-align: center;
     }
   }
@@ -401,7 +391,7 @@ export default {
         border: 1px solid #ffbc00;
         border-radius: 1rem;
         text-align: center;
-        font-size: 0.75rem
+        font-size: 0.75rem;
       }
     }
   }
