@@ -882,7 +882,7 @@ export default {
         img {
           height: 1.2rem;
           position: absolute;
-          left: 15%;
+          left: 7%;
           top: 0.7rem;
         }
         p {
