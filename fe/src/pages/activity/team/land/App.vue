@@ -9,7 +9,7 @@
       </div>
       <div v-if="appType==1" class="download-app-wrapper">
         <div class="download-app-btn" @click="down()">
-          <div style="padding:0px 0.8rem">{{$t('vote.team.download_apk')}}</div>
+          <div style="padding:0px 0.8rem">{{$t('vote.team.download_join')}}</div>
         </div>
       </div>
     </div>
@@ -77,13 +77,19 @@ export default {
     bottom: 15%;
     left: 17.5%;
     .download-app-btn {
-      font-size: 1.2rem;
+      font-size: 1rem;
       line-height: 3rem;
+      width: 100%;
       height: 3rem;
       text-align: center;
       color: rgba(255, 255, 255, 1);
       background-color: #231f20;
       border-radius: 0.3rem;
+      div {
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
     }
     .download-appstore-wrapper {
       width: 85%;
