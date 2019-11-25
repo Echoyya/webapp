@@ -442,6 +442,7 @@ export default {
             this.msgScroll()
           })
           if (this.team.length >= 3 && data.data.allow_lottery) {
+            this.mSendEvLog('teamsucc_show', '', '1')
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
               window.scrollTo(0, 1500)
               this.canLottery = true
