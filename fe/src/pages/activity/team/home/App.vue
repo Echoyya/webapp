@@ -84,7 +84,7 @@
         </div>
       </div>
     </div>
-    <div v-else class="team-full">
+    <div v-if="isFull" class="team-full">
       <div class="text text1">{{$t('vote.team.full_team')}}</div>
       <div class="invite">
         <div v-show="mumberList.length>0" class="team clearfix">
@@ -767,6 +767,7 @@ export default {
     box-sizing: border-box;
   }
   width: 100%;
+  min-height: 100vh;
   font-size: 0.9rem;
   letter-spacing: -0.03rem;
   position: static;
