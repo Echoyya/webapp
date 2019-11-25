@@ -65,6 +65,7 @@ export default {
   created() {
     this.teamNum = getQuery('teamno')
     this.award_day = getQuery('prize')
+    if (this.award_day) window.getChannelId && window.getChannelId.updateOttInfo && window.getChannelId.updateOttInfo()
     this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
     this.shareShowoffUrl = `${window.location.origin}/activity/team/showoff.html?activity=${this.activity_id}&prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
     this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
