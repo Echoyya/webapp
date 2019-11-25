@@ -31,15 +31,19 @@ import { formatAmount, getCookie } from '@/functions/utils'
 export default {
   props: {
     activityStart: {
-      requred: true,
+      required: true,
       type: Number
     },
     activityEnd: {
-      requred: true,
+      required: true,
       type: Number
     },
     teamNo: {
-      requred: false
+      required: false
+    },
+    isFull:{
+      required: false,
+      type: Boolean
     }
   },
   watch: {
@@ -131,6 +135,9 @@ export default {
     toAwards() {
       if (this.$isLogin) {
         this.mSendEvLog('myprize_click', '', '1')
+        if(this.isFull){
+          sessionStorage.setItem('search_full_team',1)
+        }
         window.location.href = `/activity/team/awards.html?activity=${this.activity_id}&teamno=${this.teamNo}`
       } else {
         toNativePage('com.star.mobile.video.account.LoginActivity')

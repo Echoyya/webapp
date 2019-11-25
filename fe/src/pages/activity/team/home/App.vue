@@ -1,7 +1,7 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
+    <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" :isFull="isFull" />
     <div v-if="team.length>0 || hasFinish" class="team-normal">
       <div v-show="!show_share" class="invite box">
         <div v-if="!hasFinish" class="title">{{$t('vote.team.invite_tips')}}</div>
@@ -257,9 +257,11 @@ export default {
     })
   },
   mounted() {
-    if (this.activity_id == 2) this.lottery_id = 5
+    if (this.activity_id == 1) this.lottery_id = 5
     const teamno = getQuery('teamno')
-    if (teamno && !isNaN(teamno)) {
+    const searchFullTeamStatus = sessionStorage.getItem('search_full_team')
+    if ((teamno && !isNaN(teamno) && window.history.length <= 1) || searchFullTeamStatus) {
+      sessionStorage.removeItem('search_full_team')
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
           this.$refs.malert.show(data.message)
