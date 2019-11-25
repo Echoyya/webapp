@@ -257,7 +257,7 @@ export default {
     })
   },
   mounted() {
-    if(this.activity_id==1) this.lottery_id = 5
+    if (this.activity_id == 1) this.lottery_id = 5
     const teamno = getQuery('teamno')
     if (teamno && !isNaN(teamno) && window.history.length <= 1) {
       searchTeam.call(this, teamno, data => {
