@@ -155,13 +155,14 @@
   </div>
 </template>
 <script>
-import mBanner from '@/pages/activity/team/banner.vue'
+
 import { formatAmount } from '@/functions/utils'
-import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity/team/func'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, toNativePage, shareInvite, toNativeLogin } from '@/functions/app'
-import malert from '@/pages/activity/team/malert'
-import uncloseAlert from '@/pages/activity/team/uncloseAlert'
+import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity/team/func'
+import mBanner from '@/pages/activity/team/banner'
 import countdown from '@/pages/activity/team/countdown'
+import uncloseAlert from '@/pages/activity/team/uncloseAlert'
+import malert from '@/pages/activity/team/malert'
 import chooseMethod from '@/pages/activity/team/confirm'
 export default {
   components: {
