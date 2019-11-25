@@ -150,9 +150,6 @@ export const initPage = function(page) {
             if (res.data && res.data.id) {
                 // 有用户信息
                 const role = res.data.roleName
-                deviceId = res.data.deviceID
-                initAna(appType, deviceId, appType)
-                Vue.prototype.$deviceId = res.data.deviceID
                 Vue.prototype.$countryCode = res.data.countryCode
                 Vue.prototype.$isLogin = role && role.toUpperCase() !== 'ANONYMOUS'
                 Vue.prototype.$user = res.data
