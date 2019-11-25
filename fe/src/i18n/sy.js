@@ -64,6 +64,7 @@ export default {
             shareTitle: 'Make A Team to Win Free VIPS',
             shareText: 'Join my team and send you VIP to watch it all for free',
             countdownTitle: 'Remaining',
+            enterID: 'ingiza kitambulisho cha timu',
 
             //no need 
             prize_step: 'Fuata hatua hapa chini kupata zawadi sasa.',

@@ -65,15 +65,14 @@ export default {
   created() {
     this.teamNum = getQuery('teamno')
     this.award_day = getQuery('prize')
-
-    ;(this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`),
-      (this.shareShowoffUrl = `${window.location.origin}/activity/team/showoff.html?activity=${this.activity_id}&prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`),
-      this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
-        if (data.code == 0) {
-          this.activityStart = data.data.start_date
-          this.activityEnd = data.data.end_date
-        }
-      })
+    this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+    this.shareShowoffUrl = `${window.location.origin}/activity/team/showoff.html?activity=${this.activity_id}&prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+    this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
+      if (data.code == 0) {
+        this.activityStart = data.data.start_date
+        this.activityEnd = data.data.end_date
+      }
+    })
   },
   methods: {
     mSendEvLog(action, label, value) {
@@ -180,11 +179,16 @@ export default {
     img {
       height: 1.2rem;
       position: absolute;
-      left: 15%;
+      left: 7%;
       top: 0.5rem;
     }
     p {
+      width: 80%;
       text-align: center;
+      margin-left: 17%;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
   .share-box {
@@ -248,6 +252,9 @@ export default {
       height: 2.75rem;
       line-height: 2.25rem;
       margin-top: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
   .tip {

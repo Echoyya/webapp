@@ -64,6 +64,7 @@ export default {
             shareTitle: 'Make A Team to Win Free VIPS',
             shareText: 'Join my team and send you VIP to watch it all for free',
             countdownTitle: 'Remaining',
+            enterID: "entrer l'ID de l'équipe",
 
             //no need 
             prize_step: 'Suivez les étapes ci-dessous pour gaganer le prix.',

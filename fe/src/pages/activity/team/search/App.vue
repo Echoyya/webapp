@@ -3,13 +3,8 @@
     <mBanner />
     <div class="search-body">
       <div class="search">
-        <input v-model="teamNum" :class="{'full':!showBtn}" type="number" />
-        <div
-          v-show="showBtn"
-          class="btn"
-          :class="{'can-submit':teamNum}"
-          @click="submit"
-        >{{$t('vote.team.search')}}</div>
+        <input v-model="teamNum" :class="{'full':!showBtn}" type="number" :placeholder="$t('vote.team.enterID')" />
+        <div v-show="showBtn" class="btn" :class="{'can-submit':teamNum}" @click="submit">{{$t('vote.team.search')}}</div>
       </div>
       <div v-show="mumberList.length>0" class="team clearfix">
         <div v-for="(item,index) in mumberList" :key="index" class="mumber">
@@ -113,9 +108,9 @@ export default {
         createTeam.call(this, data => {
           if (data.code == 0) {
             window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
-          } else if(data.code == 1) {
+          } else if (data.code == 1) {
             this.$refs.malert.show(this.$t('vote.team.have_team'))
-          } else if(data.code == 2) {
+          } else if (data.code == 2) {
             this.$refs.malert.show(this.$t('vote.team.share10_2'))
           } else {
             this.$refs.malert.show(data.message)
@@ -154,23 +149,31 @@ export default {
       padding: 0 1rem;
       font-size: 1.1rem;
       box-sizing: border-box;
-      width: 63%;
+      width: 68%;
       height: 2.5rem;
       line-height: 2.25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       &.full {
         width: 100%;
         text-align: center;
+      }
+      &::-webkit-input-placeholder {
+        letter-spacing: 0;
+        font-size: 0.9rem;
       }
     }
     .btn {
       color: #ffffff;
       box-sizing: border-box;
       font-weight: bold;
+      font-size: 0.8rem;
       text-align: center;
       background: rgba(153, 153, 153, 1);
       border-radius: 20px;
       display: inline-block;
-      width: 35%;
+      width: 30%;
       margin-left: 2%;
       height: 2.5rem;
       line-height: 2rem;
@@ -218,16 +221,17 @@ export default {
         }
       }
       p {
+        font-size: 0.75rem;
         background: rgba(134, 0, 200, 1);
         border-radius: 8px;
         display: inline-block;
-        padding: 0 0.5rem;
+        padding: 0 0.2rem;
         position: relative;
         top: -0.7rem;
         color: #b360dd;
         font-size: 0.9rem;
-        height: 1.1rem;
-        line-height: 1.1rem;
+        // height: 1.1rem;
+        line-height: 1rem;
       }
     }
   }

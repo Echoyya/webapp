@@ -1094,13 +1094,11 @@ export default {
         margin: 0.5rem auto 0;
       }
       &.text3 {
-        height: 3.4rem;
+        height: 1.7rem;
         margin: 0.5rem auto 0;
         overflow: hidden;
         text-overflow: ellipsis;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
+        white-space: nowrap;
         text-align: center;
       }
     }

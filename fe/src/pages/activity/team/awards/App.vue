@@ -16,28 +16,19 @@
           <img src="@/assets/img/vote/TeamFission/ic_forward2.png" />
           <div>
             <div>
-              <img
-                v-if="item.team_member_dtos[1]&&item.team_member_dtos[1].logo"
-                :src="item.team_member_dtos[1].logo"
-              />
+              <img v-if="item.team_member_dtos[1]&&item.team_member_dtos[1].logo" :src="item.team_member_dtos[1].logo" />
               <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <div>
             <div>
-              <img
-                v-if="item.team_member_dtos[2]&&item.team_member_dtos[2].logo"
-                :src="item.team_member_dtos[2].logo"
-              />
+              <img v-if="item.team_member_dtos[2]&&item.team_member_dtos[2].logo" :src="item.team_member_dtos[2].logo" />
               <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <div v-if="item.my_award_day==0" class="vip">THANKS</div>
           <div v-if="item.my_award_day==1" class="vip">VIP {{item.my_award_day}} DAY</div>
-          <div
-            v-if="item.my_award_day!=0&&item.my_award_day!=1"
-            class="vip"
-          >VIP {{item.my_award_day}} DAYS</div>
+          <div v-if="item.my_award_day!=0&&item.my_award_day!=1" class="vip">VIP {{item.my_award_day}} DAYS</div>
         </div>
       </div>
       <div class="friends" @click="showShare">
@@ -52,6 +43,13 @@
       <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
       <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
       <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
+      <div>
+        <span>{{$t('vote.team.facebook')}}</span>
+        <span>{{$t('vote.team.whatsapp')}}</span>
+        <span>{{$t('vote.team.xender')}}</span>
+        <span>{{$t('vote.team.download')}}</span>
+        <span>{{$t('vote.team.copy')}}</span>
+      </div>
     </div>
   </div>
 </template>
@@ -307,12 +305,17 @@ export default {
       img {
         height: 1.2rem;
         position: absolute;
-        left: 15%;
+        left: 7%;
         top: 0.7rem;
       }
       p {
+        width: 80%;
         text-align: center;
         font-weight: bold;
+        margin-left: 17%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }
@@ -333,6 +336,17 @@ export default {
         margin-bottom: 1rem;
         width: 7%;
         background-image: url('~@/assets/img/vote/TeamFission/ic_download.png');
+      }
+    }
+    > div {
+      span {
+        display: inline-block;
+        width: 20%;
+        vertical-align: top;
+        text-align: center;
+        line-height: 1rem;
+        font-size: 0.75rem;
+        color: #fff;
       }
     }
   }
