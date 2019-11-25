@@ -25,8 +25,8 @@
     </div>
     <div class="team-btn" v-show="!show_share">
       <div class="friends" @click="showShare">
-        <img src="@/assets/img/vote/TeamFission/ic_share.png" />
-        <p>{{$t('vote.team.invite_btn')}}</p>
+        <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
+        <p>{{$t('vote.team.show_lucky')}}</p>
       </div>
     </div>
     <div class="team-btn">
@@ -65,7 +65,6 @@ export default {
   created() {
     this.teamNum = getQuery('teamno')
     this.award_day = getQuery('prize')
-
     ;(this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`),
       (this.shareShowoffUrl = `${window.location.origin}/activity/team/showoff.html?activity=${this.activity_id}&prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`),
       this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
@@ -88,6 +87,7 @@ export default {
       window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
     },
     showShare() {
+      this.show_share = true
       if (this.$appVersion) {
         // 5.20版本
         this.show_share = true
@@ -180,7 +180,7 @@ export default {
     img {
       height: 1.2rem;
       position: absolute;
-      left: 15%;
+      left: 7%;
       top: 0.5rem;
     }
     p {
