@@ -117,7 +117,8 @@ export const callApp = function(page, failback) {
       invokeByHref.call(this, createScheme(page), failback)
     }
   } else {
-    invokeByIframe.call(this, createScheme(page), failback)
+    invokeByHref.call(this, createIntent(page), failback)
+    // invokeByIframe.call(this, createScheme(page), failback)
   }
 }
 
