@@ -173,7 +173,7 @@ export default {
   },
   data() {
     return {
-      activity_id: getQuery('activiy') || 1,
+      activity_id: getQuery('activity') || 1,
       activityStart: 0,
       activityEnd: 0,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',

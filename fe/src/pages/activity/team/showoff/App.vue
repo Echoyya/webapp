@@ -52,7 +52,7 @@ export default {
   },
   data() {
     return {
-      activity_id: getQuery('activiy') || 1,
+      activity_id: getQuery('activity') || 1,
       award_day: ''
     }
   },

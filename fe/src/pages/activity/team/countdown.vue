@@ -55,7 +55,7 @@ export default {
   },
   data() {
     return {
-      activity_id: getQuery('activiy') || 1,
+      activity_id: getQuery('activity') || 1,
       days: '1000000',
       hour: '',
       min: '',
