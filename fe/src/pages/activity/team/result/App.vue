@@ -23,7 +23,7 @@
         <span>{{$t('vote.team.copy')}}</span>
       </div>
     </div>
-    <div class="team-btn" v-show="!show_share">
+    <div class="share-btn" v-show="!show_share">
       <div class="friends" @click="showShare">
         <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
         <p>{{$t('vote.team.show_lucky')}}</p>
@@ -168,29 +168,36 @@ export default {
       width: 100%;
     }
   }
-  .friends {
-    width: 100%;
-    height: 3rem;
-    position: relative;
-    background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
-    border-radius: 25px;
-    border: 0.2rem solid rgba(26, 1, 96, 0.75);
-    color: #ffffff;
-    height: 3rem;
-    line-height: 2.6rem;
-    img {
-      height: 1.2rem;
-      position: absolute;
-      left: 7%;
-      top: 0.5rem;
-    }
-    p {
-      width: 80%;
-      text-align: center;
-      margin-left: 17%;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
+  .share-btn {
+    .friends {
+      width: 90%;
+      height: 4rem;
+      position: relative;
+      background: #600049;
+      border-radius: 2rem;
+      color: #ffffff;
+      margin: 0 auto;
+      padding-top: 0.4rem;
+      img {
+        height: 1.8rem;
+        position: absolute;
+        left: 7%;
+        top: 1rem;
+      }
+      p {
+        width: 78%;
+        height: 3rem;
+        line-height: 3rem;
+        text-align: left;
+        padding-left: 17%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background-color: #94013f;
+        border-radius: 2rem;
+        border: 0.1rem solid #ff9800;
+        margin: 0 auto;
+      }
     }
   }
   .share-box {
