@@ -84,7 +84,7 @@
         </div>
       </div>
     </div>
-    <div v-else class="team-full">
+    <div v-if="isFull" class="team-full">
       <div class="text text1">{{$t('vote.team.full_team')}}</div>
       <div class="invite">
         <div v-show="mumberList.length>0" class="team clearfix">
@@ -379,6 +379,7 @@ export default {
           }
         } else if (data.code == 1) {
           // 不是新用户，需要创建队伍
+          this.mSendEvLog('teammatch_show', 'old', '1')
           this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
           this.toCreate()
         } else if (data.code == 2) {
@@ -727,7 +728,6 @@ export default {
               }
             })
             .catch(() => {
-              // TODO 提示
               this.fail = true
               this.prize = 3
             })
@@ -765,6 +765,7 @@ export default {
     box-sizing: border-box;
   }
   width: 100%;
+  min-height: 100vh;
   font-size: 0.9rem;
   letter-spacing: -0.03rem;
   position: static;

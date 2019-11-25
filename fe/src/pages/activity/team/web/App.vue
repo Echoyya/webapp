@@ -156,18 +156,23 @@ export default {
     },
     callOrDownApp(value) {
       let url = ''
+      let val = value
       if (value == 'first') {
+        val = 'jointeamfull'
         this.mSendEvLog('joinbtn_click', 'h5recommend', '1')
         this.mSendEvLog('callApp', 'jointeamfull', '1')
         url = '&teamno=' + this.teamNum1
       } else if (value == 'second') {
+        val = 'jointeamfull'
         this.mSendEvLog('joinbtn_click', 'h5recommend', '1')
         this.mSendEvLog('callApp', 'jointeamfull', '1')
         url = '&teamno=' + this.teamNum2
       } else if (value == 'join') {
+        val = 'jointeam'
         this.mSendEvLog('callApp', 'jointeam', '1')
         url = '&teamno=' + this.teamNum
       } else {
+        val = 'formnew'
         this.mSendEvLog('callApp', 'formnew', '1')
         this.mSendEvLog('teamoverpage_formnew', '', '1')
       }
@@ -175,21 +180,15 @@ export default {
       const loadURl = window.location.origin + '/activity/team/home.html?activity=' + this.activity_id + url
       callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${encodeURIComponent(loadURl)}`, () => {
         callMarket.call(this, () => {
-          if (value == 'join') this.mSendEvLog('downloadpopup_show', 'jointeam', '1')
-          else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_show', 'jointeamfull', '1')
-          else this.mSendEvLog('downloadpopup_show', 'formnew', '1')
+          this.mSendEvLog('downloadpopup_show', val, '1')
           this.$refs.confirm.show(
             this.$t('vote.team.download_tip'),
             () => {
-              if (value == 'join') this.mSendEvLog('downloadpopup_clickok', 'jointeam', '1')
-              else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clickok', 'jointeamfull', '1')
-              else this.mSendEvLog('downloadpopup_clickok', 'formnew', '1')
+              this.mSendEvLog('downloadpopup_clickok', val, '1')
               downApk.call(this)
             },
             () => {
-              if (value == 'join') this.mSendEvLog('downloadpopup_clicknot', 'jointeam', '1')
-              else if (value == 'first' || value == 'second') this.mSendEvLog('downloadpopup_clicknot', 'jointeamfull', '1')
-              else this.mSendEvLog('downloadpopup_clicknot', 'formnew', '1')
+              this.mSendEvLog('downloadpopup_clicknot', val, '1')
             },
             'OK',
             'NOT NOW'
