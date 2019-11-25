@@ -381,6 +381,7 @@ export default {
           }
         } else if (data.code == 1) {
           // 不是新用户，需要创建队伍
+          this.mSendEvLog('teammatch_show', 'old', '1')
           this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
           this.toCreate()
         } else if (data.code == 2) {
@@ -729,7 +730,6 @@ export default {
               }
             })
             .catch(() => {
-              // TODO 提示
               this.fail = true
               this.prize = 3
             })
