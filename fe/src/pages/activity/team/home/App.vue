@@ -2,10 +2,10 @@
   <div class="wrapper">
     <mBanner />
     <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
-    <div v-if="!isFull" class="team-normal">
+    <div v-if="team.length>0" class="team-normal">
       <div v-show="!show_share" class="invite box">
-        <div v-show="!hasFinish" class="title">{{$t('vote.team.invite_tips')}}</div>
-        <div v-show="!hasFinish" v-if="team.length>0" class="contant">
+        <div class="title">{{$t('vote.team.invite_tips')}}</div>
+        <div class="contant">
           <div>
             <div>
               <img :src="team[0].logo" />
@@ -148,6 +148,7 @@
       </div>
     </div>
     <malert ref="malert" />
+    <chooseMethod ref="confirm" />
     <malert ref="findTeamAlert">
       <div slot="link" @click="changeTeam">CHANGE</div>
     </malert>
@@ -160,11 +161,13 @@ import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, toNativePage, shareInvite, toNativeLogin } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
 import countdown from '@/pages/activity/team/countdown'
+import chooseMethod from '@/pages/activity/team/confirm'
 export default {
   components: {
     mBanner,
     malert,
-    countdown
+    countdown,
+    chooseMethod
   },
   data() {
     return {
@@ -253,10 +256,7 @@ export default {
   },
   mounted() {
     const teamno = getQuery('teamno')
-    const cacheTeamNo = localStorage.getItem('join_teamno')
-    const createInfo = localStorage.getItem('create')
-    history.replaceState({ origin: 1 }, '', `/activity/team/home.html?activity=${this.activity_id}`)
-    if (teamno && !isNaN(teamno) && !cacheTeamNo && !createInfo) {
+    if (teamno && !isNaN(teamno) && window.history.length <= 1) {
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
           this.$refs.malert.show(data.message)
@@ -264,14 +264,12 @@ export default {
         }
         if (data.data.newcomer) {
           if (data.code > 0) {
-            // can join
             this.mSendEvLog('teammatch_show', 'new', '1')
             this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
               this.mSendEvLog('teammatch_click', 'ok', '1')
               if (this.$isLogin) {
                 this.toJoin(teamno)
               } else {
-                localStorage.setItem('join_teamno', teamno)
                 toNativeLogin(this.$appType)
               }
             })
@@ -299,15 +297,21 @@ export default {
       })
     } else {
       if (this.$isLogin) {
-        this.checkMyTeam(() => {
-          // check my team failed
-          if (cacheTeamNo) {
-            localStorage.removeItem('join_teamno')
-            this.toJoin(cacheTeamNo)
+        this.checkMyTeam(newcomer => {
+          // TODO 询问是否加入队伍还是创建队伍
+          if (newcomer) {
+            this.fakeTeam()
+            this.$refs.confirm.show(
+              () => {
+                // join team
+                window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
+              },
+              () => {
+                this.toCreate()
+                this.$refs.confirm.hide()
+              }
+            )
           } else {
-            if (createInfo) {
-              localStorage.removeItem('create')
-            }
             this.toCreate()
           }
         })
@@ -315,6 +319,8 @@ export default {
         this.fakeTeam()
       }
     }
+
+    // TODO 埋点有问题
     if (this.hasFinish) {
       this.mSendEvLog('homepage_show', 'finish', '1')
     } else {
@@ -335,22 +341,25 @@ export default {
       })
     },
     changeTeam() {
+      // TODO 影响埋点
       this.mSendEvLog('teammatch_click', 'change', '1')
-      window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
+      if (this.$isLogin) {
+        window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
+      } else {
+        toNativeLogin(this.$appType)
+      }
     },
     toJoinFull(teamno) {
       this.mSendEvLog('joinbtn_click', 'h5recommend', '1')
-      this.isFull = false
       if (this.$isLogin) {
         this.toJoin(teamno)
+        this.isFull = false
       } else {
-        localStorage.setItem('join_teamno', teamno)
         toNativeLogin(this.$appType)
       }
     },
     toJoin(teamno) {
       joinTeam.call(this, teamno, data => {
-        // TODO 确认data.code ==4 是否属于这个分支
         if (data.code == 0) {
           this.team = data.data.team_member_dtos
           this.teamNum = teamno
@@ -390,11 +399,10 @@ export default {
       })
     },
     toCreateFull() {
-      this.isFull = false
       if (this.$isLogin) {
+        this.isFull = false
         this.toCreate()
       } else {
-        localStorage.setItem('create', 'true')
         toNativeLogin(this.$appType)
       }
     },
@@ -425,16 +433,6 @@ export default {
     checkMyTeam(failback) {
       searchMyTeam.call(this, data => {
         if (data.code == 0) {
-          // 搜索页跳转登录，老用户有队提示
-          if (localStorage.getItem('join_teamno')) {
-            this.$refs.malert.show(this.$t('vote.team.have_team'))
-            localStorage.removeItem('join_teamno')
-          }
-          // 满队创建新队跳转登录，老用户有队提示
-          if (localStorage.getItem('create')) {
-            this.$refs.malert.show(this.$t('vote.team.have_team'))
-            localStorage.removeItem('create')
-          }
           this.team = data.data.team_member_dtos
           this.teamNum = data.data.team_no
           if (this.team.length >= 3 && data.data.allow_lottery) {
@@ -448,7 +446,7 @@ export default {
           if (data.data.team_limit_arrived) {
             this.hasFinish = true
           }
-          failback && failback()
+          failback && failback(data.data.newcomer)
         }
       })
     },
@@ -520,7 +518,11 @@ export default {
     },
     toSearch() {
       this.mSendEvLog('searchbtn_click', '', '1')
-      window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
+      if (this.$isLogin) {
+        window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
+      } else {
+        toNativeLogin(this.$appType)
+      }
     },
     showShare() {
       if (this.hasFinish) {
@@ -850,39 +852,39 @@ export default {
         text-align: center;
         font-weight: bold;
       }
-      .firends-box {
-        width: 100%;
-        margin-top: 0.5rem;
+    }
+    .firends-box {
+      width: 100%;
+      margin-top: 0.5rem;
+      height: 3rem;
+      .img {
+        float: left;
+        width: 17%;
         height: 3rem;
-        .img {
-          float: left;
-          width: 17%;
-          height: 3rem;
-          background-image: url('~@/assets/img/vote/TeamFission/btn-search.png');
-          background-size: contain;
-          background-repeat: no-repeat;
+        background-image: url('~@/assets/img/vote/TeamFission/btn-search.png');
+        background-size: contain;
+        background-repeat: no-repeat;
+      }
+      .friends {
+        float: left;
+        width: 83%;
+        height: 3rem;
+        position: relative;
+        background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
+        border-radius: 25px;
+        border: 0.2rem solid rgba(26, 1, 96, 0.75);
+        color: #ffffff;
+        height: 3rem;
+        line-height: 2.6rem;
+        img {
+          height: 1.2rem;
+          position: absolute;
+          left: 15%;
+          top: 0.7rem;
         }
-        .friends {
-          float: left;
-          width: 83%;
-          height: 3rem;
-          position: relative;
-          background: linear-gradient(180deg, rgba(253, 94, 0, 1) 0%, rgba(250, 0, 67, 1) 100%);
-          border-radius: 25px;
-          border: 0.2rem solid rgba(26, 1, 96, 0.75);
-          color: #ffffff;
-          height: 3rem;
-          line-height: 2.6rem;
-          img {
-            height: 1.2rem;
-            position: absolute;
-            left: 15%;
-            top: 0.7rem;
-          }
-          p {
-            text-align: center;
-            font-weight: bold;
-          }
+        p {
+          text-align: center;
+          font-weight: bold;
         }
       }
     }
