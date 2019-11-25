@@ -146,19 +146,15 @@ export const initPage = function(page) {
         .get('/cms/users/me')
         .then(res => {
             Vue.prototype.$serverTime = res.headers.server_time
-
+            Vue.prototype.$deviceId = deviceId
             if (res.data && res.data.id) {
                 // 有用户信息
                 const role = res.data.roleName
-                deviceId = res.data.deviceID
-                initAna(appType, deviceId, appType)
-                Vue.prototype.$deviceId = res.data.deviceID
                 Vue.prototype.$countryCode = res.data.countryCode
                 Vue.prototype.$isLogin = role && role.toUpperCase() !== 'ANONYMOUS'
                 Vue.prototype.$user = res.data
             } else {
                 // 无用户信息 本地匿名token
-                Vue.prototype.$deviceId = deviceId
                 Vue.prototype.$countryCode = 'NG'
                 Vue.prototype.$isLogin = false
                 Vue.prototype.$user = {

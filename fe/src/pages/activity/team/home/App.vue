@@ -149,9 +149,9 @@
     </div>
     <malert ref="malert" />
     <chooseMethod ref="confirm" />
-    <malert ref="findTeamAlert">
+    <uncloseAlert ref="findTeamAlert">
       <div slot="link" @click="changeTeam">CHANGE</div>
-    </malert>
+    </uncloseAlert>
   </div>
 </template>
 <script>
@@ -160,12 +160,14 @@ import { formatAmount } from '@/functions/utils'
 import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity/team/func'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, toNativePage, shareInvite, toNativeLogin } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
+import uncloseAlert from '@/pages/activity/team/uncloseAlert'
 import countdown from '@/pages/activity/team/countdown'
 import chooseMethod from '@/pages/activity/team/confirm'
 export default {
   components: {
     mBanner,
     malert,
+    uncloseAlert,
     countdown,
     chooseMethod
   },
@@ -255,6 +257,7 @@ export default {
     })
   },
   mounted() {
+    if(this.activity_id==1) this.lottery_id = 5
     const teamno = getQuery('teamno')
     if (teamno && !isNaN(teamno) && window.history.length <= 1) {
       searchTeam.call(this, teamno, data => {
