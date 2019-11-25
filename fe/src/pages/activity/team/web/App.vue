@@ -37,7 +37,7 @@
       </div>
     </div>
     <div v-show="moreList1.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
-    <div class="more-team">
+    <div v-show="moreList1.length>0" class="more-team">
       <div v-show="moreList1.length>0" class="team1 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
         <div class="team-box">
@@ -140,7 +140,7 @@ export default {
     this.$nextTick(() => {
       const clipboard = new ClipboardJS('#copy')
       clipboard.on('success', e => {
-        this.$refs.toast.show('Copied')
+        this.$refs.toast.show(this.$t('vote.team.copied'))
         e.clearSelection()
       })
 
@@ -401,6 +401,7 @@ export default {
         border: 1px solid #ffbc00;
         border-radius: 1rem;
         text-align: center;
+        font-size: 0.75rem
       }
     }
   }

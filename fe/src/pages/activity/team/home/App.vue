@@ -329,7 +329,6 @@ export default {
 
     this.getLotteryType()
     this.getMsgList()
-    this.msgScroll()
   },
   methods: {
     mSendEvLog(action, label, value) {
@@ -363,6 +362,9 @@ export default {
         if (data.code == 0) {
           this.team = data.data.team_member_dtos
           this.teamNum = teamno
+          this.$nextTick(() => {
+            this.msgScroll()
+          })
           if (this.team.length >= 3) {
             this.canLottery = true
             this.mSendEvLog('teamsucc_show', '', '1')
@@ -429,12 +431,18 @@ export default {
           logo: this.$user.head || 'https://cdn.startimestv.com/head/h_d.png'
         }
       ]
+      this.$nextTick(() => {
+        this.msgScroll()
+      })
     },
     checkMyTeam(failback) {
       searchMyTeam.call(this, data => {
         if (data.code == 0) {
           this.team = data.data.team_member_dtos
           this.teamNum = data.data.team_no
+          this.$nextTick(() => {
+            this.msgScroll()
+          })
           if (this.team.length >= 3 && data.data.allow_lottery) {
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
               window.scrollTo(0, 1500)
@@ -604,6 +612,8 @@ export default {
         })
     },
     msgScroll() {
+      this.tmsg = null
+      this.tscroll = null
       this.tmsg = setInterval(() => {
         if (this.$serverTime > this.activityEnd) clearInterval(this.tmsg)
         this.getMsgList()
