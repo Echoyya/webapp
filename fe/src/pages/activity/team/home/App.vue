@@ -257,9 +257,9 @@ export default {
     })
   },
   mounted() {
-    if (this.activity_id == 1) this.lottery_id = 5
+    if (this.activity_id == 2) this.lottery_id = 5
     const teamno = getQuery('teamno')
-    if (teamno && !isNaN(teamno) && window.history.length <= 1) {
+    if (teamno && !isNaN(teamno)) {
       searchTeam.call(this, teamno, data => {
         if (data.code >= 2) {
           this.$refs.malert.show(data.message)
@@ -301,12 +301,10 @@ export default {
     } else {
       if (this.$isLogin) {
         this.checkMyTeam(newcomer => {
-          // TODO 询问是否加入队伍还是创建队伍
           if (newcomer) {
             this.fakeTeam()
             this.$refs.confirm.show(
               () => {
-                // join team
                 window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
               },
               () => {
