@@ -248,16 +248,17 @@ export default {
       if (data.code == 0) {
         this.activityStart = data.data.start_date
         this.activityEnd = data.data.end_date
+        this.lottery_id = data.data.lottery_activity_id
         const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
         const max = 10 * 10000
         const speed = Math.floor((max / during) * 100) / 100
         const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
         this.number = formatAmount(10 + Math.floor(period * speed))
+        this.getLotteryType()
       }
     })
   },
   mounted() {
-    if (this.activity_id == 2) this.lottery_id = 5
     const teamno = getQuery('teamno')
     const searchFullTeamStatus = sessionStorage.getItem('search_full_team')
     if ((teamno && !isNaN(teamno) && window.history.length <= 1) || searchFullTeamStatus) {
@@ -323,8 +324,6 @@ export default {
         this.fakeTeam()
       }
     }
-
-    this.getLotteryType()
   },
   methods: {
     mSendEvLog(action, label, value) {
@@ -336,7 +335,6 @@ export default {
       })
     },
     changeTeam() {
-      // TODO 影响埋点
       this.mSendEvLog('teammatch_click', 'change', '1')
       if (this.$isLogin) {
         window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
