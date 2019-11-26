@@ -488,7 +488,7 @@ export default {
       this.mSendEvLog('inviteway_click', 'Xender', '1')
       if (this.$appType == 1) {
         if (this.teamNum) {
-          shareByXender(this.teamNum)
+          shareByXender(this.teamNum,'1')
         }
       }
     },
@@ -552,11 +552,7 @@ export default {
           }
         }
       } else {
-        if (this.hasFinish) {
-          this.mSendEvLog('invitebtn_click', 'teamover', '0')
-        } else {
-          this.mSendEvLog('invitebtn_click', 'teaminvpage', '0')
-        }
+        this.mSendEvLog('invitebtn_click', 'teaminvpage', '0')
         toNativePage('com.star.mobile.video.account.LoginActivity')
       }
     },
