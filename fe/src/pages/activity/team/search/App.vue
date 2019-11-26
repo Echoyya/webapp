@@ -2,7 +2,7 @@
   <div class="wrapper">
     <mBanner />
     <div class="search-body">
-      <div class="search">
+      <div class="search clearfix">
         <input v-model="teamNum" :class="{'full':!showBtn}" type="number" :placeholder="$t('vote.team.enterID')" />
         <div v-show="showBtn" class="btn" :class="{'can-submit':teamNum}" @click="submit">{{$t('vote.team.search')}}</div>
       </div>
@@ -143,6 +143,7 @@ export default {
     position: relative;
     padding-top: 2rem;
     input {
+      float: left;
       color: #ffffff;
       background: #1c003e;
       border: none;
@@ -168,6 +169,7 @@ export default {
       }
     }
     .btn {
+      float: left;
       color: #ffffff;
       box-sizing: border-box;
       font-weight: bold;
@@ -175,7 +177,6 @@ export default {
       text-align: center;
       background: rgba(153, 153, 153, 1);
       border-radius: 20px;
-      display: inline-block;
       width: 30%;
       margin-left: 2%;
       height: 2.5rem;
