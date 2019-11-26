@@ -79,7 +79,7 @@
             <li
               v-for="item in msgList"
               :key="item.key"
-            >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} has won {{item.reward_name||''}}!</li>
+            >{{$t('vote.team.boardcast_con',[item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id),item.reward_name||''])}}</li>
           </ul>
         </div>
       </div>
@@ -538,11 +538,7 @@ export default {
       if (this.hasFinish) {
         this.mSendEvLog('invitebtn_click', 'teamover', '1')
       } else {
-        if (this.isFull) {
-          this.mSendEvLog('invitebtn_click', 'teamfull', '1')
-        } else {
-          this.mSendEvLog('invitebtn_click', 'teaminvpage', '1')
-        }
+        this.mSendEvLog('invitebtn_click', 'teaminvpage', '1')
       }
       if (this.$isLogin) {
         if (this.$appVersion) {
@@ -600,6 +596,9 @@ export default {
                 }
               })
               this.loaded_m = true
+              this.$nextTick(()=>{
+                this.msgScroll()
+              })
             }
           } else {
             this.items = [] // 服务器端计算数据错误时

@@ -7,7 +7,7 @@
     <div class="title">{{$t('vote.team.countdownTitle')}}</div>
     <div class="contant">
       <div class="day">
-        <span>{{days | formatAmount}}</span> days
+        <span>{{days | formatAmount}}</span> days VIP
       </div>
       <div class="day count-down">
         <div>

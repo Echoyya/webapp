@@ -40,8 +40,10 @@ export default {
         label: label,
         value: value
       })
+      console.log(11)
     },
     down() {
+      console.log(22)
       this.mSendEvLog('callApp', 'landingpage', '1')
       callApp.call(
         this,

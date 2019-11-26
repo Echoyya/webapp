@@ -77,6 +77,7 @@ export default {
             }
           } else if (data.code == 2) {
             this.$refs.malert.show(this.$t('vote.team.search_nores'))
+            this.mumberList = []
             this.mSendEvLog('search_click', 'noresult', '1')
           } else {
             this.$refs.malert.show(this.$t('vote.team.network_error'))
@@ -92,6 +93,8 @@ export default {
             window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
           } else if (data.code == 1) {
             this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
+          } else if (data.code == 2) {
+            this.$refs.malert.show(this.$t('vote.team.full_team'))
           } else if (data.code == 4) {
             this.$refs.malert.show(this.$t('vote.team.have_team'))
           } else {
