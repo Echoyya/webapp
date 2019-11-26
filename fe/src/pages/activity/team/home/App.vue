@@ -155,7 +155,6 @@
   </div>
 </template>
 <script>
-
 import { formatAmount } from '@/functions/utils'
 import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, toNativePage, shareInvite, toNativeLogin } from '@/functions/app'
 import { searchTeam, joinTeam, createTeam, searchMyTeam } from '@/pages/activity/team/func'
@@ -527,20 +526,21 @@ export default {
       }
     },
     toSearch() {
-      this.mSendEvLog('searchbtn_click', '', '1')
       if (this.$isLogin) {
+        this.mSendEvLog('searchbtn_click', '', '1')
         window.location.href = `/activity/team/search.html?activity=${this.activity_id}`
       } else {
+        this.mSendEvLog('searchbtn_click', '', '0')
         toNativeLogin(this.$appType)
       }
     },
     showShare() {
-      if (this.hasFinish) {
-        this.mSendEvLog('invitebtn_click', 'teamover', '1')
-      } else {
-        this.mSendEvLog('invitebtn_click', 'teaminvpage', '1')
-      }
       if (this.$isLogin) {
+        if (this.hasFinish) {
+          this.mSendEvLog('invitebtn_click', 'teamover', '1')
+        } else {
+          this.mSendEvLog('invitebtn_click', 'teaminvpage', '1')
+        }
         if (this.$appVersion) {
           // 5.20版本
           this.show_share = true
@@ -552,6 +552,11 @@ export default {
           }
         }
       } else {
+        if (this.hasFinish) {
+          this.mSendEvLog('invitebtn_click', 'teamover', '0')
+        } else {
+          this.mSendEvLog('invitebtn_click', 'teaminvpage', '0')
+        }
         toNativePage('com.star.mobile.video.account.LoginActivity')
       }
     },
@@ -596,7 +601,7 @@ export default {
                 }
               })
               this.loaded_m = true
-              this.$nextTick(()=>{
+              this.$nextTick(() => {
                 this.msgScroll()
               })
             }

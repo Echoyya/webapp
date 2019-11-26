@@ -140,6 +140,7 @@ export default {
         }
         window.location.href = `/activity/team/awards.html?activity=${this.activity_id}&teamno=${this.teamNo}`
       } else {
+        this.mSendEvLog('myprize_click', '', '0')
         toNativePage('com.star.mobile.video.account.LoginActivity')
       }
     }
