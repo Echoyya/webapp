@@ -358,9 +358,6 @@ export default {
           this.team = data.data.team_member_dtos
           this.teamNum = teamno
           this.mSendEvLog('homepage_show', 'continue', '1')
-          this.$nextTick(() => {
-            this.msgScroll()
-          })
           if (this.team.length >= 3) {
             this.canLottery = true
             this.mSendEvLog('teamsucc_show', '', '1')
@@ -429,9 +426,6 @@ export default {
           logo: this.$user.head || 'https://cdn.startimestv.com/head/h_d.png'
         }
       ]
-      this.$nextTick(() => {
-        this.msgScroll()
-      })
     },
     checkMyTeam(failback) {
       searchMyTeam.call(this, data => {
@@ -439,9 +433,6 @@ export default {
           this.team = data.data.team_member_dtos
           this.teamNum = data.data.team_no
           this.mSendEvLog('homepage_show', 'continue', '1')
-          this.$nextTick(() => {
-            this.msgScroll()
-          })
           if (this.team.length >= 3 && data.data.allow_lottery) {
             this.mSendEvLog('teamsucc_show', '', '1')
             this.$refs.malert.show(this.$t('vote.team.form_succ'), () => {
