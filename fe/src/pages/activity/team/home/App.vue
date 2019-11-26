@@ -605,8 +605,8 @@ export default {
         })
     },
     msgScroll() {
-      this.tmsg = null
-      this.tscroll = null
+      clearInterval(this.tmsg)
+      clearInterval(this.tscroll)
       this.tmsg = setInterval(() => {
         if (this.$serverTime > this.activityEnd) clearInterval(this.tmsg)
         this.getMsgList()
