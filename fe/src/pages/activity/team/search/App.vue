@@ -2,19 +2,16 @@
   <div class="wrapper">
     <mBanner />
     <div class="search-body">
-      <div class="search">
-        <input v-model="teamNum" :class="{'full':!showBtn}" type="number" />
-        <div
-          v-show="showBtn"
-          class="btn"
-          :class="{'can-submit':teamNum}"
-          @click="submit"
-        >{{$t('vote.team.search')}}</div>
+      <div class="search clearfix">
+        <input v-model="teamNum" :class="{'full':!showBtn}" type="number" :placeholder="$t('vote.team.enterID')" />
+        <div v-show="showBtn" class="btn" :class="{'can-submit':teamNum}" @click="submit">{{$t('vote.team.search')}}</div>
       </div>
       <div v-show="mumberList.length>0" class="team clearfix">
         <div v-for="(item,index) in mumberList" :key="index" class="mumber">
-          <img v-if="item.logo" :src="item.logo" />
-          <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+          <div>
+            <img v-if="item.logo" :src="item.logo" />
+            <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+          </div>
           <p v-show="item.nick_name">{{item.nick_name}}</p>
         </div>
         <div v-for="(add) in 3-mumberList.length" :key="add+3" class="mumber">
@@ -37,7 +34,7 @@
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
 import { searchTeam, joinTeam, createTeam } from '@/pages/activity/team/func'
-import { toNativePage } from '@/functions/app'
+import { toNativePage, getQuery } from '@/functions/app'
 import malert from '@/pages/activity/team/malert'
 export default {
   components: {
@@ -46,24 +43,22 @@ export default {
   },
   data() {
     return {
+      activity_id: getQuery('activity') || 1,
       appType: this.$appType,
       teamNum: '',
       mumberList: [],
       showBtn: true
     }
   },
-  computed: {
-    platform() {
-      if (this.appType == 1) {
-        return 'Android'
-      } else if (this.appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
-    }
-  },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
     submit() {
       const teamno = ('' + this.teamNum).trim()
       if (teamno) {
@@ -74,10 +69,16 @@ export default {
         }
         searchTeam.call(this, teamno, data => {
           if (data && (data.code == 1 || data.code == 0)) {
-            // this.showBtn = false
             this.mumberList = data.data.team_member_dtos
+            if (data.code == 0) {
+              this.mSendEvLog('search_click', 'full', '1')
+            } else {
+              this.mSendEvLog('search_click', 'ok', '1')
+            }
           } else if (data.code == 2) {
             this.$refs.malert.show(this.$t('vote.team.search_nores'))
+            this.mumberList = []
+            this.mSendEvLog('search_click', 'noresult', '1')
           } else {
             this.$refs.malert.show(this.$t('vote.team.network_error'))
           }
@@ -85,17 +86,23 @@ export default {
       }
     },
     join() {
+      this.mSendEvLog('joinbtn_click', 'search', '1')
       if (this.$isLogin) {
         joinTeam.call(this, this.teamNum, data => {
           if (data.code == 0) {
-            window.location.href = '/activity/team/home.html'
+            window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
           } else if (data.code == 1) {
             this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'))
+          } else if (data.code == 2) {
+            this.$refs.malert.show(this.$t('vote.team.full_team'))
+          } else if (data.code == 4) {
+            this.$refs.malert.show(this.$t('vote.team.have_team'))
           } else {
             this.$refs.malert.show(data.message)
           }
         })
       } else {
+        localStorage.setItem('join_teamno', this.teamNum)
         toNativePage('com.star.mobile.video.account.LoginActivity')
       }
     },
@@ -103,7 +110,11 @@ export default {
       if (this.$isLogin) {
         createTeam.call(this, data => {
           if (data.code == 0) {
-            window.location.href = '/activity/team/home.html'
+            window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
+          } else if (data.code == 1) {
+            this.$refs.malert.show(this.$t('vote.team.have_team'))
+          } else if (data.code == 2) {
+            this.$refs.malert.show(this.$t('vote.team.share10_2'))
           } else {
             this.$refs.malert.show(data.message)
           }
@@ -132,6 +143,7 @@ export default {
     position: relative;
     padding-top: 2rem;
     input {
+      float: left;
       color: #ffffff;
       background: #1c003e;
       border: none;
@@ -141,23 +153,31 @@ export default {
       padding: 0 1rem;
       font-size: 1.1rem;
       box-sizing: border-box;
-      width: 63%;
+      width: 68%;
       height: 2.5rem;
       line-height: 2.25rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
       &.full {
         width: 100%;
         text-align: center;
       }
+      &::-webkit-input-placeholder {
+        letter-spacing: 0;
+        font-size: 0.9rem;
+      }
     }
     .btn {
+      float: left;
       color: #ffffff;
       box-sizing: border-box;
       font-weight: bold;
+      font-size: 0.8rem;
       text-align: center;
       background: rgba(153, 153, 153, 1);
       border-radius: 20px;
-      display: inline-block;
-      width: 35%;
+      width: 30%;
       margin-left: 2%;
       height: 2.5rem;
       line-height: 2rem;
@@ -174,24 +194,48 @@ export default {
     .mumber {
       width: 33%;
       float: left;
-      img {
+      > div {
         width: 65%;
+        position: relative;
+        margin: 0 auto;
         border: 2px solid #8600c8;
         border-radius: 100%;
-        display: block;
-        margin: 0 auto;
+        overflow: hidden;
+        img {
+          width: 100%;
+          height: 100%;
+          position: absolute;
+          left: 0;
+        }
+        &:before {
+          content: '';
+          display: inline-block;
+          padding-bottom: 100%;
+          width: 0;
+          vertical-align: middle;
+        }
+      }
+      span {
+        img {
+          width: 65%;
+          margin: 0 auto;
+          border: 2px solid #8600c8;
+          border-radius: 100%;
+          display: block;
+        }
       }
       p {
+        font-size: 0.75rem;
         background: rgba(134, 0, 200, 1);
         border-radius: 8px;
         display: inline-block;
-        padding: 0 0.5rem;
+        padding: 0 0.2rem;
         position: relative;
         top: -0.7rem;
         color: #b360dd;
         font-size: 0.9rem;
-        height: 1.1rem;
-        line-height: 1.1rem;
+        // height: 1.1rem;
+        line-height: 1rem;
       }
     }
   }

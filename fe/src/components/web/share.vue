@@ -29,21 +29,6 @@ export default {
       style: 'none'
     }
   },
-  mounted() {
-    window.fbAsyncInit = function() {
-      // eslint-disable-next-line no-undef
-      FB.init({
-        appId: '159785064477978',
-        status: true,
-        xfbml: true,
-        version: 'v3.2'
-      })
-    }
-    const script = document.createElement('script')
-    script.src = 'https://connect.facebook.net/en_US/sdk.js'
-    const firstScript = document.getElementsByTagName('script')[0]
-    firstScript.parentNode.insertBefore(script, firstScript)
-  },
   methods: {
     close() {
       this.style = 'none'
@@ -100,7 +85,7 @@ li {
   }
   .slide-bar-share {
     width: 100%;
-    height: 11rem;
+    height: 10rem;
     z-index: 1001;
     position: fixed;
     left: 0;
@@ -122,6 +107,11 @@ li {
         padding: 0 1rem;
         img {
           width: 65%;
+        }
+        > p {
+          padding: 0;
+          height: 1.2rem;
+          line-height: 1.2rem;
         }
       }
     }

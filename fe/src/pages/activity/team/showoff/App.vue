@@ -2,10 +2,12 @@
   <div class="wrapper">
     <mBanner />
     <div class="prize">
-      <div class="text">{{text[prize-1]}}</div>
-      <div class="vip">VIP {{award_day}} DAY</div>
+      <img v-if="award_day==1" src="@/assets/img/vote/TeamFission/vip1.png" alt />
+      <img v-if="award_day==7" src="@/assets/img/vote/TeamFission/vip7.png" alt />
+      <img v-if="award_day==30" src="@/assets/img/vote/TeamFission/vip30.png" alt />
+      <img v-if="award_day==0" src="@/assets/img/vote/TeamFission/thanks.png" alt />
     </div>
-    <div class="text2">{{$t('vote.team.invite_infotit')}}</div>
+    <div class="text2" v-html="$t('vote.team.invite_infotit')"></div>
     <div class="video">
       <div class="item">
         <div class="video-item">
@@ -43,20 +45,15 @@
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import { getQueryVariable, callApp, callMarket, downApk } from '@/functions/app'
+import { getQuery, callApp, callMarket, downApk } from '@/functions/app'
 export default {
   components: {
     mBanner
   },
   data() {
     return {
-      // 页面
-      prize: 1,
-      text: [this.$t('vote.team.congrats'), this.$t('vote.team.solucky'), this.$t('vote.team.jackpot')],
-      award_day: '',
-
-      activityStart: new Date('2019-11-05 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-18 04:00:00').getTime(),
+      activity_id: getQuery('activity') || 1,
+      award_day: ''
     }
   },
   computed: {
@@ -71,19 +68,16 @@ export default {
     }
   },
   mounted() {
-    this.award_day = getQueryVariable(location.search.replace('?', ''), 'prize')
-    if (this.award_day == 1) this.prize = 1
-    else if (this.award_day == 7) this.prize = 2
-    else if (this.award_day == 30) this.prize = 3
+    this.award_day = getQuery('prize')
   },
   methods: {
     create() {
-      window.location.href = '/activity/team/home.html'
+      window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
     },
     callOrDownApp() {
       callApp.call(
         this,
-        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home`,
+        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?activity=${this.activity_id}`,
         () => {
           callMarket.call(this, () => {
             this.$refs.confirm.show(
@@ -98,7 +92,7 @@ export default {
           })
         }
       )
-    },
+    }
   }
 }
 </script>
@@ -116,75 +110,36 @@ export default {
   position: static;
   background-image: linear-gradient(#7c003d, #6c0049);
   min-height: 100vh;
-  .box {
-    position: relative;
-    z-index: 2;
-    width: 95%;
-    margin: 0 auto;
-    font-style: italic;
-    .title {
-      background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
-      width: 80%;
-      height: 2rem;
-      color: #ffbc00;
-      border-top-right-radius: 1rem;
-      border-top-left-radius: 1rem;
-      padding-left: 0.8rem;
-      line-height: 2rem;
-    }
-    .contant {
-      padding: 0.5rem;
-      background-image: linear-gradient(rgba(165, 3, 80, 0.5), #600165);
-      border-radius: 1rem;
-      border-top-left-radius: 0;
-      color: #fff;
-    }
-  }
   .prize {
     width: 95%;
     margin: -18% auto 0;
-    background-color: rgba(50, 0, 25, 0.8);
-    padding: 1rem 0.5rem 1.5rem;
     border-radius: 1rem;
-    text-align: center;
+    overflow: hidden;
     position: relative;
-    .text {
-      color: #fff;
+    z-index: 2;
+    img {
       width: 100%;
-      margin: 0 auto;
-      height: 2rem;
-      line-height: 2rem;
-      margin-bottom: 1rem;
-    }
-    .vip {
-      color: #ffbc00;
-      margin: 0 auto;
-      width: 50%;
-      height: 3rem;
-      line-height: 2.9rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border: 0.05rem solid #ffbc00;
-      border-radius: 0.5rem;
-      background-color: #000;
     }
   }
   .text2 {
     width: 95%;
     position: relative;
-    height: 1.7rem;
+    height: 3.4rem;
     line-height: 1.7rem;
     font-size: 0.8rem;
     padding-left: 0.5rem;
-    color: #fff;
     border-top-right-radius: 1rem;
     border-top-left-radius: 1rem;
-    background-color: #ff3867;
-    font-style: italic;
+    background-color: #c20044;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
     margin: 0.5rem auto 0;
+    text-align: center;
+    color: #ffbc00;
+    font-weight: bold;
   }
   .video {
     width: 95%;

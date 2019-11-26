@@ -48,6 +48,7 @@ export const formatAmount = num => {
     return ''
   }
 }
+
 export const formatTime = val => {
   if (val < 3600) {
     const min = Math.floor(val / 60) < 10 ? '0' + Math.floor(val / 60) : Math.floor(val / 60)
@@ -61,22 +62,6 @@ export const formatTime = val => {
   }
 }
 
-export const animateCSS = function(element, animationName, callback) {
-  const node = element
-
-  function handleAnimationEnd() {
-    node.classList.remove('animated', animationName)
-    node.removeEventListener('animationend', handleAnimationEnd)
-    node.removeEventListener('webkitAnimationEnd', handleAnimationEnd)
-
-    if (typeof callback === 'function') callback()
-  }
-
-  node.addEventListener('animationend', handleAnimationEnd)
-  node.addEventListener('webkitAnimationEnd', handleAnimationEnd)
-  node.classList.add('animated', animationName)
-}
-
 export const getBrowser = function() {
   const ua = window.navigator.userAgent || ''
   const isAndroid = /android/i.test(ua)
@@ -84,7 +69,14 @@ export const getBrowser = function() {
   const systemInfo = /Android [\d.]*/i.exec(ua)
   const browserInfo = /Chrome\/[\d.]*/i.exec(ua)
   const browserVer = browserInfo ? parseFloat(browserInfo[0].split('/')[1]) : -1
-  const androidVer = systemInfo ? parseFloat(systemInfo[0].split('/')[1]) : -1
+  let androidVer = -1
+  if (systemInfo) {
+    if (systemInfo.includes('/')) {
+      androidVer = parseFloat(systemInfo[0].split('/')[1])
+    } else {
+      androidVer = parseFloat(systemInfo[0].split(' ')[1])
+    }
+  }
 
   return {
     isAndroid,

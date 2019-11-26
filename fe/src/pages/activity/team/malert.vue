@@ -6,7 +6,12 @@
       ref="alerts"
       class="dialog"
     >
-      <img class="close" @click="style='none'" src="@/assets/img/vote/TeamFission/ic_close.png" />
+      <img
+        v-if="closeback"
+        class="close"
+        @click="close"
+        src="@/assets/img/vote/TeamFission/ic_close.png"
+      />
       <div class="dialog-body">
         <div class="pop-default">
           <p>
@@ -30,6 +35,7 @@ export default {
       msg: '',
       style: 'none',
       callback: '',
+      closeback: '',
       offsetLeft: 0,
       offsetTop: 0,
       text: ''
@@ -40,7 +46,11 @@ export default {
       this.style = 'none'
       if (this.callback) this.callback()
     },
-    show(msg, callback, text) {
+    close() {
+      this.style = 'none'
+      if (this.closeback) this.closeback()
+    },
+    show(msg, callback, text, closeback) {
       const _this = this
       this.msg = msg
       this.text = text || 'OK'
@@ -56,6 +66,11 @@ export default {
         this.callback = callback
       } else {
         this.callback = ''
+      }
+      if (closeback) {
+        this.closeback = closeback
+      } else {
+        this.closeback = ''
       }
     }
   }
@@ -122,7 +137,7 @@ export default {
 }
 .link {
   text-align: center;
-  a {
+  div {
     color: #fabe00;
   }
 }

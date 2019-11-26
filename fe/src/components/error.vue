@@ -2,10 +2,20 @@
   <div class="error">
     <img src="@/assets/img/web/error500.png" alt />
     Sorry, there is a network error.
-    <br />Please
-    <a href>try again</a>.
+    <br />
+    <a href="javascript:void(0)" @click="login">Please login and try again</a>.
   </div>
 </template>
+<script>
+import { toNativePage } from '@/functions/app'
+export default {
+  methods: {
+    login() {
+      toNativePage('com.star.mobile.video.account.LoginActivity')
+    }
+  }
+}
+</script>
 <style lang="less" scoped>
 .error {
   width: 100%;

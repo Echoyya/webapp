@@ -1,13 +1,15 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div v-if="mumberList.length<3" class="text text1">{{$t('vote.team.invite_tip',[leader_name])}}</div>
+    <div v-if="mumberList.length<3" class="text text0" v-html="$t('vote.team.invite_tip',[leader_name])"></div>
     <div v-else class="text text1">{{$t('vote.team.full_team')}}</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
         <div v-for="(item,index) in mumberList" :key="index" class="mumber">
-          <img v-if="item.logo" :src="item.logo" />
-          <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+          <div>
+            <img v-if="item.logo" :src="item.logo" />
+            <img v-else src="https://cdn.startimestv.com/head/h_d.png" />
+          </div>
         </div>
         <div v-for="(add) in (3-mumberList.length)" :key="add+3" class="mumber">
           <span class="add">
@@ -17,25 +19,22 @@
       </div>
       <span>{{$t('vote.team.invite_won',[number])}}</span>
       <div v-show="mumberList.length>=3" class="team-btn">
-        <div @click="callOrDownApp">{{$t('vote.team.form_newbtn')}}</div>
+        <div @click="callOrDownApp('new')">{{$t('vote.team.form_newbtn')}}</div>
       </div>
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="team-btn">
-        <div @click="callOrDownApp">
+        <div @click="callOrDownApp('join')">
           <div>{{$t('vote.team.join_s')}}</div>
         </div>
       </div>
       <div v-show="mumberList.length>=1&&mumberList.length<3" class="copy">
         <div>Team ID:</div>
         <div id="teamno">{{teamNum}}</div>
-        <div id="copy" data-clipboard-target="#teamno">COPY</div>
+        <div id="copy" data-clipboard-target="#teamno">{{$t('vote.team.copy_text')}}</div>
       </div>
     </div>
-    <div
-      v-show="moreList1.length>0&&moreList2.length>0"
-      class="text text2"
-    >{{$t('vote.team.follow_team')}}</div>
-    <div v-show="moreList1.length>0&&moreList2.length>0" class="more-team">
-      <div class="team1 clearfix">
+    <div v-show="moreList1.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
+    <div v-show="moreList1.length>0" class="more-team">
+      <div v-show="moreList1.length>0" class="team1 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
         <div class="team-box">
           <div class="team clearfix">
@@ -49,12 +48,12 @@
               </span>
             </div>
           </div>
-          <div class="join" @click="callOrDownApp">
+          <div class="join" @click="callOrDownApp('first')">
             <div>{{$t('vote.team.join_s')}}</div>
           </div>
         </div>
       </div>
-      <div class="team2 clearfix">
+      <div v-show="moreList1.length>0&&moreList2.length>0" class="team2 clearfix">
         <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum2}}</div>
         <div class="team-box">
           <div class="team clearfix">
@@ -68,44 +67,18 @@
               </span>
             </div>
           </div>
-          <div class="join" @click="callOrDownApp">
+          <div class="join" @click="callOrDownApp('second')">
             <div>{{$t('vote.team.join_s')}}</div>
           </div>
         </div>
       </div>
     </div>
-    <div class="text text3">{{$t('vote.team.invite_infotit')}}</div>
+    <div class="text text3" v-html="$t('vote.team.invite_infotit')"></div>
     <div class="video">
-      <div class="item">
-        <div class="video-item">
-          <p>GAMES</p>
-          <img src="@/assets/img/vote/TeamFission/verline.png" alt />
-          <img src="@/assets/img/vote/TeamFission/verline2.png" alt />
-        </div>
-        <div class="video-item">
-          <p>SERIES</p>
-          <img src="@/assets/img/vote/TeamFission/verline.png" alt />
-          <img src="@/assets/img/vote/TeamFission/verline2.png" alt />
-        </div>
-        <div class="video-item">
-          <p>VARIETY</p>
-          <img src="@/assets/img/vote/TeamFission/verline2.png" alt />
-        </div>
-        <div class="video-item">
-          <p>KIDS</p>
-          <img src="@/assets/img/vote/TeamFission/verline.png" alt />
-        </div>
-        <div class="video-item">
-          <p>MOVIE</p>
-          <img src="@/assets/img/vote/TeamFission/verline.png" alt />
-        </div>
-        <div class="video-item">
-          <p>DVB</p>
-        </div>
-      </div>
-      <div class="img"></div>
+      <div class="item"></div>
     </div>
     <confirm-dialog ref="confirm" />
+    <toast-dialog ref="toast" />
     <malert ref="malert" />
   </div>
 </template>
@@ -113,21 +86,23 @@
 import mBanner from '@/pages/activity/team/banner.vue'
 import { formatAmount } from '@/functions/utils'
 import { searchTeam } from '@/pages/activity/team/func'
-import { getQueryVariable, callApp, callMarket, downApk } from '@/functions/app'
+import { getQuery, callApp, callMarket, downApk } from '@/functions/app'
 import confirmDialog from '@/components/confirm'
 import malert from '@/pages/activity/team/malert'
 import ClipboardJS from 'clipboard'
+import toastDialog from '@/components/toast'
 export default {
   components: {
     mBanner,
     confirmDialog,
+    toastDialog,
     malert
   },
   data() {
     return {
-      // 页面
-      activityStart: new Date('2019-11-05 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-18 04:00:00').getTime(),
+      activity_id: getQuery('activity') || 1,
+      activityStart: 0,
+      activityEnd: 0,
 
       mumberList: [],
       moreList1: [],
@@ -139,64 +114,103 @@ export default {
       leader_name: 'leader_name'
     }
   },
-  computed: {
-    platform() {
-      if (this.appType == 1) {
-        return 'Android'
-      } else if (this.appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
-    }
-  },
   created() {
-    const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
-    const max = 10 * 10000
-    const speed = Math.floor((max / during) * 100) / 100
-    const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
-    this.number = formatAmount(10 + Math.floor(period * speed))
+    this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
+      if (data.code == 0) {
+        this.activityStart = data.data.start_date
+        this.activityEnd = data.data.end_date
+        const during = Math.floor((this.activityEnd - this.activityStart) / 1000)
+        const max = 10 * 10000
+        const speed = Math.floor((max / during) * 100) / 100
+        const period = Math.floor((this.$serverTime - this.activityStart) / 1000)
+        this.number = formatAmount(10 + Math.floor(period * speed))
+      }
+    })
 
-    this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
+    this.teamNum = getQuery('teamno')
     if (this.teamNum) {
       this.search()
     }
   },
   mounted() {
     this.$nextTick(() => {
-      new ClipboardJS('#copy')
+      const clipboard = new ClipboardJS('#copy')
+      clipboard.on('success', e => {
+        this.$refs.toast.show(this.$t('vote.team.copied'))
+        e.clearSelection()
+      })
+
+      clipboard.on('error', () => {
+        this.$refs.toast.show('Copy is not supported on your browser, please try to make a long press to copy')
+      })
     })
   },
   methods: {
-    callOrDownApp() {
-      callApp.call(
-        this,
-        `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?teamno=${this.teamNum}`,
-        () => {
-          callMarket.call(this, () => {
-            this.$refs.confirm.show(
-              this.$t('vote.team.download_tip'),
-              () => {
-                downApk.call(this)
-              },
-              () => {},
-              'OK',
-              'NOT NOW'
-            )
-          })
-        }
-      )
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
+    callOrDownApp(value) {
+      let url = ''
+      let val = value
+      if (value == 'first') {
+        val = 'jointeamfull'
+        this.mSendEvLog('joinbtn_click', 'h5recommend', '1')
+        this.mSendEvLog('callApp', 'jointeamfull', '1')
+        url = '&teamno=' + this.teamNum1
+      } else if (value == 'second') {
+        val = 'jointeamfull'
+        this.mSendEvLog('joinbtn_click', 'h5recommend', '1')
+        this.mSendEvLog('callApp', 'jointeamfull', '1')
+        url = '&teamno=' + this.teamNum2
+      } else if (value == 'join') {
+        val = 'jointeam'
+        this.mSendEvLog('callApp', 'jointeam', '1')
+        url = '&teamno=' + this.teamNum
+      } else {
+        val = 'formnew'
+        this.mSendEvLog('callApp', 'formnew', '1')
+        this.mSendEvLog('teamoverpage_formnew', '', '1')
+      }
+
+      const loadURl = window.location.origin + '/activity/team/home.html?activity=' + this.activity_id + url
+      callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${encodeURIComponent(loadURl)}`, () => {
+        callMarket.call(this, () => {
+          this.mSendEvLog('downloadpopup_show', val, '1')
+          this.$refs.confirm.show(
+            this.$t('vote.team.download_tip'),
+            () => {
+              this.mSendEvLog('downloadpopup_clickok', val, '1')
+              downApk.call(this)
+            },
+            () => {
+              this.mSendEvLog('downloadpopup_clicknot', val, '1')
+            },
+            'OK',
+            'NOT NOW'
+          )
+        })
+      })
     },
     search() {
       searchTeam.call(this, this.teamNum, data => {
-        if (data && (data.code == 1 || data.code == 0)) {
+        console.log(data.code)
+        if (data.code == 1 || data.code == 0) {
           this.mumberList = data.data.team_member_dtos
           this.leader_name = this.mumberList[0].nick_name
+          if (data.code == 1) {
+            this.mSendEvLog('teaminvpage_show', '', '1')
+          }
           if (data.code == 0) {
-            this.teamNum1 = data.data.team_recommend_dtos[0].team_no
-            this.teamNum2 = data.data.team_recommend_dtos[1].team_no
-            this.moreList1 = data.data.team_recommend_dtos[0].team_member_dtos
-            this.moreList2 = data.data.team_recommend_dtos[1].team_member_dtos
+            this.mSendEvLog('teamfullpage_show', '', '1')
+            this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
+            this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
+            this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
+            this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
           }
         } else if (data.code == 2) {
           this.$refs.malert.show(this.$t('vote.team.search_nores'))
@@ -225,18 +239,24 @@ export default {
   .text {
     width: 95%;
     position: relative;
-    height: 1.7rem;
     line-height: 1.7rem;
     font-size: 0.8rem;
     padding-left: 0.5rem;
     color: #fff;
     border-top-right-radius: 1rem;
     border-top-left-radius: 1rem;
-    background-color: #ff3867;
-    font-style: italic;
+    background-color: #c20044;
+    color: #ffbc00;
+    font-weight: bold;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    &.text0 {
+      margin: -18% auto 0;
+      text-align: center;
+    }
     &.text1 {
       margin: -18% auto 0;
     }
@@ -245,6 +265,7 @@ export default {
     }
     &.text3 {
       margin: 0.5rem auto 0;
+      text-align: center;
     }
   }
   .invite {
@@ -262,12 +283,35 @@ export default {
       .mumber {
         width: 33%;
         float: left;
-        img {
+        span {
+          img {
+            width: 65%;
+            margin: 0 auto;
+            border: 2px solid #8600c8;
+            border-radius: 100%;
+            display: block;
+          }
+        }
+        > div {
           width: 65%;
+          position: relative;
+          margin: 0 auto;
           border: 2px solid #8600c8;
           border-radius: 100%;
-          display: block;
-          margin: 0 auto;
+          overflow: hidden;
+          img {
+            width: 100%;
+            height: 100%;
+            position: absolute;
+            left: 0;
+          }
+          &:before {
+            content: '';
+            display: inline-block;
+            padding-bottom: 100%;
+            width: 0;
+            vertical-align: middle;
+          }
         }
         p {
           background: rgba(134, 0, 200, 1);
@@ -346,6 +390,7 @@ export default {
         border: 1px solid #ffbc00;
         border-radius: 1rem;
         text-align: center;
+        font-size: 0.75rem;
       }
     }
   }
@@ -377,22 +422,10 @@ export default {
             float: left;
             img {
               width: 65%;
+              position: relative;
+              margin: 0 auto;
               border: 2px solid #8600c8;
               border-radius: 100%;
-              display: block;
-              margin: 0 auto;
-            }
-            p {
-              background: rgba(134, 0, 200, 1);
-              border-radius: 8px;
-              display: inline-block;
-              padding: 0 0.5rem;
-              position: relative;
-              top: -0.7rem;
-              color: #b360dd;
-              font-size: 0.9rem;
-              height: 1.1rem;
-              line-height: 1.1rem;
             }
           }
         }
@@ -404,7 +437,7 @@ export default {
           font-weight: bold;
           position: relative;
           right: -5%;
-          top: -1rem;
+          top: -1.5rem;
           > div {
             width: 80%;
             height: 2rem;
@@ -412,6 +445,7 @@ export default {
             border-radius: 1rem;
             border: 0.15rem solid #fa7a00;
             text-align: center;
+            background-color: #37006f;
           }
         }
       }
@@ -419,66 +453,25 @@ export default {
   }
   .video {
     width: 95%;
-    height: 8.5rem;
     margin: 0 auto;
     position: relative;
-    background-image: linear-gradient(rgba(234, 4, 4, 0.3), rgba(57, 3, 157, 0.5));
-    padding: 0 2.5%;
+    background-image: linear-gradient(#8e0044, #3c0003);
+    padding: 0 2.5% 0.5rem;
     border-bottom-left-radius: 1rem;
     border-bottom-right-radius: 1rem;
     .item {
       position: relative;
-      z-index: 2;
-      border-bottom-left-radius: 1rem;
-      border-bottom-right-radius: 1rem;
-      overflow: hidden;
-      .video-item {
-        position: relative;
+      border-bottom-left-radius: 0.5rem;
+      border-bottom-right-radius: 0.5rem;
+      background-image: url('~@/assets/img/vote/TeamFission/down-banner.png');
+      background-size: 100% 100%;
+      &:before {
+        content: '';
         display: inline-block;
-        width: 33.3%;
-        height: 4rem;
-        line-height: 4rem;
-        text-align: center;
-        background-color: rgba(0, 0, 0, 0.5);
-        p {
-          color: #fff;
-        }
-        img:nth-child(2) {
-          position: absolute;
-          width: 0.05rem;
-          height: 1.2rem;
-          top: 1.4rem;
-          right: 0;
-        }
-        img:nth-child(3) {
-          width: 1.2rem;
-          height: 0.05rem;
-          position: absolute;
-          left: 42%;
-          bottom: 0;
-        }
-        &:nth-child(3) {
-          img:nth-child(2) {
-            width: 1.2rem;
-            height: 0.05rem;
-            position: absolute;
-            left: 42%;
-            top: 3.95rem;
-            bottom: 0;
-          }
-        }
+        padding-bottom: 57%;
+        width: 0;
+        vertical-align: middle;
       }
-    }
-    .img {
-      width: 94%;
-      height: 8rem;
-      position: absolute;
-      left: 3%;
-      top: 0;
-      background-image: url('~@/assets/img/vote/TeamFission/bg-banner.png');
-      background-size: cover;
-      border-bottom-left-radius: 1rem;
-      border-bottom-right-radius: 1rem;
     }
   }
 }

@@ -3,28 +3,43 @@
     <mBanner />
     <countdown :teamNo="teamNum" :activityStart="activityStart" :activityEnd="activityEnd" />
     <div class="prize">
-      <div class="text">{{text[prize-1]}}</div>
-      <div class="vip">VIP {{award_day}} DAY</div>
+      <img v-if="award_day==1" src="@/assets/img/vote/TeamFission/vip1.png" alt />
+      <img v-if="award_day==7" src="@/assets/img/vote/TeamFission/vip7.png" alt />
+      <img v-if="award_day==30" src="@/assets/img/vote/TeamFission/vip30.png" alt />
+      <img v-if="award_day==0" src="@/assets/img/vote/TeamFission/thanks.png" alt />
     </div>
-    <div class="share-box">
+    <div class="share-box" v-show="show_share">
       <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
       <div class="text">{{$t('vote.team.show_lucky')}}</div>
+      <img src="@/assets/img/vote/TeamFission/ic_close.png" class="close" @click="show_share=false" />
       <img src="@/assets/img/vote/TeamFission/ic-facebook.png" @click="toFacebook" />
       <img src="@/assets/img/vote/TeamFission/ic_WhatsApp.png" @click="toWhatsApp" />
       <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
       <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
+      <div class="name">
+        <span>{{$t('vote.team.facebook')}}</span>
+        <span>{{$t('vote.team.whatsapp')}}</span>
+        <span>{{$t('vote.team.xender')}}</span>
+        <span>{{$t('vote.team.copy')}}</span>
+      </div>
+    </div>
+    <div class="share-btn" v-show="!show_share">
+      <div class="friends" @click="showShare">
+        <img src="@/assets/img/vote/TeamFission/ic_voice.png" />
+        <p>{{$t('vote.team.show_lucky')}}</p>
+      </div>
     </div>
     <div class="team-btn">
       <div @click="create">{{$t('vote.team.form_newbtn')}}</div>
     </div>
     <div class="tip">
-      <div class="text" v-html="$t('vote.team.tips',[award_day])"></div>
+      <div class="text" v-html="$t('vote.team.tips')"></div>
     </div>
   </div>
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, getQuery, shareInvite } from '@/functions/app'
 import countdown from '@/pages/activity/team/countdown'
 export default {
   components: {
@@ -33,77 +48,76 @@ export default {
   },
   data() {
     return {
-      // 页面
+      activity_id: getQuery('activity') || 1,
+      activityStart: 0,
+      activityEnd: 0,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.invite_con'),
-      prize: 1,
-      text: [this.$t('vote.team.congrats'), this.$t('vote.team.solucky'), this.$t('vote.team.jackpot')],
-      award_day: '',
+      shareWebUrl: '',
+      shareShowoffUrl: '',
 
-      activityStart: new Date('2019-11-05 00:00:00').getTime(),
-      activityEnd: new Date('2019-11-18 04:00:00').getTime(),
-      //team
       teamNum: '',
-      team_activity_id: 1
+      show_share: false,
+      award_day: ''
     }
   },
-  computed: {
-    platform() {
-      if (this.appType == 1) {
-        return 'Android'
-      } else if (this.appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
+  created() {
+    this.teamNum = getQuery('teamno')
+    this.award_day = getQuery('prize')
+    if (this.award_day) window.getChannelId && window.getChannelId.updateOttInfo && window.getChannelId.updateOttInfo()
+    this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+    this.shareShowoffUrl = `${window.location.origin}/activity/team/showoff.html?activity=${this.activity_id}&prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+    this.$axios.get(`/voting/team-building/v1/activity-info?team_activity_id=${this.activity_id}`).then(({ data }) => {
+      if (data.code == 0) {
+        this.activityStart = data.data.start_date
+        this.activityEnd = data.data.end_date
       }
-    }
-  },
-  mounted() {
-    this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
-    this.award_day = getQueryVariable(location.search.replace('?', ''), 'prize')
-    if (this.award_day == 1) this.prize = 1
-    else if (this.award_day == 7) this.prize = 2
-    else if (this.award_day == 30) this.prize = 3
+    })
   },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
     create() {
-      window.location.href = '/activity/team/home.html'
+      window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
+    },
+    showShare() {
+      if (this.$appVersion) {
+        // 5.20版本
+        this.show_share = true
+      } else {
+        shareInvite(this.shareShowoffUrl, this.shareTitle, this.shareText, this.imgUrl)
+      }
     },
     toFacebook() {
+      this.mSendEvLog('sharelucky_click', 'Facebook', '1')
       if (this.$appType == 1) {
-        shareByFacebook(
-          `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        shareByFacebook(this.shareShowoffUrl, `【${this.shareTitle}】 ${this.shareText} `)
       }
     },
     toWhatsApp() {
+      this.mSendEvLog('sharelucky_click', 'WhatsApp', '1')
       if (this.$appType == 1) {
-        shareByWhatsApp(
-          `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        shareByWhatsApp(this.shareShowoffUrl, this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     toXender() {
+      this.mSendEvLog('sharelucky_click', 'Xender', '1')
       if (this.$appType == 1) {
-        shareByXender()
+        shareByXender(this.teamNum,'awards')
       }
     },
     toCopylink() {
+      this.mSendEvLog('sharelucky_click', 'copylink', '1')
       if (this.$appType == 1) {
-        shareByCopyLink(
-          `${window.location.origin}/activity/team/showoff.html?prize=${this.award_day}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
-        )
+        shareByCopyLink(this.shareShowoffUrl)
       }
-    },
-    showAwards() {
-      console.log('my awards')
     }
   }
 }
@@ -126,7 +140,6 @@ export default {
     z-index: 2;
     width: 95%;
     margin: 0 auto;
-    font-style: italic;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80, 0.5));
       width: 80%;
@@ -148,29 +161,42 @@ export default {
   .prize {
     width: 95%;
     margin: 0 auto;
-    background-color: rgba(0, 0, 0, 0.5);
-    padding: 1rem 0.5rem 1.5rem;
     border-radius: 1rem;
-    text-align: center;
-    .text {
-      color: #fff;
+    overflow: hidden;
+    img {
       width: 100%;
-      margin: 0 auto;
-      height: 2rem;
-      line-height: 2rem;
-      margin-bottom: 1rem;
     }
-    .vip {
-      color: #ffbc00;
+  }
+  .share-btn {
+    .friends {
+      width: 90%;
+      height: 4rem;
+      position: relative;
+      background: #600049;
+      border-radius: 2rem;
+      color: #ffffff;
       margin: 0 auto;
-      width: 50%;
-      height: 3rem;
-      line-height: 2.9rem;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border: 0.05rem solid #ffbc00;
-      border-radius: 0.5rem;
-      background-color: #000;
+      padding-top: 0.4rem;
+      img {
+        height: 1.8rem;
+        position: absolute;
+        left: 7%;
+        top: 1rem;
+      }
+      p {
+        width: 78%;
+        height: 3rem;
+        line-height: 3rem;
+        text-align: left;
+        padding-left: 17%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        background-color: #94013f;
+        border-radius: 2rem;
+        border: 0.1rem solid #ff9800;
+        margin: 0 auto;
+      }
     }
   }
   .share-box {
@@ -178,9 +204,15 @@ export default {
     margin: 0.5rem auto;
     padding: 0.5rem;
     background-color: #a1014b;
-    // height: 10rem;
     border-radius: 1rem;
     position: relative;
+    .close {
+      width: 2rem;
+      height: 2rem;
+      position: absolute;
+      right: 0.5rem;
+      top: 0.5rem;
+    }
     > img {
       width: 25%;
       &:nth-child(1) {
@@ -191,7 +223,7 @@ export default {
         top: 0.5rem;
       }
     }
-    > div {
+    .text {
       width: 100%;
       height: 2rem;
       line-height: 2rem;
@@ -199,6 +231,17 @@ export default {
       color: #fff;
       padding-left: 15%;
       margin-bottom: 1rem;
+    }
+    .name {
+      span {
+        display: inline-block;
+        width: 25%;
+        vertical-align: top;
+        text-align: center;
+        line-height: 1rem;
+        font-size: 0.75rem;
+        color: #fff;
+      }
     }
   }
   .team-btn {
@@ -217,6 +260,9 @@ export default {
       height: 2.75rem;
       line-height: 2.25rem;
       margin-top: 0.5rem;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
   .tip {

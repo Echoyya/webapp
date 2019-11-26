@@ -3,7 +3,8 @@
     <mBanner />
     <div v-if="have_no_result" class="no-result">{{$t('vote.team.no_awards')}}</div>
     <div v-if="!have_no_result" v-show="!show_share" class="invite">
-      <div class="title">{{$t('vote.team.my_won',[allDays])}}</div>
+      <div v-if="allDays>1" class="title">{{$t('vote.team.my_won',[allDays])}}</div>
+      <div v-if="allDays<=1" class="title">{{$t('vote.team.my_won_one',[allDays])}}</div>
       <div class="contant">
         <div v-show="teams.length>0" v-for="(item,index) in teams" :key="index" class="items">
           <div>
@@ -15,28 +16,24 @@
           <img src="@/assets/img/vote/TeamFission/ic_forward2.png" />
           <div>
             <div>
-              <img
-                v-if="item.team_member_dtos[1]&&item.team_member_dtos[1].logo"
-                :src="item.team_member_dtos[1].logo"
-              />
+              <img v-if="item.team_member_dtos[1]&&item.team_member_dtos[1].logo" :src="item.team_member_dtos[1].logo" />
               <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
           <div>
             <div>
-              <img
-                v-if="item.team_member_dtos[2]&&item.team_member_dtos[2].logo"
-                :src="item.team_member_dtos[2].logo"
-              />
+              <img v-if="item.team_member_dtos[2]&&item.team_member_dtos[2].logo" :src="item.team_member_dtos[2].logo" />
               <img v-else src="http://cdn.startimestv.com/head/h_d.png" />
             </div>
           </div>
-          <div class="vip">VIP {{item.my_award_day}} DAYS</div>
+          <div v-if="item.my_award_day==0" class="vip">THANKS</div>
+          <div v-if="item.my_award_day==1" class="vip">VIP {{item.my_award_day}} DAY</div>
+          <div v-if="item.my_award_day!=0&&item.my_award_day!=1" class="vip">VIP {{item.my_award_day}} DAYS</div>
         </div>
       </div>
-      <div class="friends" @click="show_share=true">
+      <div class="friends" @click="showShare">
         <img src="@/assets/img/vote/TeamFission/ic_share.png" />
-        <p>{{$t('vote.team.invite_btn',[allDays])}}</p>
+        <p>{{$t('vote.team.share_btn')}}</p>
       </div>
     </div>
     <div v-if="!have_no_result" v-show="show_share" class="share-box">
@@ -46,91 +43,144 @@
       <img src="@/assets/img/vote/TeamFission/ic_xender.png" @click="toXender" />
       <img src="@/assets/img/vote/TeamFission/ic_download.png" @click="toDownload" />
       <img src="@/assets/img/vote/TeamFission/ic-copylink.png" @click="toCopylink" />
+      <div>
+        <span>{{$t('vote.team.facebook')}}</span>
+        <span>{{$t('vote.team.whatsapp')}}</span>
+        <span>{{$t('vote.team.xender')}}</span>
+        <span>{{$t('vote.team.download')}}</span>
+        <span>{{$t('vote.team.copy')}}</span>
+      </div>
     </div>
+    <malert ref="malert" />
   </div>
 </template>
 <script>
 import mBanner from '@/pages/activity/team/banner.vue'
-import env from '@/functions/config'
-import { shareByFacebook, shareByWhatsApp, shareByXender, shareByDownload, shareByCopyLink, getQueryVariable } from '@/functions/app'
+import malert from '@/pages/activity/team/malert'
+import { shareByFacebook, shareByWhatsApp, shareByXender, shareByCopyLink, shareInvite, getQuery } from '@/functions/app'
+import { searchTeam } from '@/pages/activity/team/func'
 export default {
   components: {
-    mBanner
+    mBanner,
+    malert
   },
   data() {
     return {
-      // 页面
-      show_share: false,
+      activity_id: getQuery('activity') || 1,
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.invite_con'),
+      shareWebUrl: '',
+      shareLandUrl: '',
 
-      //team
       teams: [],
-      team_activity_id: 1,
-      allDays: 0,
       teamNum: '',
-      have_no_result: false
-    }
-  },
-  computed: {
-    platform() {
-      if (this.$appType == 1) {
-        return 'Android'
-      } else if (this.$appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
+      allDays: 0,
+      show_share: false,
+      have_no_result: false,
+      hasFinish: false
     }
   },
   created() {
-    this.teamNum = getQueryVariable(location.search.replace('?', ''), 'teamno')
-    this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.team_activity_id}`).then(({ data }) => {
-      if (data.data && data.data.all_award_days) {
-        this.teams = data.data.my_award_team_dtos ? data.data.my_award_team_dtos : []
-        this.allDays = data.data.all_award_days ? data.data.all_award_days : 0
+    this.teamNum = getQuery('teamno')
+    this.shareLandUrl = `${window.location.origin}/activity/team/land.html?activity=${this.activity_id}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+    this.shareWebUrl = `${window.location.origin}/activity/team/web.html?activity=${this.activity_id}&teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.$platform}`
+    this.$axios.get(`/voting/team-award/v1/user/awards?team_activity_id=${this.activity_id}`).then(({ data }) => {
+      if (data.code == 0) {
+        this.teams = data.data.my_award_team_dtos
+        this.allDays = data.data.all_award_days
+        if(this.teams.length>=10) {
+          this.hasFinish = true
+        }
       } else {
         this.have_no_result = true
       }
     })
   },
   methods: {
+    mSendEvLog(action, label, value) {
+      this.$sendEvLog({
+        category: 'referral_team_' + this.$platform,
+        action: action,
+        label: label,
+        value: value
+      })
+    },
+    showShare() {
+      if (this.$appVersion) {
+        this.show_share = true
+        this.mSendEvLog('invitebtn_click', 'myprize', '1')
+        this.mSendEvLog('myprize_inv_click', '', '1')
+      } else {
+        if (this.hasFinish) {
+          shareInvite(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
+        } else {
+          shareInvite(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
+        }
+      }
+    },
     toFacebook() {
+      this.mSendEvLog('inviteway_click', 'Facebook', '1')
       if (this.$appType == 1) {
-        shareByFacebook(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        if (this.hasFinish) {
+          shareByFacebook(this.shareLandUrl, `【${this.shareTitle}】 ${this.shareText} `)
+        } else {
+          shareByFacebook(this.shareWebUrl, `【${this.shareTitle}】 ${this.shareText} `)
+        }
       }
     },
     toWhatsApp() {
+      this.mSendEvLog('inviteway_click', 'WhatsApp', '1')
       if (this.$appType == 1) {
-        shareByWhatsApp(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`,
-          this.shareTitle,
-          this.shareText,
-          this.imgUrl
-        )
+        if (this.hasFinish) {
+          shareByWhatsApp(this.shareLandUrl, this.shareTitle, this.shareText, this.imgUrl)
+        } else {
+          shareByWhatsApp(this.shareWebUrl, this.shareTitle, this.shareText, this.imgUrl)
+        }
       }
     },
     toXender() {
+      if (this.hasFinish) {
+        this.mSendEvLog('inviteway_click', 'Xender', '0')
+        this.$refs.malert.show(this.$t('vote.team.share10_2'))
+        return
+      }
+      this.mSendEvLog('inviteway_click', 'Xender', '1')
       if (this.$appType == 1) {
-        shareByXender()
+        if (this.teamNum) {
+          shareByXender(this.teamNum,'mygift')
+        }
       }
     },
     toDownload() {
-      if (this.$appType == 1) {
-        shareByDownload(`${env.apiUrl}/voting/team-building/v1/download?team_activity_id=${this.team_activity_id}&team_no=${this.teamNum}`)
+      if (this.hasFinish) {
+        this.mSendEvLog('inviteway_click', 'download', '0')
+        this.$refs.malert.show(this.$t('vote.team.share10_2'))
+        return
+      }
+      this.mSendEvLog('inviteway_click', 'download', '1')
+      if (window.getChannelId && window.getChannelId.shareDownload) {
+        searchTeam.call(this, this.teamNum, data => {
+          const team = data.data.team_member_dtos
+          if (team && team.length > 0) {
+            const teamLeader = team[0].nick_name || team[0].user_id
+            const logoArr = []
+            team.forEach(item => {
+              logoArr.push(item.logo || 'https://cdn.startimestv.com/head/h_d.png')
+            })
+            window.getChannelId.shareDownload(teamLeader, this.teamNum, logoArr.join(','))
+          }
+        })
       }
     },
     toCopylink() {
+      this.mSendEvLog('inviteway_click', 'copylink', '1')
       if (this.$appType == 1) {
-        shareByCopyLink(
-          `${window.location.origin}/activity/team/web.html?teamno=${this.teamNum}&utm_source=VOTE&utm_medium=team&utm_campaign=${this.platform}`
-        )
+        if (this.hasFinish) {
+          shareByCopyLink(this.shareLandUrl)
+        } else {
+          shareByCopyLink(this.shareWebUrl)
+        }
       }
     }
   }
@@ -164,7 +214,6 @@ export default {
     z-index: 2;
     width: 95%;
     margin: -18% auto 0;
-    font-style: italic;
     margin-bottom: 0.5rem;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80));
@@ -215,7 +264,6 @@ export default {
           }
           span {
             color: #9f00ee;
-            font-style: normal;
             position: absolute;
             left: 6%;
           }
@@ -241,7 +289,6 @@ export default {
           width: 5.5rem;
           height: 2.2rem;
           line-height: 2.1rem;
-          font-style: normal;
           font-size: 0.75rem;
           color: #ffbc00;
           text-align: center;
@@ -265,13 +312,17 @@ export default {
       img {
         height: 1.2rem;
         position: absolute;
-        left: 15%;
+        left: 7%;
         top: 0.7rem;
       }
       p {
+        width: 80%;
         text-align: center;
-        font-style: normal;
         font-weight: bold;
+        margin-left: 17%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
       }
     }
   }
@@ -292,6 +343,17 @@ export default {
         margin-bottom: 1rem;
         width: 7%;
         background-image: url('~@/assets/img/vote/TeamFission/ic_download.png');
+      }
+    }
+    > div {
+      span {
+        display: inline-block;
+        width: 20%;
+        vertical-align: top;
+        text-align: center;
+        line-height: 1rem;
+        font-size: 0.75rem;
+        color: #fff;
       }
     }
   }

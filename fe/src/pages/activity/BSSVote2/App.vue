@@ -176,7 +176,7 @@
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
     </div>
     <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
-    <mShare v-if="$appType=0" ref="share" />
+    <mShare v-if="$appType==0" ref="share" />
     <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
     <toast-dialog ref="toast" />
@@ -188,7 +188,7 @@ import alertDialog from '@/components/alert'
 import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
-import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQueryVariable } from '@/functions/app'
+import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQuery } from '@/functions/app'
 import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
 import env from '@/functions/config'
 export default {
@@ -334,8 +334,8 @@ export default {
     }
   },
   created() {
-    this.vote_id = getQueryVariable(location.search.replace('?', ''), 'voteid') || 64
-    this.barrage_id = getQueryVariable(location.search.replace('?', ''), 'barrageid') || 17
+    this.vote_id = getQuery('voteid') || 64
+    this.barrage_id = getQuery('barrageid') || 17
   },
   mounted() {
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
@@ -356,7 +356,11 @@ export default {
       if (time < this.minTime) time = this.minTime
       this.barrageList.push({
         id: ++this.currentId,
-        avatar: v.avatar ? (v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar) : 'http://cdn.startimestv.com/banner/DD_user_icon.png',
+        avatar: v.avatar
+          ? v.avatar == 'http://cdn.startimestv.com/head/h_d.png'
+            ? 'http://cdn.startimestv.com/banner/DD_user_icon.png'
+            : v.avatar
+          : 'http://cdn.startimestv.com/banner/DD_user_icon.png',
         msg: decodeURI(v.content),
         time: time,
         type: MESSAGE_TYPE.NORMAL
@@ -876,8 +880,8 @@ export default {
       if (this.appType == 1) {
         const url =
           window.location.href.indexOf('?') >= 0
-            ? window.location.href + (this.isLogin ? ('&pin=' + this.$user.id) : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
-            : window.location.href + (this.isLogin ? ('?pin=' + this.$user.id) : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+            ? window.location.href + (this.isLogin ? '&pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+            : window.location.href + (this.isLogin ? '?pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
         shareInvite(url, this.shareTitle, this.shareText, this.imgUrl)
       } else if (this.appType == 0) {
         this.$refs.share.show()
