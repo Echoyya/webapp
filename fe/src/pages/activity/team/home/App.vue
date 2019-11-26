@@ -176,7 +176,7 @@ export default {
       activity_id: getQuery('activity') || 1,
       activityStart: 0,
       activityEnd: 0,
-      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
+      imgUrl: 'http://cdn.startimestv.com/banner/team-banner.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.shareText'),
 
