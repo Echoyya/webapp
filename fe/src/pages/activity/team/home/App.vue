@@ -500,7 +500,7 @@ export default {
               team.forEach(item => {
                 logoArr.push(item.logo || 'https://cdn.startimestv.com/head/h_d.png')
               })
-              window.getChannelId.shareDownload(teamLeader, this.teamNum, logoArr.join(','))
+              window.getChannelId.shareDownload(teamLeader, this.teamNum, logoArr.join(','), 'invite')
             }
           })
         }
