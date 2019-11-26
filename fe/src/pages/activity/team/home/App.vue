@@ -274,6 +274,7 @@ export default {
             this.mSendEvLog('teammatch_show', 'new', '1')
             this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
               this.mSendEvLog('teammatch_click', 'ok', '1')
+              this.mSendEvLog('joinbtn_click', 'teammatch', '1')
               if (this.$isLogin) {
                 this.$refs.findTeamAlert.hide()
                 this.toJoin(teamno)
