@@ -264,12 +264,17 @@ export default {
     if ((teamno && !isNaN(teamno) && window.history.length <= 1) || searchFullTeamStatus) {
       sessionStorage.removeItem('search_full_team')
       searchTeam.call(this, teamno, data => {
-        if (data.code >= 2) {
-          this.$refs.malert.show(data.message)
-          return
-        }
-        if (data.data.newcomer) {
-          if (data.code > 0) {
+        if (data.code == 0) {
+          // 满队
+          this.isFull = true
+          this.mumberList = data.data.team_member_dtos
+          this.leader_name = this.mumberList[0].nick_name
+          this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
+          this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
+          this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
+          this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
+        } else if (data.code == 1) {
+          if (data.data.newcomer) {
             this.mSendEvLog('teammatch_show', 'new', '1')
             this.$refs.findTeamAlert.show(this.$t('vote.team.joinpop_newuser'), () => {
               this.mSendEvLog('teammatch_click', 'ok', '1')
@@ -283,24 +288,17 @@ export default {
             })
             this.fakeTeam()
           } else {
-            // 当前搜索的队伍是满队
-            this.isFull = true
-            this.mumberList = data.data.team_member_dtos
-            this.leader_name = this.mumberList[0].nick_name
-            this.teamNum1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_no : 0
-            this.teamNum2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_no : 0
-            this.moreList1 = data.data.team_recommend_dtos[0] ? data.data.team_recommend_dtos[0].team_member_dtos : []
-            this.moreList2 = data.data.team_recommend_dtos[1] ? data.data.team_recommend_dtos[1].team_member_dtos : []
+            this.mSendEvLog('teammatch_show', 'old', '1')
+            this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
+              if (this.$isLogin) {
+                this.toCreate()
+              } else {
+                this.fakeTeam()
+              }
+            })
           }
         } else {
-          this.mSendEvLog('teammatch_show', 'old', '1')
-          this.$refs.malert.show(this.$t('vote.team.joinpop_olduser'), () => {
-            if (this.$isLogin) {
-              this.toCreate()
-            } else {
-              this.fakeTeam()
-            }
-          })
+          this.$refs.malert.show(data.message)
         }
       })
     } else {
@@ -479,7 +477,7 @@ export default {
       this.mSendEvLog('inviteway_click', 'Xender', '1')
       if (this.$appType == 1) {
         if (this.teamNum) {
-          shareByXender(this.teamNum,'invite')
+          shareByXender(this.teamNum, 'invite')
         }
       }
     },
