@@ -45,8 +45,9 @@ export const createTeam = function(callback) {
 }
 
 export const searchMyTeam = function(callback) {
+  const time = new Date().getTime()
   this.$axios
-    .get(`/voting/team-building/v1/participating-team?team_activity_id=${activity_id}`)
+    .get(`/voting/team-building/v1/participating-team?team_activity_id=${activity_id}&time=${time}`)
     .then(({ data }) => {
       callback && callback(data)
     })
