@@ -488,7 +488,7 @@ export default {
       this.mSendEvLog('inviteway_click', 'Xender', '1')
       if (this.$appType == 1) {
         if (this.teamNum) {
-          shareByXender(this.teamNum,'1')
+          shareByXender(this.teamNum,'invite')
         }
       }
     },

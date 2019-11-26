@@ -110,7 +110,7 @@ export default {
     toXender() {
       this.mSendEvLog('sharelucky_click', 'Xender', '1')
       if (this.$appType == 1) {
-        shareByXender(this.teamNum,'2')
+        shareByXender(this.teamNum,'awards')
       }
     },
     toCopylink() {
