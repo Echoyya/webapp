@@ -88,7 +88,6 @@ export default {
       window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
     },
     showShare() {
-      this.show_share = true
       if (this.$appVersion) {
         // 5.20版本
         this.show_share = true
