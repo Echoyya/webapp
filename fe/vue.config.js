@@ -23,7 +23,14 @@ entries.forEach(file => {
   pages[pageName] = {
     entry: file,
     template: pageHtml,
-    filename: `${pageName}.html`
+    filename: `${pageName}.html`,
+    minify: {
+      removeAttributeQuotes: false,
+      collapseInlineTagWhitespace: true,
+      collapseWhitespace: true,
+      minifyCSS: true,
+      removeComments: true
+    }
   }
 })
 
