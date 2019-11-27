@@ -106,7 +106,7 @@
         </div>
       </div>
       <div v-show="moreList1.length>0" class="text text2">{{$t('vote.team.follow_team')}}</div>
-      <div class="more-team">
+      <div v-show="moreList1.length>0" class="more-team">
         <div v-show="moreList1.length>0" class="team1 clearfix">
           <div class="team-id">{{$t('vote.team.team_id')}}: {{teamNum1}}</div>
           <div class="team-box">
