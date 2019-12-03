@@ -28,3 +28,6 @@ ingress:
   - name: webapp.startimestv.com
     path:
       - /
+  - name: webapp-cdn-source.startimes.me
+    path:
+      - /
