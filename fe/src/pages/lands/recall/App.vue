@@ -61,6 +61,7 @@ export default {
   background-size: 100% 100%;
   width: 100%;
   height: 100vh;
+  min-height: 660px;
   .contain {
     position: absolute;
     bottom: 1.5rem;
