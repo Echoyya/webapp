@@ -175,7 +175,7 @@ export default {
   }
 }
 .remaining {
-  margin: -18% auto 0.5rem;
+  margin: -14% auto 0.5rem;
   > img {
     position: absolute;
     width: 20%;

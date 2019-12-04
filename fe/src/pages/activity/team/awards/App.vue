@@ -213,7 +213,7 @@ export default {
     position: relative;
     z-index: 2;
     width: 95%;
-    margin: -18% auto 0;
+    margin: -14% auto 0;
     margin-bottom: 0.5rem;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80));
@@ -328,7 +328,7 @@ export default {
   }
   .share-box {
     width: 95%;
-    margin: -18% auto 0;
+    margin: -14% auto 0;
     padding: 0.5rem;
     background-color: #a1014b;
     height: 10rem;
