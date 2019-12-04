@@ -554,7 +554,7 @@ export default {
                 this.barrageList = []
                 this.getCommentList()
               }
-            }, 1000)
+            }, 1500)
           } else {
             this.commentList = []
             this.$refs.alert.show('Get comment list error! ' + res.data.message)
@@ -2122,7 +2122,7 @@ export default {
         position: relative;
         overflow: hidden;
         .comment-box {
-          width: 110%;
+          width: 135%;
           height: 212px;
           position: relative;
           left: 0;
