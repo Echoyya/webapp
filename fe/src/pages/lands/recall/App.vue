@@ -31,6 +31,7 @@ export default {
         utmParm.map
       )
     )
+    this.down()
   },
   methods: {
     down() {
