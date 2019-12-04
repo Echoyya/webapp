@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       activity_id: getQuery('activity') || 1,
-      imgUrl: 'http://cdn.startimestv.com/banner/team-banner.png',
+      imgUrl: 'http://cdn.startimestv.com/banner/team-banner2.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.invite_con'),
       shareWebUrl: '',
