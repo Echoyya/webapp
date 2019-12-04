@@ -1,6 +1,6 @@
 <template>
   <div class="wrapper">
-    <img src="@/assets/img/vote/TeamFission/landing-banner.png" class="banner" />
+    <img src="@/assets/img/vote/TeamFission/bg-banner.png" class="banner" />
     <div class="download">
       <div v-if="appType==2" class="download-appstore-wrapper" @click="down()">
         <img v-if="lang=='fr'" src="@/assets/img/landpage/ios_appstore_bg_fy.png" />
