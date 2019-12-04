@@ -67,7 +67,7 @@ export default {
   data() {
     return {
       activity_id: getQuery('activity') || 1,
-      imgUrl: 'http://cdn.startimestv.com/banner/team-banner.png',
+      imgUrl: 'http://cdn.startimestv.com/banner/team-banner2.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.invite_con'),
       shareWebUrl: '',
@@ -213,7 +213,7 @@ export default {
     position: relative;
     z-index: 2;
     width: 95%;
-    margin: -18% auto 0;
+    margin: -14% auto 0;
     margin-bottom: 0.5rem;
     .title {
       background-image: linear-gradient(rgba(189, 4, 78, 0.5), rgba(165, 3, 80));
@@ -328,7 +328,7 @@ export default {
   }
   .share-box {
     width: 95%;
-    margin: -18% auto 0;
+    margin: -14% auto 0;
     padding: 0.5rem;
     background-color: #a1014b;
     height: 10rem;

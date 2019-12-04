@@ -254,11 +254,11 @@ export default {
     -webkit-line-clamp: 3;
     -webkit-box-orient: vertical;
     &.text0 {
-      margin: -18% auto 0;
+      margin: -14% auto 0;
       text-align: center;
     }
     &.text1 {
-      margin: -18% auto 0;
+      margin: -14% auto 0;
     }
     &.text2 {
       margin: 0.5rem auto 0;
