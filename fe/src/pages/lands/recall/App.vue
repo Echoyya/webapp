@@ -7,15 +7,19 @@
         <img src="@/assets/img/landpage/button-google.png" class="fr" alt="StarTimes APP" @click="down()" />
       </div>
     </div>
+    <confirm-dialog ref="confirm" />
   </div>
 </template>
 <script>
 import { downApk, callApp, callMarket, getUtmParam } from '@/functions/app'
 import { getBrowser } from '@/functions/utils'
 import { sendEvLog } from '@/functions/analysis.js'
-
+import confirmDialog from '@/components/confirm'
 export default {
   layout: 'base',
+  components: {
+    confirmDialog
+  },
   mounted() {
     const browser = getBrowser()
     this.appType = browser.isIos ? 2 : 1
@@ -35,11 +39,18 @@ export default {
   },
   methods: {
     down() {
-      this.$nuxt.$loading.start()
       callApp.call(this, '', () => {
         callMarket.call(this, () => {
+          this.$refs.confirm.show(
+            'Download apk now?（12M）',
+            () => {
+              downApk.call(this)
+            },
+            () => {},
+            'OK',
+            'NOT NOW'
+          )
           downApk.call(this)
-          this.$nuxt.$loading.finish()
         })
       })
     }
