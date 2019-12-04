@@ -796,6 +796,7 @@ export default {
       .title {
         width: 100%;
         background-color: #c20044;
+        color: #fff;
       }
       .contant {
         padding: 0.5rem 0.5rem 1.5rem;

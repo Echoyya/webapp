@@ -191,12 +191,12 @@ export default {
       background-size: 100% 2.5rem;
       text-align: center;
       font-size: 1.2rem;
-      color: #dddddd;
+      color: #8A80A0;
       span {
         font-size: 1.3rem;
         font-weight: bold;
         letter-spacing: 0.15rem;
-        color: white;
+        color: #8A80A0;
       }
       &:first-child {
         margin-bottom: 0.5rem;
