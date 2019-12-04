@@ -43,7 +43,7 @@ export default {
             joinpop_olduser: 'Oh, my old friend. Only new user can join team. You can also invite friends and form a new team to get gifts.',
             download_tip: 'Start downloading apk now? (12M)',
             show_lucky: 'SHOW THEM HOW LUCKY I AM',
-            download_join: 'Download to join now',
+            download_join: 'DOWNLOAD TO JOIN NOW',
             have_team: 'You can only own one team at the same time.',
             input_error: 'Please enter a valid Team ID.',
             network_error: 'Network error.',
@@ -58,7 +58,7 @@ export default {
             xender: 'Xender',
             download: 'Save image',
             copy: 'Copy link',
-            download_apk: 'Download Now',
+            download_apk: 'DOWNLOAD NOW',
 
             //add
             shareTitle: 'Make A Team to Win Free VIPS',
