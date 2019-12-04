@@ -13,7 +13,6 @@
 <script>
 import { downApk, callApp, callMarket, getUtmParam } from '@/functions/app'
 import { getBrowser } from '@/functions/utils'
-import { sendEvLog } from '@/functions/analysis.js'
 import confirmDialog from '@/components/confirm'
 export default {
   layout: 'base',
@@ -24,7 +23,7 @@ export default {
     const browser = getBrowser()
     this.appType = browser.isIos ? 2 : 1
     const utmParm = getUtmParam.call(this)
-    sendEvLog(
+    this.$sendEvLog(
       Object.assign(
         {
           category: 'callup_app',
@@ -50,37 +49,8 @@ export default {
             'OK',
             'NOT NOW'
           )
-          downApk.call(this)
         })
       })
-    }
-  },
-  head() {
-    return {
-      title: 'StarTimes ON APP',
-      meta: [
-        { name: 'description', property: 'description', content: 'StarTimes | Movies | Sport | Series | Music | TV Guide | Entertainment' },
-        {
-          name: 'og:description',
-          property: 'og:description',
-          content: 'StarTimes | Movies | Sport | Series | Music | TV Guide | Entertainment'
-        },
-        {
-          name: 'og:image',
-          property: 'og:image',
-          content: 'http://m.startimestv.com/_nuxt/img/6672906.png'
-        },
-        { name: 'twitter:card', property: 'twitter:card', content: 'summary_large_image' },
-        { name: 'og:title', property: 'og:title', content: 'StarTimes APP' },
-        {
-          name: 'al:android:url',
-          property: 'al:android:url',
-          content: 'starvideo://platformapi/webtoapp?channel=facebook'
-        },
-        { name: 'al:android:app_name', property: 'al:android:app_name', content: 'StarTimes' },
-        { name: 'al:android:package', property: 'al:android:package', content: 'com.star.mobile.video' },
-        { name: 'al:web:url', property: 'al:web:url', content: 'http://m.startimestv.com' }
-      ]
     }
   }
 }
