@@ -3,21 +3,29 @@
     <div class="contain">
       <img src="@/assets/img/landpage/word.png" class="word" alt="StarTimes APP" />
       <div class="down">
-        <img src="@/assets/img/landpage/button-appstore.png" class="fl" alt="StarTimes APP" @click="down()" />
-        <img src="@/assets/img/landpage/button-google.png" class="fr" alt="StarTimes APP" @click="down()" />
+        <div v-show="appType==1" @click="down()">Download Now</div>
+        <img v-show="appType==2" src="@/assets/img/landpage/button-appstore.png" alt="StarTimes APP" @click="down()" />
       </div>
     </div>
     <confirm-dialog ref="confirm" />
+    <loading ref="loading" />
   </div>
 </template>
 <script>
 import { downApk, callApp, callMarket, getUtmParam } from '@/functions/app'
 import { getBrowser } from '@/functions/utils'
 import confirmDialog from '@/components/confirm'
+import loading from '@/components/loading'
 export default {
   layout: 'base',
   components: {
-    confirmDialog
+    confirmDialog,
+    loading
+  },
+  data() {
+    return {
+      appType: null
+    }
   },
   mounted() {
     const browser = getBrowser()
@@ -26,20 +34,27 @@ export default {
     this.$sendEvLog(
       Object.assign(
         {
-          category: 'callup_app',
-          action: 'landing_show',
+          category: 'recall_ng',
+          action: 'page_show',
           label: window.location.pathname,
           value: 1
         },
         utmParm.map
       )
     )
-    this.down()
   },
   methods: {
     down() {
+      this.$refs.loading.start()
+      this.$sendEvLog({
+        category: 'recall_ng',
+        action: 'btn_tap',
+        label: this.appType == 2 ? 'appstore' : 'googleplay',
+        value: 1
+      })
       callApp.call(this, '', () => {
         callMarket.call(this, () => {
+          this.$refs.loading.finish()
           this.$refs.confirm.show(
             'Download apk now?（12M）',
             () => {
@@ -76,13 +91,17 @@ export default {
     margin: 0 auto;
     text-align: center;
     img {
-      width: 45%;
-      &.fr {
-        float: right;
-      }
-      &.fl {
-        float: left;
-      }
+      width: 65%;
+    }
+    div {
+      width: 65%;
+      margin: 0 auto;
+      background: #000;
+      color: #fff;
+      height: 3.5rem;
+      line-height: 3.5rem;
+      font-size: 1.4rem;
+      border-radius: 4px;
     }
   }
 }
