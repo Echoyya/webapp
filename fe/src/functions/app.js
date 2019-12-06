@@ -1,12 +1,16 @@
 import axios from 'axios'
 import qs from 'qs'
-import { getBrowser, getCookie, setCookie } from '@/functions/utils'
+import {
+    getBrowser,
+    getCookie,
+    setCookie
+} from '@/functions/utils'
 import env from '@/functions/config'
 
 const browser = getBrowser()
 const appleStore = 'https://itunes.apple.com/us/app/startimes/id1168518958?l=zh&ls=1&mt=8'
 
-export const createIntent = function(page, host, path, scheme) {
+export const createIntent = function (page, host, path, scheme) {
     const target = page ? '?target=' + window.btoa(page.replace(/&/g, '**')) : ''
     host = host || 'platformapi'
     path = path || 'webtoapp'
@@ -14,7 +18,7 @@ export const createIntent = function(page, host, path, scheme) {
     return `intent://${host}/${path}${target}#Intent;scheme=${scheme};end`
 }
 
-export const createScheme = function(page, host, path, scheme) {
+export const createScheme = function (page, host, path, scheme) {
     const target = page ? '?target=' + window.btoa(page.replace(/&/g, '**')) : ''
     host = host || 'platformapi'
     path = path || 'webtoapp'
@@ -22,7 +26,7 @@ export const createScheme = function(page, host, path, scheme) {
     return `${scheme}://${host}/${path}${target}`
 }
 
-export const pageDlay = function(callback, second) {
+export const pageDlay = function (callback, second) {
     const timeout = second || 5000 // 手机卡顿的情况会比较慢
     const timerStart = new Date().getTime()
     let lastFired = new Date().getTime()
@@ -37,7 +41,7 @@ export const pageDlay = function(callback, second) {
                     lastFired = now
                     window.requestAnimationFrame(exam)
                 }
-            }else{
+            } else {
                 this.$refs.loading.finish()
             }
         }
@@ -46,23 +50,23 @@ export const pageDlay = function(callback, second) {
         const interval = 200
         const deviation = 20
         const timer = setInterval(() => {
-                const now = new Date().getTime()
-                if (now - lastFired < deviation + interval) {
-                    // 浏览器健康状态
-                    if (now - timerStart > timeout) {
-                        if (!document.hidden) callback && callback()
-                        clearInterval(timer)
-                    }
-                } else {
-                    // 不健康,代表浏览器进入后台，则不做操作
-                    this.$refs.loading.finish()
+            const now = new Date().getTime()
+            if (now - lastFired < deviation + interval) {
+                // 浏览器健康状态
+                if (now - timerStart > timeout) {
+                    if (!document.hidden) callback && callback()
                     clearInterval(timer)
                 }
-                lastFired = now
-            }, 200)
-            // 如果chrome唤醒app时间较短则不会触发视图窗口可视状态的变化
-            // 进入我们apphome页就算唤起成功，只有跳过了广告页面才会改变进程的前后状态
-        document.onvisibilitychange = function() {
+            } else {
+                // 不健康,代表浏览器进入后台，则不做操作
+                this.$refs.loading.finish()
+                clearInterval(timer)
+            }
+            lastFired = now
+        }, 200)
+        // 如果chrome唤醒app时间较短则不会触发视图窗口可视状态的变化
+        // 进入我们apphome页就算唤起成功，只有跳过了广告页面才会改变进程的前后状态
+        document.onvisibilitychange = function () {
             clearInterval(timer)
         }
     }
@@ -74,7 +78,7 @@ export const pageDlay = function(callback, second) {
  * @param {String} target 链接
  * @param {Function} failback 失败回调
  */
-export const invokeByHref = function(target, failback) {
+export const invokeByHref = function (target, failback) {
     window.location.href = target
     pageDlay.call(this, failback)
 }
@@ -85,7 +89,7 @@ export const invokeByHref = function(target, failback) {
  * @param {String} target
  * @param {Function} failback
  */
-export const invokeByIframe = function(target, failback) {
+export const invokeByIframe = function (target, failback) {
     const iframe = document.createElement('iframe')
     iframe.frameborder = '0'
     iframe.style.cssText = 'display:none;border:0;width:0;height:0;'
@@ -94,7 +98,7 @@ export const invokeByIframe = function(target, failback) {
     pageDlay.call(this, failback)
 }
 
-export const callApp = function(page, failback) {
+export const callApp = function (page, failback) {
     const utmParam = getUtmParam.call(this)
     this.$sendEvLog(
         Object.assign({
@@ -106,7 +110,7 @@ export const callApp = function(page, failback) {
             utmParam.map
         )
     )
-    if(browser.isIos){
+    if (browser.isIos) {
         invokeByHref.call(this, createScheme(page), failback)
         return
     }
@@ -123,11 +127,11 @@ export const callApp = function(page, failback) {
         }
     } else {
         invokeByHref.call(this, createIntent(page), failback)
-            // invokeByIframe.call(this, createScheme(page), failback)
+        // invokeByIframe.call(this, createScheme(page), failback)
     }
 }
 
-export const downApk = function(callback) {
+export const downApk = function (callback) {
     const utmParam = getUtmParam.call(this)
     this.$sendEvLog(
         Object.assign({
@@ -153,7 +157,7 @@ export const downApk = function(callback) {
     callback && callback()
 }
 
-export const callMarket = function(failback) {
+export const callMarket = function (failback) {
     const utmParam = getUtmParam.call(this)
     let source = utmParam.str
 
@@ -196,7 +200,7 @@ export const callMarket = function(failback) {
     }
 }
 
-export const playVodinApp = function(appType, vod) {
+export const playVodinApp = function (appType, vod) {
     if (appType == 1) {
         toNativePage('com.star.mobile.video.player.PlayerVodActivity?vodId=' + vod)
     } else if (appType == 2) {
@@ -210,7 +214,7 @@ export const playVodinApp = function(appType, vod) {
     }
 }
 
-export const toNativePage = function(page) {
+export const toNativePage = function (page) {
     if (page.indexOf('com.star.mobile.video') >= 0) {
         window.getChannelId && window.getChannelId.toAppPage(3, page, '')
     } else {
@@ -248,68 +252,68 @@ export const shareByXender = (teamno, type) => {
     }
 }
 
-export const getUtmParam = function() {
-        const query = location.search
-        const referrer = query.referrer
-        let source = '&referrer='
-        let utmSource = ''
-        let utmCampaign = ''
-        let utmMedium = ''
+export const getUtmParam = function () {
+    const query = location.search
+    const referrer = query.referrer
+    let source = '&referrer='
+    let utmSource = ''
+    let utmCampaign = ''
+    let utmMedium = ''
 
-        if (query.referrer) {
-            // 通过referrer 参数接收
-            source = source + referrer
-            utmSource = getQuery('utm_source', decodeURIComponent(referrer)) || ''
-            utmMedium = getQuery('utm_medium', decodeURIComponent(referrer)) || ''
-            utmCampaign = getQuery('utm_campaign', decodeURIComponent(referrer)) || ''
-        } else if (query.utm_source) {
-            // 通过utm_source格式接收
-            let str = `utm_source=${query.utm_source}`
-            if (query.utm_medium) str += `&utm_medium=${query.utm_medium}`
-            if (query.utm_campaign) str += `&utm_campaign=${query.utm_campaign}`
-            source = source + encodeURIComponent(str)
-            utmSource = query.utm_source || ''
-            utmMedium = query.utm_medium || ''
-            utmCampaign = query.utm_campaign || ''
-        } else if (query.utms) {
-            // 通过utms简写方式(utms,utmm,utmc)
-            let str = `utm_source=${query.utms}`
-            if (query.utmm) str += `&utm_medium=${query.utmm}`
-            if (query.utmc) str += `&utm_campaign=${query.utmc}`
-            source = source + encodeURIComponent(str)
-            utmSource = query.utms || ''
-            utmMedium = query.utmm || ''
-            utmCampaign = query.utmc || ''
+    if (query.referrer) {
+        // 通过referrer 参数接收
+        source = source + referrer
+        utmSource = getQuery('utm_source', decodeURIComponent(referrer)) || ''
+        utmMedium = getQuery('utm_medium', decodeURIComponent(referrer)) || ''
+        utmCampaign = getQuery('utm_campaign', decodeURIComponent(referrer)) || ''
+    } else if (query.utm_source) {
+        // 通过utm_source格式接收
+        let str = `utm_source=${query.utm_source}`
+        if (query.utm_medium) str += `&utm_medium=${query.utm_medium}`
+        if (query.utm_campaign) str += `&utm_campaign=${query.utm_campaign}`
+        source = source + encodeURIComponent(str)
+        utmSource = query.utm_source || ''
+        utmMedium = query.utm_medium || ''
+        utmCampaign = query.utm_campaign || ''
+    } else if (query.utms) {
+        // 通过utms简写方式(utms,utmm,utmc)
+        let str = `utm_source=${query.utms}`
+        if (query.utmm) str += `&utm_medium=${query.utmm}`
+        if (query.utmc) str += `&utm_campaign=${query.utmc}`
+        source = source + encodeURIComponent(str)
+        utmSource = query.utms || ''
+        utmMedium = query.utmm || ''
+        utmCampaign = query.utmc || ''
+    } else {
+        // 通过会话缓存接收
+        const utmCache = sessionStorage.getItem('utm_str')
+        if (utmCache) {
+            source = source + utmCache
+            utmSource = getQuery('utm_source', decodeURIComponent(utmCache)) || ''
+            utmMedium = getQuery('utm_medium', decodeURIComponent(utmCache)) || ''
+            utmCampaign = getQuery('utm_campaign', decodeURIComponent(utmCache)) || ''
         } else {
-            // 通过会话缓存接收
-            const utmCache = sessionStorage.getItem('utm_str')
-            if (utmCache) {
-                source = source + utmCache
-                utmSource = getQuery('utm_source', decodeURIComponent(utmCache)) || ''
-                utmMedium = getQuery('utm_medium', decodeURIComponent(utmCache)) || ''
-                utmCampaign = getQuery('utm_campaign', decodeURIComponent(utmCache)) || ''
-            } else {
-                source = source + encodeURIComponent('utm_source=officeWap')
-                utmSource = 'officeWap'
-                utmMedium = 'officeWap'
-                utmCampaign = 'officeWap'
-            }
-        }
-        return {
-            str: source,
-            map: {
-                utm_source: utmSource,
-                utm_medium: utmMedium,
-                utm_campaign: utmCampaign
-            }
+            source = source + encodeURIComponent('utm_source=officeWap')
+            utmSource = 'officeWap'
+            utmMedium = 'officeWap'
+            utmCampaign = 'officeWap'
         }
     }
-    /**
-     *
-     * @param {string} key 获取query参数名
-     * @param {string} queryStr 指定字符串
-     */
-export const getQuery = function(key, queryStr) {
+    return {
+        str: source,
+        map: {
+            utm_source: utmSource,
+            utm_medium: utmMedium,
+            utm_campaign: utmCampaign
+        }
+    }
+}
+/**
+ *
+ * @param {string} key 获取query参数名
+ * @param {string} queryStr 指定字符串
+ */
+export const getQuery = function (key, queryStr) {
     let query = queryStr || location.search
     query = query.includes('?') ? query.replace('?', '') : query
     const vars = query.split('&')
@@ -325,7 +329,7 @@ export const getQuery = function(key, queryStr) {
     }
 }
 
-export const addTicketByDownload = function(vote_id) {
+export const addTicketByDownload = function (vote_id) {
     const user = getQuery('pin')
     const lastGetTicket = getCookie('get_ticket_time')
     if (user && !lastGetTicket) {
@@ -333,7 +337,9 @@ export const addTicketByDownload = function(vote_id) {
         if (env.apiUrl == 'http://upms.startimestv.com') {
             url = 'http://m.startimestv.com' + url
         }
-        this.$axios.get(url).then(({ data }) => {
+        this.$axios.get(url).then(({
+            data
+        }) => {
             if (data.code == 200) {
                 this.$axios({
                     method: 'POST',
@@ -379,11 +385,11 @@ export const shareByFacebookInWeb = (link, quote, hashtag, redirect_uri) => {
 
     window.location.href = href
 }
-export const shareByTwitterInWeb = function(text, link) {
+export const shareByTwitterInWeb = function (text, link) {
     window.location.href = 'http://twitter.com/share?url=' + encodeURIComponent(link) + '&text=' + encodeURIComponent(text)
 }
 
-export const copyClipboard = function(text) {
+export const copyClipboard = function (text) {
     const input = document.createElement('input')
     input.setAttribute('readOnly', true)
     document.body.appendChild(input)
@@ -400,7 +406,7 @@ export const copyClipboard = function(text) {
     }
 }
 
-export const toNativeLogin = function(type) {
+export const toNativeLogin = function (type) {
     if (type == 2) {
         toNativePage('startimes://login')
     } else {
