@@ -91,10 +91,7 @@
             <div class="msg">
               <ul ref="msgul" :class="{anim:animates==true}">
                 <img src="@/assets/img/vote/BSSRegister/sound.png" alt />
-                <li
-                  v-for="item in msgList"
-                  :key="item.key"
-                >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} umeshinda {{item.reward_name||''}}!</li>
+                <li v-for="item in msgList" :key="item.key">{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} umeshinda {{item.reward_name||''}}!</li>
               </ul>
             </div>
             <div class="tip">
@@ -188,7 +185,7 @@ import alertDialog from '@/components/alert'
 import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
-import { callApp, downApk, playVodinApp, toNativePage, shareInvite, addTicketByDownload, getQuery } from '@/functions/app'
+import { callApp, downApk, playVodinApp, toNativePage, shareInvite, shareInviteIos, addTicketByDownload, getQuery } from '@/functions/app'
 import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
 import env from '@/functions/config'
 export default {
@@ -357,9 +354,7 @@ export default {
       this.barrageList.push({
         id: ++this.currentId,
         avatar: v.avatar
-          ? v.avatar == 'http://cdn.startimestv.com/head/h_d.png'
-            ? 'http://cdn.startimestv.com/banner/DD_user_icon.png'
-            : v.avatar
+          ? v.avatar == 'http://cdn.startimestv.com/head/h_d.png' ? 'http://cdn.startimestv.com/banner/DD_user_icon.png' : v.avatar
           : 'http://cdn.startimestv.com/banner/DD_user_icon.png',
         msg: decodeURI(v.content),
         time: time,
@@ -449,7 +444,7 @@ export default {
       this.leftNumVal = this.pageList[this.index].candidates[0].ballot_num
       this.rightNumVal = this.pageList[this.index].candidates[1].ballot_num
       if (this.allNum) {
-        this.leftNum = parseInt((this.leftNumVal / this.allNum) * 100)
+        this.leftNum = parseInt(this.leftNumVal / this.allNum * 100)
         this.rightNum = 100 - this.leftNum
       }
       const domLeft = document.getElementsByClassName('bar')[0]
@@ -620,7 +615,7 @@ export default {
             // 动画
             this.allNum++
             local == 'left' ? this.leftNumVal++ : this.rightNumVal++
-            this.leftNum = parseInt((this.leftNumVal / this.allNum) * 100)
+            this.leftNum = parseInt(this.leftNumVal / this.allNum * 100)
             this.rightNum = 100 - this.leftNum
             const domLeft = document.getElementsByClassName('bar')[0]
             const domRight = document.getElementsByClassName('bar')[1]
@@ -833,6 +828,20 @@ export default {
             toNativePage('com.star.mobile.video.me.product.MembershipListActivity')
           }
         }
+      } else if (this.appType == 2) {
+        if (!this.isLogin) {
+          window.bridge.startLogin()
+        } else if (this.isLogin) {
+          if (vip == 'dvbvip') {
+            // 原生DVB
+            this.mSendEvLog('dvb_click', '', '')
+            window.bridge.toAppPage('dvbLink', "{'isBackToSource':false}")
+          } else if (vip == 'ottvip') {
+            // 原生OTT
+            this.mSendEvLog('ott_click', '', '')
+            window.location.href = 'startimes://ottProduct?tab=all'
+          }
+        }
       }
     },
     showRule() {
@@ -875,14 +884,16 @@ export default {
     toShare(label) {
       if (label == 'voterules') this.closeShadow()
       this.mSendEvLog('share_click', label, '')
+      const url =
+        window.location.href.indexOf('?') >= 0
+          ? window.location.href + (this.isLogin ? '&pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+          : window.location.href + (this.isLogin ? '?pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
       if (this.appType == 1) {
-        const url =
-          window.location.href.indexOf('?') >= 0
-            ? window.location.href + (this.isLogin ? '&pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
-            : window.location.href + (this.isLogin ? '?pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
         shareInvite(url, this.shareTitle, this.shareText, this.imgUrl)
       } else if (this.appType == 0) {
         this.$refs.share.show()
+      } else {
+        shareInviteIos(url, this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     // 唤醒转入活动页或下载App

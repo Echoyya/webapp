@@ -14,13 +14,13 @@ let token = ''
 let language = 'en' // default language en
 let langObj = i18n.en
 
-let appInfo = window.getChannelId && window.getChannelId.jsGetHeadInfo && window.getChannelId.jsGetHeadInfo()
+let appInfo = window.getChannelId && window.getChannelId.jsGetHeadInfo && window.getChannelId.jsGetHeadInfo() || window.bridge && window.bridge.jsGetHeadInfo && window.bridge.jsGetHeadInfo()
 
 if (appInfo) {
     appInfo = JSON.parse(appInfo)
     token = appInfo.token
     language = appInfo.lnCode
-    appType = 1
+    appType = window.getChannelId ? 1 : 2
     Vue.prototype.$appVersion = appInfo.versionCode
 } else {
     appInfo = {}
@@ -99,7 +99,7 @@ if (!deviceId) {
     deviceId = getCookie('_stdid')
     if (!deviceId) {
         deviceId = randomString(32)
-            // 为了不混淆切能做必要的统计，对未得到deviceId在app中的情形进行特殊处理
+        // 为了不混淆切能做必要的统计，对未得到deviceId在app中的情形进行特殊处理
         if (appType == 1) {
             deviceId += '_h5andoid'
         } else if (appType == 2) {
@@ -183,11 +183,11 @@ export const initPage = function(page) {
             deviceId = 'h5diviceidpageiniterrorunder52000'
             initAna(appType, deviceId, appType)
             sendEvLog({
-                    category: 'h5_open',
-                    action: 'get_me_error',
-                    label: location.pathname,
-                    value: appType
-                })
-                // TODO 登录状态失效
+                category: 'h5_open',
+                action: 'get_me_error',
+                label: location.pathname,
+                value: appType
+            })
+            // TODO 登录状态失效
         })
 }
