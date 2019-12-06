@@ -112,7 +112,8 @@ export const callApp = function (page, failback) {
     )
     if (browser.isIos) {
         invokeByHref.call(this, createScheme(page), failback)
-        return
+        this.$refs.loading.finish()
+        return false
     }
     // 该判断需要根据大量测试场景进行判断
     if (browser.browserVer > 40) {
