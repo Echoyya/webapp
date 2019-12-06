@@ -986,8 +986,6 @@ export default {
         this.mSendEvLog('votebtn_click', advisor.name, '')
         this.callOrDownApp('vote')
         return
-      } else if (this.appType == 2) {
-        return
       }
       if (this.$serverTime < this.startTime) {
         this.mSendEvLog('votebtn_click', advisor.name, '')
