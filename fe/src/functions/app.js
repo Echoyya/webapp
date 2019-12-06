@@ -37,6 +37,8 @@ export const pageDlay = function(callback, second) {
                     lastFired = now
                     window.requestAnimationFrame(exam)
                 }
+            }else{
+                this.$refs.loading.finish()
             }
         }
         window.requestAnimationFrame(exam)
@@ -53,6 +55,7 @@ export const pageDlay = function(callback, second) {
                     }
                 } else {
                     // 不健康,代表浏览器进入后台，则不做操作
+                    this.$refs.loading.finish()
                     clearInterval(timer)
                 }
                 lastFired = now
