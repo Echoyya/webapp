@@ -106,7 +106,10 @@ export const callApp = function(page, failback) {
             utmParam.map
         )
     )
-
+    if(browser.isIos){
+        invokeByHref.call(this, createScheme(page), failback)
+        return
+    }
     // 该判断需要根据大量测试场景进行判断
     if (browser.browserVer > 40) {
         if (browser.ua.indexOf('UCBrowser') > 0) {
