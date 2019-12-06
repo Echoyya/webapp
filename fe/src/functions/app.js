@@ -137,9 +137,11 @@ export const downApk = function(callback) {
         )
     )
     if (browser.isIos) {
+        this.$refs.loading.finish()
         window.location.href = appleStore
     } else {
         axios.get('http://upms.startimestv.com/cms/public/app').then(data => {
+            this.$refs.loading.finish()
             const url = data.data.apkUrl
             const direct = url.indexOf('google') > 0 ? url.replace('google', 'officialWap') : url
             window.location.href = direct
@@ -179,11 +181,14 @@ export const callMarket = function(failback) {
     )
 
     if (browser.isIos) {
+        this.$refs.loading.finish()
         window.location.href = appleStore
     } else if (browser.ua.indexOf('MuMu') >= 0 || browser.ua.indexOf('I9502') > 0) {
         // android 6+
+        this.$refs.loading.finish()
         invokeByIframe.call(this, `market://details?id=com.star.mobile.video${source}`, failback)
     } else {
+        this.$refs.loading.finish()
         invokeByHref.call(this, `market://details?id=com.star.mobile.video${source}`, failback)
     }
 }
