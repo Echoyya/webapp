@@ -11,7 +11,7 @@ export default {
   },
   methods: {
     startDraw() {
-      this.refs.lottery.tween()
+      this.$refs.lottery.tween()
     },
     endLottery(prize) {
       console.log(prize)
