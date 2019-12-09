@@ -30,6 +30,7 @@
  * event drawClick 点击draw
  * event end 抽奖效果结束
  * event getItemsError(err) 获取抽奖项目失败
+ * event getResultError(err) 获取抽奖结果失败
  * method  tween(func)
  */
 import TWEEN from '@tweenjs/tween.js'
@@ -56,6 +57,7 @@ export default {
       items: [],
       drawing: false,
       indexs: 0,
+      dataList:[],
       msgList: [],
       msgIndex: 0
     }

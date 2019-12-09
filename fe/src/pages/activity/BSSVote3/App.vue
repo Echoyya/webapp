@@ -101,7 +101,7 @@
             </div>
           </div>
         </div>
-        <lottery :id="4" :defaultPrize="3" :withMsgList="true"></lottery>
+        <lottery ref="lottery" :id="4" :defaultPrize="3" :withMsgList="true" @drawClick="shang" @end="xinbo"></lottery>
       </div>
       <div v-else class="page-barrage">
         <div class="topic">
@@ -355,6 +355,12 @@ export default {
   },
 
   methods: {
+    shang(){
+      this.$refs.lottery.tween()
+    },
+    xinbo(prize){
+      console.log(prize)
+    },
     addToList(v) {
       let time = 75 / (10 + decodeURI(v.content).length * 0.5)
       if (time > this.maxTime) time = this.maxTime
