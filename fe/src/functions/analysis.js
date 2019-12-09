@@ -1,3 +1,4 @@
+/* eslint-disable indent */
 import env from '@/functions/config'
 const ua = navigator.userAgent
 const os = (ua.includes('iPhone') && 'IOS') || (ua.includes('iPad') && 'IOS') || 'Android'

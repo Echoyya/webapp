@@ -1,11 +1,7 @@
 <template>
   <div class="alert-box">
     <div :style="{display:style}" class="shadow-box"></div>
-    <div
-      :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}"
-      ref="alerts"
-      class="dialog"
-    >
+    <div :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}" ref="alerts" class="dialog">
       <div class="dialog-body">
         <div class="pop-default">
           <p>
@@ -23,39 +19,39 @@
 export default {
   data() {
     return {
-      msg: "",
-      style: "none",
-      callback: "",
+      msg: '',
+      style: 'none',
+      callback: '',
       offsetLeft: 0,
       offsetTop: 0,
-      text: ""
-    };
+      text: ''
+    }
   },
   methods: {
     sure() {
-      this.style = "none";
-      if (this.callback) this.callback();
+      this.style = 'none'
+      if (this.callback) this.callback()
     },
     show(msg, callback, text) {
-      const _this = this;
-      this.msg = msg;
-      this.text = text || "OK";
-      this.style = "block";
+      const _this = this
+      this.msg = msg
+      this.text = text || 'OK'
+      this.style = 'block'
       this.$nextTick(() => {
-        const dialog = _this.$refs.alerts;
-        const dh = dialog.offsetHeight;
-        const dw = dialog.offsetWidth;
-        _this.offsetLeft = -dw / 2 + "px";
-        _this.offsetTop = -dh / 2 + "px";
-      });
+        const dialog = _this.$refs.alerts
+        const dh = dialog.offsetHeight
+        const dw = dialog.offsetWidth
+        _this.offsetLeft = -dw / 2 + 'px'
+        _this.offsetTop = -dh / 2 + 'px'
+      })
       if (callback) {
-        this.callback = callback;
+        this.callback = callback
       } else {
-        this.callback = "";
+        this.callback = ''
       }
     }
   }
-};
+}
 </script>
 <style lang="less" scoped>
 .alert-box {
