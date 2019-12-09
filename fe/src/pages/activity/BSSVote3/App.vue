@@ -101,7 +101,7 @@
             </div>
           </div>
         </div>
-        <lottery ref="lottery" :id="4" :defaultPrize="3" :withMsgList="true" @drawClick="shang" @end="xinbo"></lottery>
+        <lottery ref="lottery" :id="4" :defaultPrize="3" :withMsgList="true" @drawClick="startDraw" @end="endLottery" @getItemsError="lotteryError"></lottery>
       </div>
       <div v-else class="page-barrage">
         <div class="topic">
@@ -355,10 +355,10 @@ export default {
   },
 
   methods: {
-    shang(){
+    startDraw(){
       this.$refs.lottery.tween()
     },
-    xinbo(prize){
+    endLottery(prize){
       console.log(prize)
     },
     addToList(v) {
@@ -889,7 +889,7 @@ export default {
             encodeURIComponent(window.location.href)
         )
       } else {
-        toNativePage('startimes://login')
+        window.bridge.startLogin()
       }
     },
     // 调出分享弹层(app/web)
@@ -1849,19 +1849,20 @@ export default {
               }
               .getLuck,
               .getLuck-gray {
-                width: 28%;
+                width: 30%;
                 border-radius: 0.5rem;
                 text-align: center;
                 position: absolute;
                 top: 36%;
-                left: 36%;
+                left: 35%;
                 font-size: 1.1rem;
                 font-weight: bold;
                 color: #fdf2ff;
+                background-size: 100% 100%;
                 &:before {
                   content: '';
                   display: inline-block;
-                  padding-bottom: 100%;
+                  padding-bottom: 99%;
                   width: 0;
                   vertical-align: middle;
                 }
