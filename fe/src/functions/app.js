@@ -155,14 +155,14 @@ export const callMarket = function(failback) {
   const teamno = getQuery('teamno')
   if (teamno) {
     source =
-            source +
-            encodeURIComponent(
-              '&utm_term=' +
-                encodeURIComponent(
-                  'com.star.mobile.video.activity.BrowserActivity?loadUrl=' +
-                    encodeURIComponent(location.origin + `/activity/team/home.html?activity=${activity_id}&teamno=${teamno}`)
-                )
-            )
+      source +
+      encodeURIComponent(
+        '&utm_term=' +
+          encodeURIComponent(
+            'com.star.mobile.video.activity.BrowserActivity?loadUrl=' +
+              encodeURIComponent(location.origin + `/activity/team/home.html?activity=${activity_id}&teamno=${teamno}`)
+          )
+      )
   }
 
   this.$sendEvLog(
@@ -218,7 +218,7 @@ export const shareInvite = (link, shareTitle, shareContent, shareImg) => {
 }
 export const shareInviteIos = (link, shareTitle, shareContent, shareImg) => {
   if (window.bridge && window.bridge.shareContent) {
-    const content = '【' + shareTitle + '】' + shareContent 
+    const content = '【' + shareTitle + '】' + shareContent
     window.bridge.shareContent(link, content, shareTitle, shareImg || '')
   }
 }
@@ -329,9 +329,7 @@ export const addTicketByDownload = function(vote_id) {
     if (env.apiUrl == 'http://upms.startimestv.com') {
       url = 'http://m.startimestv.com' + url
     }
-    this.$axios.get(url).then(({
-      data
-    }) => {
+    this.$axios.get(url).then(({ data }) => {
       if (data.code == 200) {
         this.$axios({
           method: 'POST',
@@ -365,12 +363,12 @@ export const shareByFacebookInWeb = (link, quote, hashtag, redirect_uri) => {
   link = link || location.href
   redirect_uri = redirect_uri || location.href
   let href =
-        'https://www.facebook.com/dialog/share?app_id=' +
-        env.facebookAppId +
-        '&display=popup&href=' +
-        encodeURIComponent(link) +
-        '&redirect_uri=' +
-        encodeURIComponent(redirect_uri)
+    'https://www.facebook.com/dialog/share?app_id=' +
+    env.facebookAppId +
+    '&display=popup&href=' +
+    encodeURIComponent(link) +
+    '&redirect_uri=' +
+    encodeURIComponent(redirect_uri)
 
   if (quote) href += '&quote=' + encodeURIComponent(quote)
   if (hashtag) href += '&hashtag=' + encodeURIComponent(hashtag)
