@@ -1481,7 +1481,7 @@ export default {
       border-bottom: 0.1rem solid #fbb508;
       font-size: 0;
       position: relative;
-      margin: 1rem auto;
+      margin: -0.3rem auto 0.5rem;
       text-align: center;
       line-height: 3rem;
       background-color: #0c0c0c;
@@ -1739,11 +1739,9 @@ export default {
       }
       .lottery-box {
         width: 100%;
-        // height: 27rem;
         margin-top: 1rem;
         .lottery {
           width: 90%;
-          // height: 27rem;
           background-color: #fab512;
           margin: 0 auto;
           border-radius: 0.5rem;
@@ -1767,6 +1765,7 @@ export default {
             background-image: url('~@/assets/img/vote/BSSVote3/bg-border.png');
             background-size: 100% 101%;
             color: #ad5500;
+            padding: 3% 2.5% 1.5%;
             ul {
               width: 100%;
               margin: 0 auto;
@@ -1850,11 +1849,6 @@ export default {
                 font-size: 1.1rem;
                 font-weight: bold;
                 color: #fdf2ff;
-                background-color: #ff008a;
-                border: 0.25rem solid #ff4ca3;
-                &:active {
-                  border: 0.25rem solid #9f195f;
-                }
                 &:before {
                   content: '';
                   display: inline-block;
@@ -1862,6 +1856,16 @@ export default {
                   width: 0;
                   vertical-align: middle;
                 }
+              }
+              .getLuck {
+                background-image: url('~@/assets/img/vote/BSSRegister/start.png');
+                &:active {
+                  background-image: url('~@/assets/img/vote/BSSRegister/start-ac.png');
+                }
+              }
+              .getLuck-gray {
+                background-image: url('~@/assets/img/vote/BSSRegister/start-gray.png');
+                color: #ccc;
               }
             }
           }
@@ -2168,10 +2172,10 @@ export default {
           }
           .btn {
             img {
-              width: 1.5rem;
-              height: 1.5rem;
+              width: 1.2rem;
+              height: 1.2rem;
               position: relative;
-              top: 0.3rem;
+              top: 0.2rem;
             }
             width: 33%;
             margin-left: 66%;
