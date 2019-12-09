@@ -877,7 +877,7 @@ export default {
             encodeURIComponent(window.location.href)
         )
       } else {
-        toNativePage('startimes://login')
+        window.bridge.startLogin()
       }
     },
     // 调出分享弹层(app/web)
