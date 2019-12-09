@@ -27,13 +27,15 @@
 </template>
 <script>
 /**
- * event drawClick 点击draw
- * event end 抽奖效果结束
+ * event drawClick 点击draw事件
+ * event end 抽奖效果结束 会带着抽到奖的项目的信息
  * event getItemsError(err) 获取抽奖项目失败
+ * event getMsgListError(err) 获取抽奖通告列表失败
  * event getResultError(err) 获取抽奖结果失败
- * method  tween(func)
+ * method  tween()  开始抽奖
  */
 import TWEEN from '@tweenjs/tween.js'
+import qs from 'qs'
 export default {
   props: {
     id: {
@@ -57,7 +59,7 @@ export default {
       items: [],
       drawing: false,
       indexs: 0,
-      dataList:[],
+      dataList: [],
       msgList: [],
       msgIndex: 0
     }
@@ -73,12 +75,18 @@ export default {
           }
         } else {
           this.items = []
-          this.$emit('getItemsError', 'code is not 0')
+          this.$emit('getItemsError', {
+            code: 1,
+            errMsg: 'server response is error'
+          })
         }
       })
-      .catch(err => {
+      .catch(() => {
         this.items = []
-        this.$emit('getItemsError', err)
+        this.$emit('getItemsError', {
+          code: 2,
+          errMsg: 'network error'
+        })
       })
   },
   methods: {
@@ -128,26 +136,55 @@ export default {
             this.beforeLeave()
           } else {
             this.items = []
-            console.log('Get winnings error!')
+            this.$emit('getItemsError', {
+              code: 3,
+              errMsg: 'Get winnings error!'
+            })
           }
         })
-        .catch(err => {
+        .catch(() => {
           this.items = []
-          console.log('Get winnings error!! ' + err)
+          this.$emit('getItemsError', {
+            code: 3,
+            errMsg: 'Get winnings error!'
+          })
         })
     },
     drawClick() {
       this.$emit('drawClick')
     },
-    tween(waitFunc) {
+    tween() {
       if (this.drawing) return
       let ani = this.animate()
       const defaultIndex = 8 * 5 + this.defaultPrize
       ani.to({ num: defaultIndex }, 6000)
       ani.start()
-      waitFunc &&
-        waitFunc(function(price) {
-          ani.to({ num: 8 * 6 + price }, 7000)
+      this.$axios({
+        method: 'POST',
+        headers: {
+          'content-type': 'application/x-www-form-urlencoded'
+        },
+        data: qs.stringify({
+          lottery_id: this.id
+        }),
+        url: '/voting/lottery/v1/drawing'
+      })
+        .then(res => {
+          if (res.data.code == 0) {
+            const prizeNum = res.data.data
+            ani.to({ num: 8 * 6 + prizeNum }, 7000)
+          } else {
+            this.$emit('getResultError', {
+              code: 4,
+              errMsg: 'Lottery error'
+            })
+          }
+        })
+        .catch(() => {
+          this.$emit('getResultError', {
+            code: 4,
+            errMsg: 'Lottery error'
+          })
         })
     },
     animate() {
@@ -166,7 +203,13 @@ export default {
         .onComplete(function(obj) {
           cancelAnimationFrame(frame)
           const prize = Math.floor(obj.num % 8)
-          _this.$emit('end', prize)
+          let prizeItem = null
+          _this.items.forEach(item => {
+            if (item.id == prize + 1) {
+              prizeItem = item
+            }
+          })
+          _this.$emit('end', prizeItem)
         })
       frame = requestAnimationFrame(animate)
       return ani
