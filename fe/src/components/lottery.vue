@@ -65,8 +65,17 @@ export default {
   },
   computed: {
     msgNow() {
-      return `${this.msg.nick_name ? this.msg.nick_name : this.msg.user_name ? this.msg.user_name : this.msg.user_id} has won ${this.msg
-        .reward_name || ''}!`
+      if (this.msg.reward_id) {
+        let reward_name = ''
+        this.items.forEach(item => {
+          if (item.id == this.msg.reward_id) {
+            reward_name = item.name
+          }
+        })
+        return `${this.msg.nick_name ? this.msg.nick_name : this.msg.user_name ? this.msg.user_name : this.msg.user_id} has won ${reward_name}!`
+      } else {
+        return ''
+      }
     }
   },
   created() {
@@ -97,10 +106,11 @@ export default {
   methods: {
     beforeLeave() {
       setTimeout(() => {
-        this.msg = {
-          id: this.reward_id,
-          msg: this.dataList[this.msgIndex]
+        this.msgIndex = this.msgIndex + 1
+        if (this.msgIndex == this.dataList.length) {
+          this.msgIndex = 0
         }
+        this.msg = Object.assign({}, this.dataList[this.msgIndex])
       }, 3000)
     },
     getMsgList() {
@@ -376,6 +386,6 @@ export default {
 }
 .fade-enter-active,
 .fade-leave-active {
-  transition: 1s;
+  transition: 0.8s;
 }
 </style>
