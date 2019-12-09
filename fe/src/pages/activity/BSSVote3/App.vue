@@ -101,6 +101,7 @@
             </div>
           </div>
         </div>
+        <lottery :id="4" :defaultPrize="3" :withMsgList="true"></lottery>
       </div>
       <div v-else class="page-barrage">
         <div class="topic">
@@ -193,13 +194,15 @@ import mShare from '@/components/web/share.vue'
 import { callApp, downApk, playVodinApp, toNativePage, shareInvite, shareInviteIos, addTicketByDownload, getQuery } from '@/functions/app'
 import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
 import env from '@/functions/config'
+import lottery from '@/components/lottery'
 export default {
   components: {
     mShare,
     alertDialog,
     confirmDialog,
     toastDialog,
-    vueBaberrage
+    vueBaberrage,
+    lottery
   },
   data() {
     return {
@@ -1834,12 +1837,12 @@ export default {
                     }
                     p {
                       font-size: 0.8rem;
-
                     }
                   }
                 }
               }
-              .getLuck,.getLuck-gray {
+              .getLuck,
+              .getLuck-gray {
                 width: 28%;
                 border-radius: 0.5rem;
                 text-align: center;
