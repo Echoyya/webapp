@@ -193,10 +193,8 @@ export const callMarket = function (failback) {
         window.location.href = appleStore
     } else if (browser.ua.indexOf('MuMu') >= 0 || browser.ua.indexOf('I9502') > 0) {
         // android 6+
-        this.$refs.loading.finish()
         invokeByIframe.call(this, `market://details?id=com.star.mobile.video${source}`, failback)
     } else {
-        this.$refs.loading.finish()
         invokeByHref.call(this, `market://details?id=com.star.mobile.video${source}`, failback)
     }
 }
