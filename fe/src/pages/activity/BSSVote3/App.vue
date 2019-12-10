@@ -14,7 +14,7 @@
       </div>
       <div v-if="pageVote" class="page-vote">
         <img class="text text1" src="@/assets/img/vote/BSSVote3/text1.png" alt />
-        <div class="date">NOVEMBA 18 - DESEMBA 11</div>
+        <div class="date">DESEMBA 23 - DESEMBA 24</div>
         <div class="vote-box">
           <div class="vote-remaining">
             <div class="remain">KURA ZILIZOBAKI:{{appType==0?0:(voteLeft>0?voteLeft:0)}}</div>
@@ -228,7 +228,7 @@ export default {
 
       // 抽奖
       lotteryLeft: 0,
-      lottery_id: 3,
+      lottery_id: 6,
 
       // 弹幕
       barrage_id: 17,
@@ -260,9 +260,9 @@ export default {
       canClickTab1: false,
       canClickTab2: false,
 
-      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
+      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote3-banner.png',
       shareTitle: 'Bongo Star Search 2019',
-      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!'
+      shareText: 'Kura yako muhimu! Mpigie kura awe mshindi wa Bongo Star Search'
     }
   },
   computed: {
@@ -280,20 +280,11 @@ export default {
         return []
       }
     },
-    platform() {
-      if (this.appType == 1) {
-        return 'Android'
-      } else if (this.appType == 2) {
-        return 'iOS'
-      } else {
-        return 'web'
-      }
-    }
   },
   created() {
     this.vote_id = getQuery('voteid') || 64
     this.barrage_id = getQuery('barrageid') || 17
-    this.lottery_id = this.$appType == 2 ? 6 : 3
+    this.lottery_id = this.$appType == 2 ? 7 : 6
   },
   mounted() {
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
@@ -558,7 +549,7 @@ export default {
       // 活动未开始提示
       if (this.$serverTime < this.startTime) {
         this.$refs.alert.show(
-          'Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!',
+          'Upigaji kura utaanza tarehe 23th Desemba, kwa hiyo kaa tayari!',
           () => {
             this.canVote = true
           },
@@ -839,7 +830,7 @@ export default {
     // 埋点方法
     mSendEvLog(action, label, value) {
       this.$sendEvLog({
-        category: 'form_BSSVote2_' + this.platform,
+        category: 'form_BSSVote3_' + this.$platform,
         action: action,
         label: label,
         value: value
@@ -866,8 +857,8 @@ export default {
       this.mSendEvLog('share_click', label, '')
       const url =
         window.location.href.indexOf('?') >= 0
-          ? window.location.href + (this.isLogin ? '&pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
-          : window.location.href + (this.isLogin ? '?pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.platform
+          ? window.location.href + (this.isLogin ? '&pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.$platform
+          : window.location.href + (this.isLogin ? '?pin=' + this.$user.id : '') + '&utm_source=VOTE&utm_medium=BSS&utm_campaign=' + this.$platform
       if (this.appType == 1) {
         shareInvite(url, this.shareTitle, this.shareText, this.imgUrl)
       } else if (this.appType == 0) {
@@ -1472,6 +1463,13 @@ export default {
         padding: 1rem 2%;
         position: relative;
         z-index: 2;
+        /deep/ .lottery ul li {
+          &:nth-child(1),
+          &:nth-child(2) {
+            background-image: url('~@/assets/img/vote/BSSRegister/bg-lottery-light.png');
+            background-size: 100% 100%;
+          }
+        }
         .count {
           width: 11rem;
           height: 1.5rem;
