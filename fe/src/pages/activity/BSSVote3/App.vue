@@ -194,8 +194,8 @@ export default {
       // 页面
       show_rules: false,
       show_pick: false,
-      appType: 1 || this.$appType,
-      isLogin: 1 || this.$isLogin,
+      appType: this.$appType,
+      isLogin: this.$isLogin,
       // appType: 1,
       // isLogin: true,
       firstTime: true,
@@ -338,10 +338,13 @@ export default {
     },
     endLottery(prize) {
       console.log(prize)
-      if (prize.indexs < 5) {
+      if (prize.index < 5) {
+        if(prize.index == 2) this.mSendEvLog('lottery_click', 'vip', '1')
+        else if(prize.index == 3) this.mSendEvLog('lottery_click', '40offcoupon', '1')
+        else if(prize.index == 4) this.mSendEvLog('lottery_click', '30offcoupon', '1')
         setTimeout(() => {
           this.$refs.alert.show(
-            'Hongera! Umepata ' + this.lotteryType[this.indexs].name + '! Zawadi zitatolewa kwenye siku ya pili ya kazi katika Me-> Kuponi zangu.',
+            'Hongera! Umepata ' + prize.name + '! Zawadi zitatolewa kwenye siku ya pili ya kazi katika Me-> Kuponi zangu.',
             () => {
               this.click = true
               this.canClickTab2 = true
@@ -349,7 +352,8 @@ export default {
             'SAWA'
           )
         }, 1000)
-      } else if (prize.indexs == 5) {
+      } else if (prize.index == 5) {
+        this.mSendEvLog('lottery_click', 'morevotes', '1')
         this.getTicketAward(res => {
           if (res.data.code == 200) {
             setTimeout(() => {
@@ -367,7 +371,8 @@ export default {
             this.$refs.alert.show('Get ticket award error!' + res.data.message)
           }
         })
-      } else if (prize.indexs === 6) {
+      } else if (prize.index === 6) {
+        this.mSendEvLog('lottery_click', 'tryagain', '0')
         setTimeout(() => {
           this.lotteryLeft++
           this.$refs.alert.show(
@@ -379,7 +384,8 @@ export default {
             'SAWA'
           )
         }, 1000)
-      } else if (prize.indexs === 7) {
+      } else if (prize.index === 7) {
+        this.mSendEvLog('lottery_click', 'sorry', '0')
         setTimeout(() => {
           this.$refs.alert.show(
             'Asante kwa ushiriki wako.',
