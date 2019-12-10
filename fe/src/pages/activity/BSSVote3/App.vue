@@ -70,38 +70,23 @@
         <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
         <img v-if="appType>0&&!isLogin" class="text text3" src="@/assets/img/vote/BSSVote3/text3-login-no.png" @click="toSignIn" />
         <img v-if="!(appType>0&&!isLogin)" class="text text3" src="@/assets/img/vote/BSSVote3/text3-login.png" alt />
-        <div class="lottery-box">
-          <div class="lottery">
-            <div class="count">NAFASI ZILIZOBAKI:{{appType>0&&isLogin?(lotteryLeft>0?lotteryLeft:0):0}}</div>
-            <div class="lottery-type">
-              <ul class="clearfix">
-                <li v-for="(item,key) in lotteryList" :key="key" :class="indexs==key?'active':''">
-                  <div>
-                    <div class="prize">
-                      <img :src="item.picture_url" alt />
-                      <p>{{item.name}}</p>
-                    </div>
-                  </div>
-                </li>
-                <div v-if="appType>0&&isLogin&&lotteryLeft>0" class="getLuck" @click="startLottery">Anza</div>
-                <div v-else class="getLuck-gray" @click="canNotLottery">Anza</div>
-              </ul>
-            </div>
-            <div class="msg">
-              <ul ref="msgul" :class="{anim:animates==true}">
-                <img src="@/assets/img/vote/BSSRegister/sound.png" alt />
-                <li
-                  v-for="item in msgList"
-                  :key="item.key"
-                >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} umeshinda {{item.reward_name||''}}!</li>
-              </ul>
-            </div>
-            <div class="tip">
-              <p>TAFUTA ZAWADI KWENYE ME -> KUPONI YANGU</p>
-            </div>
+        <div class="lottery-type">
+          <div class="count">NAFASI ZILIZOBAKI:{{appType>0&&isLogin?(lotteryLeft>0?lotteryLeft:0):0}}</div>
+          <lottery
+            ref="lottery"
+            :id="lottery_id"
+            :defaultPrize="7"
+            :withMsgList="true"
+            @drawClick="startDraw"
+            @end="endLottery"
+            @getItemsError="getTypeError"
+            @getResultError="lotteryError"
+            @getMsgListError="getMsgError"
+          ></lottery>
+          <div class="tip">
+            <p>TAFUTA ZAWADI KWENYE ME -> KUPONI YANGU</p>
           </div>
         </div>
-        <lottery ref="lottery" :id="4" :defaultPrize="3" :withMsgList="true" @drawClick="startDraw" @end="endLottery" @getItemsError="lotteryError"></lottery>
       </div>
       <div v-else class="page-barrage">
         <div class="topic">
@@ -242,27 +227,9 @@ export default {
       canVotes: true,
 
       // 抽奖
-      indexs: -1, // 当前转动到哪个位置，起点位置
-      counts: 8, // 总共有多少个位置
-      timers: 0, // 每次转动定时器
-      speeds: 200, // 初始转动速度
-      times: 0, // 转动次数
-      cycle: 30, // 转动基本次数：即至少需要转动多少次再进入抽奖环节
-      prize: -1, // 中奖位置
       click: true,
-
       lotteryLeft: 0,
       lottery_id: 3,
-      lotteryType: [],
-      loaded_l: false,
-
-      // 消息轮播
-      animates: false,
-      items: [],
-      star: '',
-      loaded_m: false,
-      tmsg: null,
-      tscroll: null,
 
       // 弹幕
       barrage_id: 17,
@@ -314,20 +281,6 @@ export default {
         return []
       }
     },
-    lotteryList() {
-      if (this.loaded_l) {
-        return this.lotteryType
-      } else {
-        return []
-      }
-    },
-    msgList() {
-      if (this.loaded_l && this.loaded_m) {
-        return this.items
-      } else {
-        return []
-      }
-    },
     platform() {
       if (this.appType == 1) {
         return 'Android'
@@ -341,6 +294,7 @@ export default {
   created() {
     this.vote_id = getQuery('voteid') || 64
     this.barrage_id = getQuery('barrageid') || 17
+    this.lottery_id = this.$appType == 2 ? 6 : 3
   },
   mounted() {
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
@@ -349,17 +303,61 @@ export default {
     this.getVoteRemain()
     this.getLeftLottery()
     this.getVideoMsg()
-    this.getLotteryType()
     this.getShareNum()
-    this.msgScroll()
   },
 
   methods: {
-    startDraw(){
+    getMsgError(err) {
+      this.$refs.alert.show('get winning list error! ' + err)
+    },
+    getTypeError(err) {
+      this.$refs.alert.show('get lottery type error! ' + err)
+    },
+    lotteryError(err) {
+      this.$refs.alert.show('lottery error! ' + err)
+    },
+    startDraw() {
+      if (!this.click) {
+        return
+      }
+      if (this.appType == 0 || !this.isLogin || this.$serverTime < this.startTime || this.$serverTime >= this.endTime || this.lotteryLeft <= 0) {
+        this.mSendEvLog('lottery_click', '', '-1')
+      }
+      if (this.appType == 0) {
+        this.callOrDownApp('lottery')
+        return
+      }
+      if (!this.isLogin) {
+        // 移动端未登录
+        this.$refs.alert.show(
+          'Tafadhali jisajili ili uanze mchuano wa bahati.',
+          () => {
+            this.toSignIn()
+          },
+          'JISAJILI'
+        )
+        return
+      }
+      if (this.$serverTime < this.startTime) {
+        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
+        return
+      }
+      if (this.$serverTime >= this.endTime) {
+        this.$refs.alert.show('Samahani, kura zimekwisha.', () => {}, 'SAWA')
+        return
+      }
+      if (this.lotteryLeft <= 0) {
+        // 票不够不能抽奖
+        this.$refs.alert.show('Piga kura ili upate nafasi ya kupata zawadi! Kila kura 5 kwa mchezo 1', () => {}, 'SAWA')
+        return
+      }
+      this.click = false
       this.$refs.lottery.tween()
     },
-    endLottery(prize){
-      console.log(prize)
+    endLottery(prize) {
+      this.$refs.alert.show(prize,()=>{
+        this.click = true
+      },'SAWA')
     },
     addToList(v) {
       let time = 75 / (10 + decodeURI(v.content).length * 0.5)
@@ -376,23 +374,6 @@ export default {
         time: time,
         type: MESSAGE_TYPE.NORMAL
       })
-    },
-    msgScroll() {
-      this.tmsg = setInterval(() => {
-        if (this.$serverTime > this.endTime) clearInterval(this.tmsg)
-        this.getMsgList()
-      }, 60000)
-      const msgul = this.$refs.msgul
-      this.tscroll = setInterval(() => {
-        msgul.style.marginTop = '-30px'
-        this.animates = !this.animates
-        setTimeout(() => {
-          this.msgList.push(this.msgList[0])
-          this.msgList.shift()
-          msgul.style.marginTop = '0'
-          this.animates = !this.animates // 避免回滚
-        }, 500)
-      }, 2000)
     },
     changePage(page) {
       if (page == 'vote') {
@@ -412,9 +393,9 @@ export default {
         this.barrageList = []
         this.pageVote = true
         this.canClickTab2 = true
-        this.$nextTick(() => {
-          this.msgScroll()
-        })
+        // this.$nextTick(() => {
+        //   this.msgScroll()
+        // })
       } else if (page == 'barrage') {
         if (!this.canClickTab2) {
           return
@@ -1123,256 +1104,6 @@ export default {
           })
       }
     },
-    // 获取抽奖种类
-    getLotteryType() {
-      this.$axios
-        .get(`/voting/lottery/v1/rewards?lottery_id=${this.lottery_id}`)
-        .then(res => {
-          if (res.data.code === 0) {
-            this.lotteryType = res.data.data
-          } else {
-            this.lotteryType = [] // 服务器端计算数据错误时
-            this.$refs.alert.show('Get rewards error!')
-          }
-          this.loaded_l = true
-          this.getMsgList()
-        })
-        .catch(err => {
-          this.lotteryType = []
-          this.$refs.alert.show('Get rewards error!! ' + err)
-        })
-    },
-    // 获取消息列表
-    getMsgList() {
-      this.$axios
-        .get(`/voting/lottery/v1/winnings?lottery_id=${this.lottery_id}`)
-        .then(res => {
-          if (res.data.code === 0) {
-            if (this.$serverTime <= this.startTime) {
-              this.items = []
-            } else {
-              this.items = res.data.data
-              this.items.forEach(item => {
-                if (item.user_name) {
-                  if (new RegExp(/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[a-z0-9]*[a-z0-9]+\.){1,63}[a-z0-9]+$/).test(item.user_name)) {
-                    // 邮箱用户
-                    const arr = item.user_name.split('@')
-                    if (arr[0].length > 3) {
-                      item.user_name =
-                        arr[0].substr(0, 2) + arr[0].slice(2, -1).replace(/[^\s]/g, '*') + arr[0].substring(arr[0].length - 1) + '@' + arr[1]
-                    }
-                    if (arr[0].length == 3) {
-                      item.user_name = arr[0].replace(/(\w{1})\w{1}(\w{1})/, '$1*$2') + '@' + arr[1]
-                    }
-                    if (arr[0].length == 2) {
-                      item.user_name = arr[0].replace(/\w{1}(\w{1})/, '*$1') + '@' + arr[1]
-                    }
-                    if (arr[0].length == 1) {
-                      item.user_name = arr[0].replace(/\w{1}/, '*') + '@' + arr[1]
-                    }
-                  } else if (new RegExp(/^\d{1,}$/).test(item.user_name)) {
-                    // 手机用户
-                    item.user_name = item.user_name.toString().replace(/(.*)\d{3}(\d{3})/, '$1***$2')
-                  }
-                }
-                item.user_id = item.user_id ? item.user_id.toString().replace(/(.*)\d{2}/, '$1**') : 9999
-                for (let i = 0; i < this.lotteryType.length; i++) {
-                  if (item.reward_id == this.lotteryType[i].id) {
-                    item.reward_name = this.lotteryType[i].name
-                  }
-                }
-              })
-              this.loaded_m = true
-            }
-          } else {
-            this.items = [] // 服务器端计算数据错误时
-            this.$refs.alert.show('Get winnings error!')
-          }
-        })
-        .catch(err => {
-          this.items = []
-          this.$refs.alert.show('Get winnings error!! ' + err)
-        })
-    },
-    // 抽奖按钮为灰提示
-    canNotLottery() {
-      if (!this.click) {
-        return
-      }
-      this.mSendEvLog('lottery_click', '', '-1')
-      if (this.appType == 0) {
-        this.callOrDownApp('lottery')
-        return
-      }
-      if (!this.isLogin) {
-        // 移动端未登录
-        this.$refs.alert.show(
-          'Tafadhali jisajili ili uanze mchuano wa bahati.',
-          () => {
-            this.toSignIn()
-          },
-          'JISAJILI'
-        )
-        return
-      }
-      if (this.$serverTime < this.startTime) {
-        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
-        return
-      }
-      if (this.$serverTime >= this.endTime) {
-        this.$refs.alert.show('Samahani, kura zimekwisha.', () => {}, 'SAWA')
-        return
-      }
-      // 票不够不能抽奖
-      this.$refs.alert.show('Piga kura ili upate nafasi ya kupata zawadi! Kila kura 5 kwa mchezo 1', () => {}, 'SAWA')
-    },
-    // 开始抽奖
-    startLottery() {
-      if (!this.click) {
-        return
-      }
-      this.lotteryLeft--
-      this.speeds = 200
-      this.click = false
-      this.canClickTab2 = false
-      this.startRoll()
-    },
-    // 开始转动
-    startRoll() {
-      this.times += 1 // 转动次数
-      this.oneRoll() // 转动过程调用的每一次转动方法，这里是第一次调用初始化
-
-      // 如果当前转动次数达到要求 && 目前转到的位置是中奖位置
-      if (this.times > this.cycle + 10 && this.prize === this.indexs) {
-        clearTimeout(this.timers) // 清除转动定时器，停止转动
-        // this.prize = -1
-        this.times = 0
-        if (this.indexs < 5) {
-          setTimeout(() => {
-            this.$refs.alert.show(
-              'Hongera! Umepata ' + this.lotteryType[this.indexs].name + '! Zawadi zitatolewa kwenye siku ya pili ya kazi katika Me-> Kuponi zangu.',
-              () => {
-                this.click = true
-                this.canClickTab2 = true
-              },
-              'SAWA'
-            )
-          }, 1000)
-        } else if (this.indexs == 5) {
-          this.getTicketAward(res => {
-            if (res.data.code == 200) {
-              setTimeout(() => {
-                this.$refs.alert.show(
-                  'Hongera! Umepata kura ' + res.data.data + ' zaidi!',
-                  () => {
-                    this.click = true
-                    this.canClickTab2 = true
-                  },
-                  'SAWA'
-                )
-                this.voteLeft += res.data.data
-              }, 1000)
-            } else {
-              this.$refs.alert.show('Get ticket award error!' + res.data.message)
-            }
-          })
-        } else if (this.indexs === 6) {
-          setTimeout(() => {
-            this.lotteryLeft++
-            this.$refs.alert.show(
-              'Hongera! Umepata nafasi moja zaidi!',
-              () => {
-                this.click = true
-                this.startLottery()
-              },
-              'SAWA'
-            )
-          }, 1000)
-        } else if (this.indexs === 7) {
-          setTimeout(() => {
-            this.$refs.alert.show(
-              'Asante kwa ushiriki wako.',
-              () => {
-                this.click = true
-                this.canClickTab2 = true
-              },
-              'SAWA'
-            )
-          }, 1000)
-        }
-      } else {
-        if (this.times < this.cycle) {
-          this.speeds -= 10 // 加快转动速度
-        } else if (this.times === this.cycle) {
-          // 后台取得一个中奖位置
-          this.$axios({
-            method: 'POST',
-            headers: {
-              'content-type': 'application/x-www-form-urlencoded'
-              // token: this.$store.state.token
-            },
-            data: qs.stringify({
-              lottery_id: this.lottery_id
-            }),
-            url: '/voting/lottery/v1/drawing'
-          })
-            .then(res => {
-              if (res.data.code == 0) {
-                const prizeNum = res.data.data
-                for (let i = 0; i < this.lotteryType.length; i++) {
-                  if (prizeNum == this.lotteryType[i].id) {
-                    this.prize = i
-                  }
-                }
-                if (this.prize + 1 == 3) this.mSendEvLog('lottery_click', 'vip', '1')
-                else if (this.prize + 1 == 4) this.mSendEvLog('lottery_click', '40offcoupon', '1')
-                else if (this.prize + 1 == 5) this.mSendEvLog('lottery_click', '30offcoupon', '1')
-                else if (this.prize + 1 == 6) this.mSendEvLog('lottery_click', 'morevotes', '1')
-                else if (this.prize + 1 == 7) this.mSendEvLog('lottery_click', 'tryagain', '0')
-                else if (this.prize + 1 == 8) this.mSendEvLog('lottery_click', 'sorry', '0')
-              } else {
-                setTimeout(() => {
-                  clearTimeout(this.timers)
-                  this.times = 0
-                  this.$refs.alert.show(
-                    'Lottery error!',
-                    () => {
-                      this.lotteryLeft = 0
-                    },
-                    'SAWA'
-                  )
-                }, 3000)
-              }
-            })
-            .catch(err => {
-              clearTimeout(this.timers)
-              this.times = 0
-              this.$refs.alert.show('Lottery error!!' + err, () => {
-                this.lotteryLeft = 0
-              })
-            })
-        } else if (this.times > this.cycle + 10 && ((this.prize === 0 && this.indexs === 5) || this.prize === this.indexs + 1)) {
-          this.speeds += 110
-        } else {
-          this.speeds += 20
-        }
-
-        if (this.speeds < 80) {
-          this.speeds = 80
-        }
-        this.timers = setTimeout(this.startRoll, this.speeds)
-      }
-    },
-    // 每一次转动
-    oneRoll() {
-      let indexs = this.indexs // 当前转动到哪个位置
-      const counts = this.counts // 总共有多少个位置
-      indexs += 1
-      if (indexs > counts - 1) {
-        indexs = 0
-      }
-      this.indexs = indexs
-    },
     // 获得加票方法
     getTicketAward(callback) {
       let url = '/hybrid/vote/getTicketAward'
@@ -1721,7 +1452,7 @@ export default {
             height: 0;
             &.open-ott {
               padding-bottom: 7%;
-              top: 37.5%;
+              top: 38.5%;
             }
             &.open-dvb {
               padding-bottom: 8%;
@@ -1746,185 +1477,35 @@ export default {
           }
         }
       }
-      .lottery-box {
-        width: 100%;
-        margin-top: 1rem;
-        .lottery {
-          width: 90%;
-          background-color: #fab512;
-          margin: 0 auto;
-          border-radius: 0.5rem;
-          padding: 1rem 2%;
-          position: relative;
-          z-index: 2;
-          .count {
-            width: 11rem;
-            height: 1.5rem;
-            line-height: 1.5rem;
-            border-radius: 0.2rem;
-            color: #fff;
-            background-color: #a57200;
-            text-align: center;
-            margin: 0 auto 0.5rem;
-            font-size: 0.75rem;
-          }
-          .lottery-type {
-            width: 100%;
-            margin: 0 auto;
-            background-image: url('~@/assets/img/vote/BSSVote3/bg-border.png');
-            background-size: 100% 101%;
-            color: #ad5500;
-            padding: 3% 2.5% 1.5%;
-            ul {
-              width: 100%;
-              margin: 0 auto;
-              border-radius: 0.5rem;
-              position: relative;
-              &:before {
-                content: '';
-                display: inline-block;
-                padding-bottom: 100%;
-                width: 0;
-                vertical-align: middle;
-              }
-              li {
-                width: 28%;
-                height: 28%;
-                display: block;
-                position: absolute;
-                overflow: hidden;
-                background-color: #fff;
-                border: 0.25rem solid transparent;
-                border-radius: 0.5rem;
-                &:nth-child(1) {
-                  left: 6%;
-                  top: 6%;
-                }
-                &:nth-child(2) {
-                  left: 36%;
-                  top: 6%;
-                }
-                &:nth-child(3) {
-                  left: 66%;
-                  top: 6%;
-                }
-                &:nth-child(4) {
-                  left: 66%;
-                  top: 36%;
-                }
-                &:nth-child(5) {
-                  left: 66%;
-                  top: 66%;
-                }
-                &:nth-child(6) {
-                  left: 36%;
-                  top: 66%;
-                }
-                &:nth-child(7) {
-                  left: 6%;
-                  top: 66%;
-                }
-                &:nth-child(8) {
-                  left: 6%;
-                  top: 36%;
-                }
-                &.active {
-                  border: 0.25rem solid red;
-                }
-                > div {
-                  width: 100%;
-                  height: 100%;
-                  .prize {
-                    width: 100%;
-                    height: 100%;
-                    text-align: center;
-                    img {
-                      height: 45%;
-                    }
-                    p {
-                      font-size: 0.8rem;
-                    }
-                  }
-                }
-              }
-              .getLuck,
-              .getLuck-gray {
-                width: 30%;
-                border-radius: 0.5rem;
-                text-align: center;
-                position: absolute;
-                top: 36%;
-                left: 35%;
-                font-size: 1.1rem;
-                font-weight: bold;
-                color: #fdf2ff;
-                background-size: 100% 100%;
-                &:before {
-                  content: '';
-                  display: inline-block;
-                  padding-bottom: 99%;
-                  width: 0;
-                  vertical-align: middle;
-                }
-              }
-              .getLuck {
-                background-image: url('~@/assets/img/vote/BSSRegister/start.png');
-                &:active {
-                  background-image: url('~@/assets/img/vote/BSSRegister/start-ac.png');
-                }
-              }
-              .getLuck-gray {
-                background-image: url('~@/assets/img/vote/BSSRegister/start-gray.png');
-                color: #ccc;
-              }
-            }
-          }
-          .msg {
-            width: 100%;
-            height: 2rem;
-            line-height: 2rem;
-            overflow: hidden;
-            transition: all 0.5s;
-            position: relative;
-            margin-bottom: 0.3rem;
-            background-color: #a87000;
-            border-radius: 1rem;
-            .anim {
-              transition: all 0.5s;
-            }
-            img {
-              position: absolute;
-              display: block;
-              width: 1.23rem;
-              height: 1rem;
-              left: 0.8rem;
-              top: 0.5rem;
-            }
-            ul {
-              width: 100%;
-              li {
-                width: 100%;
-                padding-left: 2.5rem;
-                line-height: 2rem;
-                height: 2rem;
-                color: #fde8ae;
-                overflow: hidden;
-                text-overflow: ellipsis;
-                white-space: nowrap;
-              }
-            }
-          }
-          .tip {
-            width: 100%;
-            height: 1.3rem;
-            font-size: 0.75rem;
-            line-height: 1.3rem;
-            text-align: center;
-            color: #fff;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
-          }
+      .lottery-type {
+        width: 90%;
+        background-color: #fab512;
+        margin: 1rem auto 0;
+        border-radius: 0.5rem;
+        padding: 1rem 2%;
+        position: relative;
+        z-index: 2;
+        .count {
+          width: 11rem;
+          height: 1.5rem;
+          line-height: 1.5rem;
+          border-radius: 0.2rem;
+          color: #fff;
+          background-color: #a57200;
+          text-align: center;
+          margin: 0 auto 0.5rem;
+          font-size: 0.75rem;
+        }
+        .tip {
+          width: 100%;
+          height: 1.3rem;
+          font-size: 0.75rem;
+          line-height: 1.3rem;
+          text-align: center;
+          color: #9a6100;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
         }
       }
     }
@@ -2186,6 +1767,7 @@ export default {
               height: 1.2rem;
               position: relative;
               top: 0.2rem;
+              margin-right: 0.3rem;
             }
             width: 33%;
             margin-left: 66%;
@@ -2213,6 +1795,7 @@ export default {
         }
         &.share {
           width: 90%;
+          padding: 0.5rem 0;
         }
       }
       .text {

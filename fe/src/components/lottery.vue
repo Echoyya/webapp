@@ -6,6 +6,7 @@
           <div>
             <div class="prize">
               <img :src="item.picture_url" />
+              <p>{{item.name}}</p>
             </div>
           </div>
         </li>
@@ -15,7 +16,7 @@
     <div v-if="withMsgList" class="msg-box">
       <div class="msg">
         <img src="@/assets/img/vote/TeamFission/ic-msg.png" alt />
-        <transition-group name="list" tag="ul" @before-leave="beforeLeave">
+        <transition-group name="list" tag="ul" @before-leave="beforeLeave" v-if="dataList.length>0">
           <li
             v-for="item in msgList"
             :key="item.reward_id"
@@ -218,13 +219,22 @@ export default {
 }
 </script>
 <style lang="less" scoped>
+div,
+li,
+img {
+  box-sizing: border-box;
+}
 .lottery {
+  width: 100%;
   margin: 0 auto;
-  background-image: url('~@/assets/img/vote/TeamFission/bg-lottery.png');
+  background-image: url('~@/assets/img/vote/BSSVote3/bg-border.png');
   background-size: 100% 101%;
   color: #ad5500;
-  padding: 1.4rem 1.5rem;
+  padding: 3% 2.5% 1.5%;
   ul {
+    width: 100%;
+    margin: 0 auto;
+    border-radius: 0.5rem;
     position: relative;
     &:before {
       content: '';
@@ -234,56 +244,62 @@ export default {
       vertical-align: middle;
     }
     li {
-      width: 30%;
+      width: 28%;
+      height: 28%;
       display: block;
       position: absolute;
       overflow: hidden;
       background-color: #fff;
-      padding: 1.5%;
+      border: 0.25rem solid transparent;
       border-radius: 0.5rem;
-      background-color: #a80044;
+      padding: 0.3rem;
       &:nth-child(1) {
-        left: 0%;
-        top: 0%;
+        left: 6%;
+        top: 6%;
       }
       &:nth-child(2) {
-        left: 34%;
-        top: 0%;
+        left: 36%;
+        top: 6%;
       }
       &:nth-child(3) {
-        left: 68%;
-        top: 0%;
+        left: 66%;
+        top: 6%;
       }
       &:nth-child(4) {
-        left: 68%;
-        top: 34%;
+        left: 66%;
+        top: 36%;
       }
       &:nth-child(5) {
-        left: 68%;
-        top: 68%;
+        left: 66%;
+        top: 66%;
       }
       &:nth-child(6) {
-        left: 34%;
-        top: 68%;
+        left: 36%;
+        top: 66%;
       }
       &:nth-child(7) {
-        left: 0%;
-        top: 68%;
+        left: 6%;
+        top: 66%;
       }
       &:nth-child(8) {
-        left: 0%;
-        top: 34%;
+        left: 6%;
+        top: 36%;
       }
       &.active {
-        background-color: #ff0090;
+        border: 0.25rem solid #8fd000;
       }
       > div {
         width: 100%;
+        height: 100%;
         .prize {
+          width: 100%;
+          height: 100%;
+          text-align: center;
           img {
-            display: block;
-            width: 100%;
-            height: 100%;
+            height: 45%;
+          }
+          p {
+            font-size: 0.8rem;
           }
         }
       }
@@ -293,23 +309,22 @@ export default {
       border-radius: 0.5rem;
       text-align: center;
       position: absolute;
-      top: 34%;
-      left: 34%;
-      font-size: 1.2rem;
+      top: 36%;
+      left: 35%;
+      font-size: 1.1rem;
       font-weight: bold;
-      color: #fdf2ff;
-      background-color: #ff008a;
-      padding: 1.5%;
-      &:active {
-        background-color: #8b0048;
-        color: #e0aac9;
-      }
+      color: #d35b05;
+      background-image: url('~@/assets/img/vote/BSSRegister/start.png');
+      background-size: 100% 100%;
       &:before {
         content: '';
         display: inline-block;
-        padding-bottom: 100%;
+        padding-bottom: 99%;
         width: 0;
         vertical-align: middle;
+      }
+      &:active {
+        background-image: url('~@/assets/img/vote/BSSRegister/start-ac.png');
       }
     }
   }
@@ -326,7 +341,7 @@ export default {
     transition: all 0.5s;
     position: relative;
     margin-bottom: 0.3rem;
-    background-color: #26010e;
+    background-color: #a87001;
     border-radius: 1.1rem;
     .anim {
       transition: all 0.5s;
