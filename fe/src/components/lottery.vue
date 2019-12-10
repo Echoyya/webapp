@@ -43,8 +43,8 @@ export default {
       type: Number,
       default: 1
     },
-    defaultPrize: {
-      required: false,
+    defaultPrizeIndex: {
+      required: true,
       type: Number,
       default: 3
     },
@@ -172,8 +172,9 @@ export default {
     },
     tween() {
       if (this.drawing) return
+      this.drawing = true
       let ani = this.animate()
-      const defaultIndex = 8 * 5 + this.defaultPrize
+      const defaultIndex = 8 * 6 + this.defaultPrizeIndex
       ani.to({ num: defaultIndex }, 6000)
       ani.start()
       this.$axios({
@@ -184,23 +185,34 @@ export default {
         data: qs.stringify({
           lottery_id: this.id
         }),
+        timeout: 6000,
         url: '/voting/lottery/v1/drawing'
       })
         .then(res => {
           if (res.data.code == 0) {
             const prizeNum = res.data.data
-            ani.to({ num: 8 * 6 + prizeNum }, 7000)
+            let prizeIndex = this.defaultIndex
+            this.items.forEach((item, index) => {
+              if (item.id == prizeNum) {
+                prizeIndex = index
+              }
+            })
+            ani.to({ num: 8 * 6 + prizeIndex }, 7000)
           } else {
+            this.drawing = false
+            ani.stop()
             this.$emit('getResultError', {
               code: 4,
-              errMsg: 'Lottery error'
+              errMsg: res.data.message
             })
           }
         })
         .catch(() => {
+          this.drawing = false
+          ani.stop()
           this.$emit('getResultError', {
             code: 4,
-            errMsg: 'Lottery error'
+            errMsg: 'Network error'
           })
         })
     },
@@ -210,23 +222,21 @@ export default {
         frame = requestAnimationFrame(animate)
         TWEEN.update(time)
       }
-      const coods = { num: 0 }
+      const coods = { num: this.indexs }
       const _this = this
       let ani = new TWEEN.Tween(coods)
         .easing(TWEEN.Easing.Quadratic.InOut)
         .onUpdate(function(obj) {
           _this.indexs = Math.floor(obj.num % 8)
         })
+        .onStop(function() {
+          _this.indexs = 0
+        })
         .onComplete(function(obj) {
+          _this.drawing = false
           cancelAnimationFrame(frame)
-          const prize = Math.floor(obj.num % 8)
-          let prizeItem = null
-          _this.items.forEach(item => {
-            if (item.id == prize + 1) {
-              prizeItem = item
-            }
-          })
-          _this.$emit('end', prizeItem)
+          const prizeIndex = Math.floor(obj.num % 8)
+          _this.$emit('end', _this.items[prizeIndex])
         })
       frame = requestAnimationFrame(animate)
       return ani

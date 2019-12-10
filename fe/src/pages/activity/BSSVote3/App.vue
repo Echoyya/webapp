@@ -75,13 +75,13 @@
           <lottery
             ref="lottery"
             :id="lottery_id"
-            :defaultPrize="7"
+            :defaultPrizeIndex="7"
             :withMsgList="true"
             @drawClick="startDraw"
             @end="endLottery"
-            @getItemsError="getTypeError"
+            @getItemsError="lotteryError"
             @getResultError="lotteryError"
-            @getMsgListError="getMsgError"
+            @getMsgListError="lotteryError"
           ></lottery>
           <div class="tip">
             <p>TAFUTA ZAWADI KWENYE ME -> KUPONI YANGU</p>
@@ -194,8 +194,8 @@ export default {
       // 页面
       show_rules: false,
       show_pick: false,
-      appType: this.$appType,
-      isLogin: this.$isLogin,
+      appType: 1 || this.$appType,
+      isLogin: 1 || this.$isLogin,
       // appType: 1,
       // isLogin: true,
       firstTime: true,
@@ -227,7 +227,6 @@ export default {
       canVotes: true,
 
       // 抽奖
-      click: true,
       lotteryLeft: 0,
       lottery_id: 3,
 
@@ -307,19 +306,10 @@ export default {
   },
 
   methods: {
-    getMsgError(err) {
-      this.$refs.alert.show('get winning list error! ' + err)
-    },
-    getTypeError(err) {
-      this.$refs.alert.show('get lottery type error! ' + err)
-    },
     lotteryError(err) {
-      this.$refs.alert.show('lottery error! ' + err)
+      this.$refs.alert.show(err.errMsg)
     },
     startDraw() {
-      if (!this.click) {
-        return
-      }
       if (this.appType == 0 || !this.isLogin || this.$serverTime < this.startTime || this.$serverTime >= this.endTime || this.lotteryLeft <= 0) {
         this.mSendEvLog('lottery_click', '', '-1')
       }
@@ -346,18 +336,15 @@ export default {
         this.$refs.alert.show('Samahani, kura zimekwisha.', () => {}, 'SAWA')
         return
       }
-      if (this.lotteryLeft <= 0) {
-        // 票不够不能抽奖
-        this.$refs.alert.show('Piga kura ili upate nafasi ya kupata zawadi! Kila kura 5 kwa mchezo 1', () => {}, 'SAWA')
-        return
-      }
-      this.click = false
+      // if (this.lotteryLeft <= 0) {
+      //   // 票不够不能抽奖
+      //   this.$refs.alert.show('Piga kura ili upate nafasi ya kupata zawadi! Kila kura 5 kwa mchezo 1', () => {}, 'SAWA')
+      //   return
+      // }
       this.$refs.lottery.tween()
     },
     endLottery(prize) {
-      this.$refs.alert.show(prize,()=>{
-        this.click = true
-      },'SAWA')
+      this.$refs.alert.show(prize, '', 'SAWA')
     },
     addToList(v) {
       let time = 75 / (10 + decodeURI(v.content).length * 0.5)
