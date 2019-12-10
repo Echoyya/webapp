@@ -19,9 +19,9 @@
           <div class="vote-remaining">
             <div class="remain">KURA ZILIZOBAKI:{{appType==0?0:(voteLeft>0?voteLeft:0)}}</div>
           </div>
-          <div v-if="coupleList.length>0">
+          <div v-if="advisorList.length>0">
             <ul class="clearfix">
-              <li v-for="(item,key) in coupleList" :key="key" data-id="item.id">
+              <li v-for="(item,key) in advisorList" :key="key" data-id="item.id">
                 <div class="item-box">
                   <div>
                     <img :src="item.icon+'?w=150'" class="icon" @click="toPlayer(item,'votepic_click',item.name)" />
@@ -94,7 +94,7 @@
           <div class="pick-box">
             <div class="left">
               <div>
-                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[0].icon+'?w=250'" alt />
+                <img v-if="pageList[index]" :src="pageList[index].candidates[0].icon+'?w=250'" alt />
               </div>
             </div>
             <div class="middle">
@@ -104,12 +104,12 @@
             </div>
             <div class="right">
               <div>
-                <img v-if="pageListReady[index]" :src="pageListReady[index].candidates[1].icon+'?w=250'" alt />
+                <img v-if="pageList[index]" :src="pageList[index].candidates[1].icon+'?w=250'" alt />
               </div>
             </div>
             <div v-show="!picked||appType==0" class="pick">
-              <div v-if="pageListReady[index]" class="btn" @click="handlePick('left',pageListReady[index].candidates)">CHAGUA</div>
-              <div v-if="pageListReady[index]" class="btn" @click="handlePick('right',pageListReady[index].candidates)">CHAGUA</div>
+              <div v-if="pageList[index]" class="btn" @click="handlePick('left',pageList[index].candidates)">CHAGUA</div>
+              <div v-if="pageList[index]" class="btn" @click="handlePick('right',pageList[index].candidates)">CHAGUA</div>
             </div>
             <div v-show="picked&&appType>0" class="progress" :class="{'show-in':show_in}">
               <div class="bar l"></div>
@@ -218,7 +218,6 @@ export default {
 
       // 投票
       voteLeft: 0,
-      loaded: false,
       advisorList: [],
       vote_id: 64,
       startTime: new Date('2019-11-18T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
@@ -253,8 +252,6 @@ export default {
       canVote: true, // 防多pick
       time: null, // 弹幕滚动定时器
       commentText: '', // 发送的内容
-      loaded_page: false,
-      loaded_comment: false,
       number: 20, // 每次请求的弹幕数量
       last_id: 0, // 上一次请求的最后一条弹幕id
       canClickTab1: false,
@@ -265,26 +262,10 @@ export default {
       shareText: 'Kura yako muhimu! Mpigie kura awe mshindi wa Bongo Star Search'
     }
   },
-  computed: {
-    pageListReady() {
-      if (this.loaded_page) {
-        return this.pageList
-      } else {
-        return []
-      }
-    },
-    coupleList() {
-      if (this.loaded) {
-        return this.advisorList
-      } else {
-        return []
-      }
-    }
-  },
   created() {
     this.vote_id = getQuery('voteid') || 64
     this.barrage_id = getQuery('barrageid') || 17
-    this.lottery_id = this.$appType == 2 ? 6 : 7
+    this.lottery_id = this.$appType == 2 ? 7 : 6
   },
   mounted() {
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
@@ -538,9 +519,7 @@ export default {
             }
           }
           if (flag) {
-            this.loaded_page = true
             this.initPage()
-            this.loaded_comment = false
             this.getCommentList()
           } else {
             this.pageList = []
@@ -554,7 +533,6 @@ export default {
     },
     getCommentList() {
       if (this.$serverTime < this.startTime) {
-        this.loaded_comment = true
         this.canClickTab1 = true
         return
       }
@@ -950,7 +928,6 @@ export default {
             this.advisorList = []
             this.$refs.alert.show('Get vote candidates show error!')
           }
-          this.loaded = true
         })
         .catch(err => {
           this.advisorList = []
