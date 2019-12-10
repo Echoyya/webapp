@@ -37,6 +37,8 @@ export const pageDlay = function(callback, second) {
           lastFired = now
           window.requestAnimationFrame(exam)
         }
+      } else {
+        this.$refs.loading.finish()
       }
     }
     window.requestAnimationFrame(exam)
@@ -53,6 +55,7 @@ export const pageDlay = function(callback, second) {
         }
       } else {
         // 不健康,代表浏览器进入后台，则不做操作
+        this.$refs.loading.finish()
         clearInterval(timer)
       }
       lastFired = now
@@ -104,7 +107,11 @@ export const callApp = function(page, failback) {
       utmParam.map
     )
   )
-
+  if (browser.isIos) {
+    invokeByHref.call(this, createScheme(page), failback)
+    this.$refs.loading.finish()
+    return false
+  }
   // 该判断需要根据大量测试场景进行判断
   if (browser.browserVer > 40) {
     if (browser.ua.indexOf('UCBrowser') > 0) {
@@ -117,7 +124,8 @@ export const callApp = function(page, failback) {
       invokeByHref.call(this, createScheme(page), failback)
     }
   } else {
-    invokeByIframe.call(this, createScheme(page), failback)
+    invokeByHref.call(this, createIntent(page), failback)
+    // invokeByIframe.call(this, createScheme(page), failback)
   }
 }
 
@@ -135,9 +143,11 @@ export const downApk = function(callback) {
     )
   )
   if (browser.isIos) {
+    this.$refs.loading.finish()
     window.location.href = appleStore
   } else {
     axios.get('http://upms.startimestv.com/cms/public/app').then(data => {
+      this.$refs.loading.finish()
       const url = data.data.apkUrl
       const direct = url.indexOf('google') > 0 ? url.replace('google', 'officialWap') : url
       window.location.href = direct
@@ -178,6 +188,7 @@ export const callMarket = function(failback) {
   )
 
   if (browser.isIos) {
+    this.$refs.loading.finish()
     window.location.href = appleStore
   } else if (browser.ua.indexOf('MuMu') >= 0 || browser.ua.indexOf('I9502') > 0) {
     // android 6+
