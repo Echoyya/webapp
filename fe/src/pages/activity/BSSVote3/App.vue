@@ -75,13 +75,13 @@
           <lottery
             ref="lottery"
             :id="lottery_id"
-            :defaultPrize="7"
+            :defaultPrizeIndex="7"
             :withMsgList="true"
             @drawClick="startDraw"
             @end="endLottery"
-            @getItemsError="getTypeError"
+            @getItemsError="lotteryError"
             @getResultError="lotteryError"
-            @getMsgListError="getMsgError"
+            @getMsgListError="lotteryError"
           ></lottery>
           <div class="tip">
             <p>TAFUTA ZAWADI KWENYE ME -> KUPONI YANGU</p>
@@ -194,8 +194,8 @@ export default {
       // 页面
       show_rules: false,
       show_pick: false,
-      appType: this.$appType,
-      isLogin: this.$isLogin,
+      appType: 1 || this.$appType,
+      isLogin: 1 || this.$isLogin,
       // appType: 1,
       // isLogin: true,
       firstTime: true,
@@ -227,7 +227,6 @@ export default {
       canVotes: true,
 
       // 抽奖
-      click: true,
       lotteryLeft: 0,
       lottery_id: 6,
 
@@ -298,19 +297,10 @@ export default {
   },
 
   methods: {
-    getMsgError(err) {
-      this.$refs.alert.show(err.errMsg)
-    },
-    getTypeError(err) {
-      this.$refs.alert.show(err.errMsg)
-    },
     lotteryError(err) {
       this.$refs.alert.show(err.errMsg)
     },
     startDraw() {
-      if (!this.click) {
-        return
-      }
       if (this.appType == 0 || !this.isLogin || this.$serverTime < this.startTime || this.$serverTime >= this.endTime || this.lotteryLeft <= 0) {
         this.mSendEvLog('lottery_click', '', '-1')
       }
