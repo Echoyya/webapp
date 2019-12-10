@@ -61,7 +61,7 @@ export default {
       indexs: 0,
       msg: {},
       dataList: [],
-      msgIndex: 0
+      msgIndex: -1
     }
   },
   computed: {
@@ -108,13 +108,16 @@ export default {
     beforeLeave() {
       setTimeout(() => {
         this.msgIndex = this.msgIndex + 1
+        if (this.msgIndex == this.dataList.length - 25) {
+          this.getMsgList(1)
+        }
         if (this.msgIndex == this.dataList.length) {
           this.msgIndex = 0
         }
         this.msg = Object.assign({}, this.dataList[this.msgIndex])
-      }, 3000)
+      }, 2500)
     },
-    getMsgList() {
+    getMsgList(more) {
       this.$axios
         .get(`/voting/lottery/v1/winnings?lottery_id=${this.id}`)
         .then(res => {
@@ -149,8 +152,11 @@ export default {
               if (item.user_id) item.user_id = item.user_id.toString().replace(/(.*)\d{2}/, '$1**')
               item.reward_name = tmp[item.reward_id].name
             })
-
-            this.beforeLeave()
+            if (!more) {
+              this.msgIndex = 0
+              this.msg = Object.assign({}, this.dataList[0])
+              this.beforeLeave()
+            }
           } else {
             this.items = []
             this.$emit('getItemsError', {
@@ -236,7 +242,7 @@ export default {
           _this.drawing = false
           cancelAnimationFrame(frame)
           const prizeIndex = Math.floor(obj.num % 8)
-          _this.$emit('end', _this.items[prizeIndex])
+          _this.$emit('end', Object.assign({}, { prizeIndex: prizeIndex }, _this.items[prizeIndex]))
         })
       frame = requestAnimationFrame(animate)
       return ani
