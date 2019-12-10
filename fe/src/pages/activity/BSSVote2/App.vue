@@ -854,7 +854,8 @@ export default {
     },
     toComment(label) {
       this.mSendEvLog('audreg_click', label, '')
-      window.location.href = 'http://m.startimestv.com/hybrid/vote/BSSComment'
+      // window.location.href = 'http://m.startimestv.com/hybrid/vote/BSSComment'
+      window.location.href = 'http://qa.upms.startimestv.com/hybrid/vote/BSSComment'
     },
     // 埋点方法
     mSendEvLog(action, label, value) {
