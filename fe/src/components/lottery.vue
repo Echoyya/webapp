@@ -16,12 +16,11 @@
     <div v-if="withMsgList" class="msg-box">
       <div class="msg">
         <img src="@/assets/img/vote/TeamFission/ic-msg.png" alt />
-        <transition-group name="list" tag="ul" @before-leave="beforeLeave" v-if="dataList.length>0">
-          <li
-            v-for="item in msgList"
-            :key="item.reward_id"
-          >{{item.nick_name?item.nick_name:(item.user_name?item.user_name:item.user_id)}} has won {{item.reward_name||''}}!</li>
-        </transition-group>
+        <ul>
+          <transition name="fade" @before-leave="beforeLeave">
+            <li :key="msgIndex">{{msgNow}}</li>
+          </transition>
+        </ul>
       </div>
     </div>
   </div>
@@ -60,9 +59,24 @@ export default {
       items: [],
       drawing: false,
       indexs: 0,
+      msg: {},
       dataList: [],
-      msgList: [],
       msgIndex: 0
+    }
+  },
+  computed: {
+    msgNow() {
+      if (this.msg.reward_id) {
+        let reward_name = ''
+        this.items.forEach(item => {
+          if (item.id == this.msg.reward_id) {
+            reward_name = item.name
+          }
+        })
+        return `${this.msg.nick_name ? this.msg.nick_name : this.msg.user_name ? this.msg.user_name : this.msg.user_id} has won ${reward_name}!`
+      } else {
+        return ''
+      }
     }
   },
   created() {
@@ -92,10 +106,12 @@ export default {
   },
   methods: {
     beforeLeave() {
-      this.msgList.push(this.dataList[this.msgIndex])
-      this.msgIndex = this.msgIndex + 1
       setTimeout(() => {
-        this.msgList.pop()
+        this.msgIndex = this.msgIndex + 1
+        if (this.msgIndex == this.dataList.length) {
+          this.msgIndex = 0
+        }
+        this.msg = Object.assign({}, this.dataList[this.msgIndex])
       }, 3000)
     },
     getMsgList() {
@@ -356,8 +372,10 @@ img {
     }
     ul {
       width: 100%;
+      position: relative;
       li {
         width: 100%;
+        position: absolute;
         padding-left: 2.5rem;
         line-height: 2rem;
         height: 2rem;
@@ -371,15 +389,18 @@ img {
   }
 }
 
-.list-enter {
-  transform: translateY(60px);
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
-.list-enter-active,
-.list-leave-active {
-  transition: all 1s ease;
+.fade-enter {
+  transform: translateY(100%);
 }
-.list-leave-to {
-  opacity: 1;
-  transform: translateY(-60px);
+.fade-leave-to {
+  transform: translateY(-100%);
+}
+.fade-enter-active,
+.fade-leave-active {
+  transition: 0.8s;
 }
 </style>
