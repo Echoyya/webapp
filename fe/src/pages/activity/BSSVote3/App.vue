@@ -280,12 +280,12 @@ export default {
       } else {
         return []
       }
-    },
+    }
   },
   created() {
     this.vote_id = getQuery('voteid') || 64
     this.barrage_id = getQuery('barrageid') || 17
-    this.lottery_id = this.$appType == 2 ? 7 : 6
+    this.lottery_id = this.$appType == 2 ? 6 : 7
   },
   mounted() {
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
@@ -343,17 +343,64 @@ export default {
         return
       }
       this.click = false
+      this.canClickTab2 = false
       this.$refs.lottery.tween()
     },
     endLottery(prize) {
       console.log(prize)
-      this.$refs.alert.show(
-        prize,
-        () => {
-          this.click = true
-        },
-        'SAWA'
-      )
+      if (prize.indexs < 5) {
+        setTimeout(() => {
+          this.$refs.alert.show(
+            'Hongera! Umepata ' + this.lotteryType[this.indexs].name + '! Zawadi zitatolewa kwenye siku ya pili ya kazi katika Me-> Kuponi zangu.',
+            () => {
+              this.click = true
+              this.canClickTab2 = true
+            },
+            'SAWA'
+          )
+        }, 1000)
+      } else if (prize.indexs == 5) {
+        this.getTicketAward(res => {
+          if (res.data.code == 200) {
+            setTimeout(() => {
+              this.$refs.alert.show(
+                'Hongera! Umepata kura ' + res.data.data + ' zaidi!',
+                () => {
+                  this.click = true
+                  this.canClickTab2 = true
+                },
+                'SAWA'
+              )
+              this.voteLeft += res.data.data
+            }, 1000)
+          } else {
+            this.$refs.alert.show('Get ticket award error!' + res.data.message)
+          }
+        })
+      } else if (prize.indexs === 6) {
+        setTimeout(() => {
+          this.lotteryLeft++
+          this.$refs.alert.show(
+            'Hongera! Umepata nafasi moja zaidi!',
+            () => {
+              this.click = true
+              this.startDraw()()
+            },
+            'SAWA'
+          )
+        }, 1000)
+      } else if (prize.indexs === 7) {
+        setTimeout(() => {
+          this.$refs.alert.show(
+            'Asante kwa ushiriki wako.',
+            () => {
+              this.click = true
+              this.canClickTab2 = true
+            },
+            'SAWA'
+          )
+        }, 1000)
+      }
     },
     addToList(v) {
       let time = 75 / (10 + decodeURI(v.content).length * 0.5)
@@ -389,9 +436,6 @@ export default {
         this.barrageList = []
         this.pageVote = true
         this.canClickTab2 = true
-        // this.$nextTick(() => {
-        //   this.msgScroll()
-        // })
       } else if (page == 'barrage') {
         if (!this.canClickTab2) {
           return
@@ -627,53 +671,15 @@ export default {
               }, 2000)
             }
 
-            // domLeft.style.width = 0.9 * this.leftNum + '%'
-            // domRight.style.width = 0.9 * this.rightNum + '%'
-            let w = 0
-            if (local == 'left') {
-              domLeft.style.width = 0
-              domRight.style.width = 90 + '%'
-              const t = setInterval(() => {
-                if (w == this.leftNum) {
-                  clearInterval(t)
-                  domLeft.style.width = 0.9 * this.leftNum + '%'
-                  domRight.style.width = 0.9 * this.rightNum + '%'
-                } else {
-                  domLeft.style.width = 0.9 * w + '%'
-                  domRight.style.width = 0.9 * (100 - w) + '%'
-                  w = w + 1
-                  if (this.leftNum == 100) {
-                    domLeft.style.borderRadius = '0.4rem'
-                  } else if (this.rightNum == 100) {
-                    domRight.style.borderRadius = '0.4rem'
-                  } else {
-                    domLeft.style.borderRadius = '0.4rem 0 0 0.4rem'
-                    domRight.style.borderRadius = '0 0.4rem 0.4rem 0'
-                  }
-                }
-              }, (100 - this.leftNum) / 5)
+            domLeft.style.width = 0.9 * this.leftNum + '%'
+            domRight.style.width = 0.9 * this.rightNum + '%'
+            if (this.leftNum == 100) {
+              domLeft.style.borderRadius = '0.4rem'
+            } else if (this.rightNum == 100) {
+              domRight.style.borderRadius = '0.4rem'
             } else {
-              domLeft.style.width = 90 + '%'
-              domRight.style.width = 0
-              const t = setInterval(() => {
-                if (w == this.rightNum) {
-                  clearInterval(t)
-                  domLeft.style.width = 0.9 * this.leftNum + '%'
-                  domRight.style.width = 0.9 * this.rightNum + '%'
-                } else {
-                  domLeft.style.width = 0.9 * (100 - w) + '%'
-                  domRight.style.width = 0.9 * w + '%'
-                  w = w + 1
-                  if (this.leftNum == 100) {
-                    domLeft.style.borderRadius = '0.4rem'
-                  } else if (this.rightNum == 100) {
-                    domRight.style.borderRadius = '0.4rem'
-                  } else {
-                    domLeft.style.borderRadius = '0.4rem 0 0 0.4rem'
-                    domRight.style.borderRadius = '0 0.4rem 0.4rem 0'
-                  }
-                }
-              }, (100 - this.rightNum) / 5)
+              domLeft.style.borderRadius = '0.4rem 0 0 0.4rem'
+              domRight.style.borderRadius = '0 0.4rem 0.4rem 0'
             }
             this.picked = true
             this.show_in = true
@@ -1430,7 +1436,7 @@ export default {
       }
       .more-vote {
         width: 95%;
-        margin: 1rem auto;
+        margin: 1rem auto 0;
         font-size: 0;
         text-align: center;
         position: relative;
@@ -1798,7 +1804,7 @@ export default {
         }
         &.share {
           width: 90%;
-          padding: 0.5rem 0;
+          padding: 1.5rem 0 0.5rem;
         }
       }
       .text {
