@@ -58,7 +58,7 @@ export default {
     return {
       items: [],
       drawing: false,
-      indexs: 0,
+      indexs: -1,
       msg: {},
       dataList: [],
       msgIndex: -1

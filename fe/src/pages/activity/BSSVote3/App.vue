@@ -76,7 +76,7 @@
             ref="lottery"
             :id="lottery_id"
             :defaultPrizeIndex="7"
-            :withMsgList="true"
+            :withMsgList="showMsg"
             @drawClick="startDraw"
             @end="endLottery"
             @getItemsError="lotteryError"
@@ -220,10 +220,10 @@ export default {
       voteLeft: 0,
       advisorList: [],
       vote_id: 64,
-      startTime: new Date('2019-11-18T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
-      endTime: new Date('2019-12-11T06:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
-      endTime2: new Date('2019-12-21T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
+      startTime: new Date('2019-12-09T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
+      endTime: new Date('2019-12-12T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
       canVotes: true,
+      showMsg: true,
 
       // 抽奖
       lotteryLeft: 0,
@@ -268,8 +268,9 @@ export default {
     this.lottery_id = this.$appType == 2 ? 7 : 6
   },
   mounted() {
-    this.barrageBox = document.getElementsByClassName('baberrage-stage')
     this.mSendEvLog('page_show', '', '')
+    this.$serverTime >= this.startTime ? (this.showMsg = true) : (this.showMsg = false)
+    this.barrageBox = document.getElementsByClassName('baberrage-stage')
     this.getAdvisorList()
     this.getVoteRemain()
     this.getLeftLottery()
@@ -301,7 +302,7 @@ export default {
         return
       }
       if (this.$serverTime < this.startTime) {
-        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
+        this.$refs.alert.show('Upigaji kura utaanza tarehe 23th Desemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
         return
       }
       if (this.$serverTime >= this.endTime) {
@@ -315,14 +316,15 @@ export default {
       }
       this.click = false
       this.canClickTab2 = false
+      this.lotteryLeft--
       this.$refs.lottery.tween()
     },
     endLottery(prize) {
       console.log(prize)
-      if (prize.index < 5) {
-        if(prize.index == 2) this.mSendEvLog('lottery_click', 'vip', '1')
-        else if(prize.index == 3) this.mSendEvLog('lottery_click', '40offcoupon', '1')
-        else if(prize.index == 4) this.mSendEvLog('lottery_click', '30offcoupon', '1')
+      if (prize.prizeIndex < 5) {
+        if (prize.prizeIndex == 2) this.mSendEvLog('lottery_click', 'vip', '1')
+        else if (prize.prizeIndex == 3) this.mSendEvLog('lottery_click', '40offcoupon', '1')
+        else if (prize.prizeIndex == 4) this.mSendEvLog('lottery_click', '30offcoupon', '1')
         setTimeout(() => {
           this.$refs.alert.show(
             'Hongera! Umepata ' + prize.name + '! Zawadi zitatolewa kwenye siku ya pili ya kazi katika Me-> Kuponi zangu.',
@@ -333,7 +335,7 @@ export default {
             'SAWA'
           )
         }, 1000)
-      } else if (prize.index == 5) {
+      } else if (prize.prizeIndex == 5) {
         this.mSendEvLog('lottery_click', 'morevotes', '1')
         this.getTicketAward(res => {
           if (res.data.code == 200) {
@@ -352,7 +354,7 @@ export default {
             this.$refs.alert.show('Get ticket award error!' + res.data.message)
           }
         })
-      } else if (prize.index === 6) {
+      } else if (prize.prizeIndex === 6) {
         this.mSendEvLog('lottery_click', 'tryagain', '0')
         setTimeout(() => {
           this.lotteryLeft++
@@ -360,12 +362,12 @@ export default {
             'Hongera! Umepata nafasi moja zaidi!',
             () => {
               this.click = true
-              this.startDraw()()
+              this.startDraw()
             },
             'SAWA'
           )
         }, 1000)
-      } else if (prize.index === 7) {
+      } else if (prize.prizeIndex === 7) {
         this.mSendEvLog('lottery_click', 'sorry', '0')
         setTimeout(() => {
           this.$refs.alert.show(
@@ -594,7 +596,7 @@ export default {
         return
       }
       // 活动已结束提示
-      if (this.$serverTime >= this.endTime2) {
+      if (this.$serverTime >= this.endTime) {
         this.$refs.alert.show(
           'Samahani, kura zimekwisha.',
           () => {
@@ -690,14 +692,14 @@ export default {
       }
       // 活动未开始提示
       if (this.$serverTime < this.startTime) {
-        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
+        this.$refs.alert.show('Upigaji kura utaanza tarehe 23th Desemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
         this.commentText = ''
         this.disabled = false
         this.canClickTab1 = true
         return
       }
       // 活动已结束提示
-      if (this.$serverTime >= this.endTime2) {
+      if (this.$serverTime >= this.endTime) {
         this.commentText = ''
         this.$refs.alert.show(
           'Samahani, kura zimekwisha.',
@@ -729,7 +731,7 @@ export default {
           this.$refs.alert.show(
             'Maoni yako yana maudhui yasiyofaa. Tafadhali ondoa maneno ambayo yatasababisha uvunjaji wa sheria.',
             () => {},
-            'GOT IT'
+            'SAWA'
           )
           this.disabled = false
           this.canClickTab1 = true
@@ -833,6 +835,7 @@ export default {
         label: label,
         value: value
       })
+      console.log('form_BSSVote3_' + this.$platform, action, label, value)
     },
     // app登录方法
     toSignIn() {
@@ -950,22 +953,19 @@ export default {
       if (!this.canVotes) {
         return
       }
+      this.mSendEvLog('votebtn_click', advisor.name, '')
       if (this.appType == 0) {
-        this.mSendEvLog('votebtn_click', advisor.name, '')
         this.callOrDownApp('vote')
         return
       }
       if (this.$serverTime < this.startTime) {
-        this.mSendEvLog('votebtn_click', advisor.name, '')
-        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
+        this.$refs.alert.show('Upigaji kura utaanza tarehe 23th Desemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
         return
       } else if (this.$serverTime > this.endTime) {
-        this.mSendEvLog('votebtn_click', advisor.name, '')
         this.$refs.alert.show('Samahani, kura zimekwisha.', () => {}, 'SAWA')
         return
       }
       if (this.voteLeft <= 0) {
-        this.mSendEvLog('votebtn_click', advisor.name, '')
         this.$refs.confirm.show(
           'Samahani, kura yako iliyobaki ni 0, shirikisha marafiki zako na upate kura zaidi.',
           () => {
@@ -976,7 +976,6 @@ export default {
           'FUTA'
         )
       } else {
-        this.mSendEvLog('votebtn_click', advisor.name, '')
         const box = document.getElementsByClassName('handle-pick-box')[key]
         box.style.display = 'block'
         this.show_pick = true
@@ -1021,19 +1020,7 @@ export default {
             }
             this.voteLeft -= value
             this.getLeftLottery()
-            if (this.voteLeft > 0) {
-              this.$refs.toast.show('Upigaji umefanikiwa! Umepata nafasi ya kupata zawadi kwa kupitia mchezo wa ukurasa huu.')
-            } else {
-              this.$refs.confirm.show(
-                'Upigaji umefanikiwa! Shirikisha marafiki kupata kura zaidi.',
-                () => {
-                  this.toShare('0leftvote')
-                },
-                () => {},
-                'SHIRIKI',
-                'FUTA'
-              )
-            }
+            this.$refs.toast.show('Upigaji umefanikiwa! Umepata nafasi ya kupata zawadi kwa kupitia mchezo wa ukurasa huu.')
             this.canVotes = true
           } else {
             this.$refs.alert.show('Vote error! ' + res.data.message)
