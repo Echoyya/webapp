@@ -351,8 +351,8 @@ img {
   padding: 0.5rem 0;
   .msg {
     width: 100%;
-    height: 2.2rem;
-    line-height: 2.2rem;
+    height: 2rem;
+    line-height: 2rem;
     overflow: hidden;
     transition: all 0.5s;
     position: relative;
@@ -368,7 +368,7 @@ img {
       width: 1.5rem;
       height: 1.5rem;
       left: 0.6rem;
-      top: 0.3rem;
+      top: 0.25rem;
     }
     ul {
       width: 100%;
