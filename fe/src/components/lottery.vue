@@ -61,7 +61,7 @@ export default {
       indexs: -1,
       msg: {},
       dataList: [],
-      msgIndex: -1
+      msgIndex: 0
     }
   },
   computed: {
@@ -73,7 +73,7 @@ export default {
             reward_name = item.name
           }
         })
-        return `${this.msg.nick_name ? this.msg.nick_name : this.msg.user_name ? this.msg.user_name : this.msg.user_id} has won ${reward_name}!`
+        return this.$t('vote.team.boardcast_con',[this.msg.nick_name ? this.msg.nick_name : this.msg.user_name ? this.msg.user_name : this.msg.user_id,reward_name])
       } else {
         return ''
       }
@@ -108,7 +108,7 @@ export default {
     beforeLeave() {
       setTimeout(() => {
         this.msgIndex = this.msgIndex + 1
-        if (this.msgIndex == this.dataList.length - 25) {
+        if (this.msgIndex == this.dataList.length - 3) {
           this.getMsgList(1)
         }
         if (this.msgIndex == this.dataList.length) {
