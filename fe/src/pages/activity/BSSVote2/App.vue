@@ -177,6 +177,7 @@
     <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
     <toast-dialog ref="toast" />
+    <loading ref="loading" />
   </div>
 </template>
 <script>
@@ -185,7 +186,9 @@ import alertDialog from '@/components/alert'
 import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
-import { callApp, downApk, playVodinApp, toNativePage, shareInvite, shareInviteIos, addTicketByDownload, getQuery } from '@/functions/app'
+import loading from '@/components/loading'
+import { callApp, downApk, playVodinApp, toNativePage, shareInvite, shareInviteIos, addTicketByDownload, getQuery,callAppleStore } from '@/functions/app'
+import { getBrowser } from '@/functions/utils'
 import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
 import env from '@/functions/config'
 export default {
@@ -194,7 +197,8 @@ export default {
     alertDialog,
     confirmDialog,
     toastDialog,
-    vueBaberrage
+    vueBaberrage,
+    loading
   },
   data() {
     return {
@@ -900,23 +904,30 @@ export default {
     // 唤醒转入活动页或下载App
     callOrDownApp(label) {
       // 唤醒App
-      callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.href, () => {
-        // 下载App
-        this.mSendEvLog('downloadpopup_show', label, '')
-        this.$refs.confirm.show(
-          'Pakua Startimes ON app na shiriki BSS2019',
-          () => {
-            this.mSendEvLog('downloadpopup_clickok', label, '')
-            downApk.call(this)
-            addTicketByDownload.call(this, this.vote_id)
-          },
-          () => {
-            this.mSendEvLog('downloadpopup_clicknot', label, '')
-          },
-          'PAKUA',
-          'FUTA'
-        )
-      })
+      this.$refs.loading.start()
+      const browser = getBrowser()
+      if (browser.isIos) {
+        callAppleStore.call(this)
+      } else {
+        callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.href, () => {
+          // 下载App
+          this.mSendEvLog('downloadpopup_show', label, '')
+          this.$refs.loading.finish()
+          this.$refs.confirm.show(
+            'Pakua Startimes ON app na shiriki BSS2019',
+            () => {
+              this.mSendEvLog('downloadpopup_clickok', label, '')
+              downApk.call(this)
+              addTicketByDownload.call(this, this.vote_id)
+            },
+            () => {
+              this.mSendEvLog('downloadpopup_clicknot', label, '')
+            },
+            'PAKUA',
+            'FUTA'
+          )
+        })
+      }
     },
     // 获取剩余票数
     getVoteRemain() {
