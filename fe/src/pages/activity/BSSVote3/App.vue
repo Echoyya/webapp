@@ -28,18 +28,7 @@
                   </div>
                   <span class="name">{{item.name.toUpperCase()}}</span>
                 </div>
-                <div class="vote-btn" @click="handleViceVote(item,key)">KURA</div>
-                <div class="handle-pick-box">
-                  <img src="@/assets/img/vote/BSSVote2/ic-pick.png" alt />
-                  <div class="title">CHAGUA KURA ZAKO</div>
-                  <div class="votes">Kura zilizobaki: {{voteLeft}}</div>
-                  <div class="pick">
-                    <div class="vote-value" :class="voteLeft>=1?'abled':'disabled'" @click="handleVote(item,1)">+1</div>
-                    <div class="vote-value" :class="voteLeft>=5?'abled':'disabled'" @click="handleVote(item,5)">+5</div>
-                    <div class="vote-value" :class="voteLeft>=10?'abled':'disabled'" @click="handleVote(item,10)">+10</div>
-                  </div>
-                  <div class="cancel" @click="closeShadow">GHAIRI</div>
-                </div>
+                <div class="vote-btn" @click="handleViceVote(item)">KURA</div>
               </li>
             </ul>
           </div>
@@ -161,7 +150,18 @@
       <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
     </div>
-    <div v-show="show_rules||show_pick" class="shadow-box" @click="closeShadow"></div>
+    <div v-show="votePannel" class="handle-pick-box">
+      <img src="@/assets/img/vote/BSSVote2/ic-pick.png" alt />
+      <div class="title">CHAGUA KURA ZAKO</div>
+      <div class="votes">Kura zilizobaki: {{voteLeft}}</div>
+      <div class="pick">
+        <div class="vote-value" :class="voteLeft>=1?'abled':'disabled'" @click="handleVote(1)">+1</div>
+        <div class="vote-value" :class="voteLeft>=5?'abled':'disabled'" @click="handleVote(5)">+5</div>
+        <div class="vote-value" :class="voteLeft>=10?'abled':'disabled'" @click="handleVote(10)">+10</div>
+      </div>
+      <div class="cancel" @click="closeShadow">GHAIRI</div>
+    </div>
+    <div v-show="show_rules||votePannel" class="shadow-box" @click="closeShadow"></div>
     <mShare v-if="$appType==0" ref="share" />
     <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
@@ -191,8 +191,7 @@ export default {
     return {
       // 页面
       show_rules: false,
-      show_pick: false,
-      appType: this.$appType,
+      appType: 1 || this.$appType,
       isLogin: this.$isLogin,
       // appType: 1,
       // isLogin: true,
@@ -222,6 +221,8 @@ export default {
       endTime: new Date('2019-12-12T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
       canVotes: true,
       showMsg: true,
+      votePannel: false,
+      votePickItem: -1, // 准备投票的投票单元id
 
       // 抽奖
       lotteryLeft: 0,
@@ -947,7 +948,7 @@ export default {
       }
     },
     // 投票方法
-    handleViceVote(advisor, key) {
+    handleViceVote(advisor) {
       if (!this.canVotes) {
         return
       }
@@ -974,24 +975,18 @@ export default {
           'FUTA'
         )
       } else {
-        const box = document.getElementsByClassName('handle-pick-box')[key]
-        box.style.display = 'block'
-        this.show_pick = true
+        this.votePickItem = advisor.id
+        this.votePannel = true
       }
     },
     closeShadow() {
       document.body.style.overflow = 'auto'
       document.body.style.position = 'static'
-      let box = document.getElementsByClassName('handle-pick-box')
-      box = Array.prototype.slice.call(box)
-      box.forEach(item => {
-        item.style.display = 'none'
-      })
+      this.votePannel = false
       this.show_rules = false
-      this.show_pick = false
     },
     // 投票1，5，10
-    handleVote(advisor, value) {
+    handleVote(value) {
       if ((value == 1 && this.voteLeft < 1) || (value == 5 && this.voteLeft < 5) || (value == 10 && this.voteLeft < 10)) {
         this.$refs.toast.show('Kura imeshindikana. Hakuna kura za kutosha zilizobaki.')
         return
@@ -1004,7 +999,7 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
-          candidate_id: advisor.id,
+          candidate_id: this.votePickItem,
           vote_id: this.vote_id,
           count: value
         })
@@ -1137,6 +1132,11 @@ export default {
 .wrapper {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
   background-color: #141515;
+  div,
+  li,
+  img {
+    box-sizing: border-box;
+  }
 }
 .top {
   position: relative;
@@ -1289,7 +1289,7 @@ export default {
           height: 1.3rem;
           line-height: 1.3rem;
           color: #ffffff;
-          background-image: url('~@/assets/img/vote/BSSRegister/bg-vote.png');
+          background: url('~@/assets/img/vote/BSSRegister/bg-vote.png') no-repeat;
           background-size: 4.5rem 1.3rem;
           margin: 0 auto;
           margin-top: 0.2rem;
@@ -1302,72 +1302,6 @@ export default {
             font-size: 0.75rem;
             background-size: 4.3rem 1.1rem;
             margin-top: 0.1rem;
-          }
-        }
-        .handle-pick-box {
-          width: 100%;
-          height: 16rem;
-          position: fixed;
-          left: 0;
-          bottom: 0;
-          color: #333;
-          background-color: #fff;
-          z-index: 999;
-          padding-top: 1rem;
-          text-align: center;
-          display: none;
-          img {
-            display: block;
-            width: 4rem;
-            height: 4rem;
-            margin: 0 auto;
-          }
-          .title {
-            width: 100%;
-            height: 1.5rem;
-            line-height: 1.5rem;
-            margin-top: 1rem;
-          }
-          .votes {
-            width: 100%;
-            height: 1rem;
-            line-height: 1rem;
-            font-size: 0.75rem;
-            color: #ef8856;
-          }
-          .pick {
-            width: 100%;
-            height: 3.5rem;
-            font-size: 0;
-            border-bottom: 1px solid #e7e7e7;
-            margin-top: 1rem;
-            padding: 0 1rem;
-            .vote-value {
-              display: inline-block;
-              width: 30%;
-              height: 2rem;
-              line-height: 2rem;
-              font-size: 0.9rem;
-              margin-left: 5%;
-              background-color: #f5f5f5;
-              border: 1px solid transparent;
-              &:first-child {
-                margin-left: 0;
-              }
-              &.abled:active {
-                color: #ec5328;
-                border: 1px solid #ec5328;
-              }
-              &.disabled {
-                color: #cfcfcf;
-              }
-            }
-          }
-          .cancel {
-            width: 100%;
-            height: 3rem;
-            color: #979797;
-            line-height: 3rem;
           }
         }
       }
@@ -1388,7 +1322,6 @@ export default {
         width: 21%;
         position: absolute;
         right: 6%;
-        background-color: transparent;
         overflow: hidden;
         height: 0;
         &.open-ott {
@@ -1455,6 +1388,72 @@ export default {
       text-overflow: ellipsis;
       white-space: nowrap;
     }
+  }
+}
+.handle-pick-box {
+  width: 100%;
+  height: 16rem;
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  color: #333;
+  background-color: #fff;
+  z-index: 999;
+  padding-top: 1rem;
+  text-align: center;
+  img {
+    display: block;
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto;
+  }
+  .title {
+    width: 100%;
+    height: 1.5rem;
+    line-height: 1.5rem;
+    margin-top: 1rem;
+  }
+  .votes {
+    width: 100%;
+    height: 1rem;
+    line-height: 1rem;
+    font-size: 0.75rem;
+    color: #ef8856;
+  }
+  .pick {
+    width: 100%;
+    height: 3.5rem;
+    font-size: 0;
+    border-bottom: 1px solid #e7e7e7;
+    margin-top: 1rem;
+    padding: 0 1rem;
+    box-sizing: border-box;
+    .vote-value {
+      display: inline-block;
+      width: 30%;
+      height: 2rem;
+      line-height: 2rem;
+      font-size: 0.9rem;
+      margin-left: 3.33%;
+      background-color: #f5f5f5;
+      border: 1px solid transparent;
+      &:first-child {
+        margin-left: 0;
+      }
+      &.abled:active {
+        color: #ec5328;
+        border: 1px solid #ec5328;
+      }
+      &.disabled {
+        color: #cfcfcf;
+      }
+    }
+  }
+  .cancel {
+    width: 100%;
+    height: 3rem;
+    color: #979797;
+    line-height: 3rem;
   }
 }
 .page-barrage {
@@ -1544,15 +1543,6 @@ export default {
         padding-bottom: 1rem;
         z-index: 3;
         -webkit-touch-callout: none;
-        -webkit-user-select: none;
-        -khtml-user-select: none;
-        -moz-user-select: none;
-        -ms-user-select: none;
-        user-select: none;
-        -moz-user-select: none; /*火狐*/
-        -webkit-user-select: none; /*webkit浏览器*/
-        -ms-user-select: none; /*IE10*/
-        -khtml-user-select: none; /*早期浏览器*/
         user-select: none;
         div {
           display: inline-block;
