@@ -197,6 +197,21 @@ export const callMarket = function(failback) {
     invokeByHref.call(this, `market://details?id=com.star.mobile.video${source}`, failback)
   }
 }
+export const callAppleStore = function () {
+    const utmParam = getUtmParam.call(this)
+    this.$sendEvLog(
+        Object.assign({
+                category: 'callup_app',
+                action: 'to_appleStore',
+                label: location.pathname,
+                value: 1
+            },
+            utmParam.map
+        )
+    )
+    this.$refs.loading.finish()
+    window.location.href = appleStore
+}
 
 export const playVodinApp = function(appType, vod) {
   if (appType == 1) {

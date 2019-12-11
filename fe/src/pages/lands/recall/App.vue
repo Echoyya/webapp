@@ -3,8 +3,8 @@
     <div class="contain">
       <img src="@/assets/img/landpage/word.png" class="word" alt="StarTimes APP" />
       <div class="down">
-        <div v-show="appType==1" @click="down()">Download Now</div>
-        <img v-show="appType==2" src="@/assets/img/landpage/button-appstore.png" alt="StarTimes APP" @click="down()" />
+        <div v-show="appType == 1" @click="down()">Download Now</div>
+        <img v-show="appType == 2" src="@/assets/img/landpage/button-appstore.png" alt="StarTimes APP" @click="down()" />
       </div>
     </div>
     <confirm-dialog ref="confirm" />
@@ -12,7 +12,7 @@
   </div>
 </template>
 <script>
-import { downApk, callApp, callMarket, getUtmParam } from '@/functions/app'
+import { downApk, callApp, callMarket, getUtmParam, callAppleStore } from '@/functions/app'
 import { getBrowser } from '@/functions/utils'
 import confirmDialog from '@/components/confirm'
 import loading from '@/components/loading'
@@ -52,20 +52,24 @@ export default {
         label: this.appType == 2 ? 'appstore' : 'googleplay',
         value: 1
       })
-      callApp.call(this, '', () => {
-        callMarket.call(this, () => {
-          this.$refs.loading.finish()
-          this.$refs.confirm.show(
-            'Download apk now?（12M）',
-            () => {
-              downApk.call(this)
-            },
-            () => {},
-            'OK',
-            'NOT NOW'
-          )
+      if (this.appType == 2) {
+        callAppleStore.call(this)
+      } else {
+        callApp.call(this, '', () => {
+          callMarket.call(this, () => {
+            this.$refs.loading.finish()
+            this.$refs.confirm.show(
+              'Download apk now?（12M）',
+              () => {
+                downApk.call(this)
+              },
+              () => {},
+              'OK',
+              'NOT NOW'
+            )
+          })
         })
-      })
+      }
     }
   }
 }
