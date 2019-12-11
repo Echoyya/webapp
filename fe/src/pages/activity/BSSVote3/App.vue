@@ -9,8 +9,8 @@
         </div>
       </div>
       <div class="page-control">
-        <p :class="pageVote?'active':''" @click="changePage('vote')">KURA</p>
-        <p :class="pageVote?'':'active'" @click="changePage('barrage')">MAONI</p>
+        <p :class="{'active':pageVote}" @click="changePage('vote')">KURA</p>
+        <p :class="{'active':!pageVote}" @click="changePage('barrage')">MAONI</p>
       </div>
       <div v-if="pageVote" class="page-vote">
         <img class="text text1" src="@/assets/img/vote/BSSVote3/text1.png" alt />
@@ -188,17 +188,24 @@ export default {
     lottery
   },
   data() {
+    const startTime = new Date('2019-12-09T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+    const endTime = new Date('2019-12-12T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     return {
       // 页面
+      vote_id: 64,
+      lottery_id: 6,
+      startTime: startTime,
+      endTime: endTime,
+
+      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote3-banner.png',
+      shareTitle: 'Bongo Star Search 2019',
+      shareText: 'Kura yako muhimu! Mpigie kura awe mshindi wa Bongo Star Search',
       show_rules: false,
-      appType: 1 || this.$appType,
+      appType: this.$appType,
       isLogin: this.$isLogin,
-      // appType: 1,
-      // isLogin: true,
-      firstTime: true,
       user_id: this.$user.id,
+
       share_num: 0,
-      enroll_id: 2,
       clipsList: [],
       topicList: [],
       pageVote: true,
@@ -207,26 +214,20 @@ export default {
 
       // msg: '',
       currentId: 0,
-      i: 0,
+      barrageIndex: 0,
       barrageList: [],
       t: null,
-      maxTime: 5,
-      minTime: 3,
 
       // 投票
       voteLeft: 0,
       advisorList: [],
-      vote_id: 64,
-      startTime: new Date('2019-12-09T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
-      endTime: new Date('2019-12-12T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime(),
       canVotes: true,
-      showMsg: true,
+      showMsg: this.$serverTime >= startTime,
       votePannel: false,
       votePickItem: -1, // 准备投票的投票单元id
 
       // 抽奖
       lotteryLeft: 0,
-      lottery_id: 6,
 
       // 弹幕
       barrage_id: 17,
@@ -254,11 +255,7 @@ export default {
       number: 20, // 每次请求的弹幕数量
       last_id: 0, // 上一次请求的最后一条弹幕id
       canClickTab1: false,
-      canClickTab2: false,
-
-      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote3-banner.png',
-      shareTitle: 'Bongo Star Search 2019',
-      shareText: 'Kura yako muhimu! Mpigie kura awe mshindi wa Bongo Star Search'
+      canClickTab2: false
     }
   },
   created() {
@@ -268,7 +265,6 @@ export default {
   },
   mounted() {
     this.mSendEvLog('page_show', '', '')
-    this.$serverTime >= this.startTime ? (this.showMsg = true) : (this.showMsg = false)
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
     this.getAdvisorList()
     this.getVoteRemain()
@@ -381,9 +377,11 @@ export default {
       }
     },
     addToList(v) {
+      const maxTime = 5
+      const minTime = 3
       let time = 75 / (10 + decodeURI(v.content).length * 0.5)
-      if (time > this.maxTime) time = this.maxTime
-      if (time < this.minTime) time = this.minTime
+      if (time > maxTime) time = maxTime
+      if (time < minTime) time = minTime
       this.barrageList.push({
         id: ++this.currentId,
         avatar: v.avatar
@@ -423,8 +421,7 @@ export default {
         this.pageVote = false
         clearInterval(this.tmsg)
         clearInterval(this.tscroll)
-        if (this.firstTime) {
-          this.firstTime = false
+        if (this.pageList.length <= 0) {
           this.getPagelist()
         } else {
           this.$nextTick(() => {
@@ -544,7 +541,7 @@ export default {
             this.last_id = res.data.data[res.data.data.length - 1].id
             this.commentList = res.data.data
             this.canClickTab1 = true
-            this.i = 0
+            this.barrageIndex = 0
             this.t = setInterval(() => {
               this.addToList(this.commentList[this.i])
               this.i++
@@ -555,8 +552,8 @@ export default {
                   this.barrageBox[0].childNodes[j].style.color = '#fff'
                 }
               }
-              if (this.i >= this.number) {
-                this.i = 0
+              if (this.barrageIndex >= this.number) {
+                this.barrageIndex = 0
                 clearInterval(this.t)
                 this.barrageList = []
                 this.getCommentList()
