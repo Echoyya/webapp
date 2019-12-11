@@ -279,7 +279,6 @@ export default {
     this.getVideoMsg()
     this.getShareNum()
   },
-
   methods: {
     lotteryError(err) {
       this.$refs.alert.show(err.errMsg)
@@ -293,7 +292,6 @@ export default {
         return
       }
       if (!this.isLogin) {
-        // 移动端未登录
         this.$refs.alert.show(
           'Tafadhali jisajili ili uanze mchuano wa bahati.',
           () => {
@@ -322,7 +320,6 @@ export default {
       this.$refs.lottery.tween()
     },
     endLottery(prize) {
-      console.log(prize)
       if (prize.prizeIndex < 5) {
         if (prize.prizeIndex == 2) this.mSendEvLog('lottery_click', 'vip', '1')
         else if (prize.prizeIndex == 3) this.mSendEvLog('lottery_click', '40offcoupon', '1')
@@ -447,7 +444,6 @@ export default {
       })
     },
     initPage() {
-      // pageList数据
       // 投票状态
       if (this.pageList[this.index].ticket_num > 0) {
         this.picked = false
@@ -835,7 +831,6 @@ export default {
         label: label,
         value: value
       })
-      console.log('form_BSSVote3_' + this.$platform, action, label, value)
     },
     // app登录方法
     toSignIn() {
@@ -1104,7 +1099,6 @@ export default {
     },
     // 获取往期视频
     getVideoMsg() {
-      // 获取投票单元数据
       this.$axios
         .get(`/voting/v1/program?vote_id=${this.vote_id}`)
         .then(res => {

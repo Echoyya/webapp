@@ -279,7 +279,6 @@ export default {
     this.getVideoMsg()
     this.getShareNum()
   },
-
   methods: {
     lotteryError(err) {
       this.$refs.alert.show(err.errMsg)
