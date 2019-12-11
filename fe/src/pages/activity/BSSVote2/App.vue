@@ -839,7 +839,7 @@ export default {
           } else if (vip == 'ottvip') {
             // 原生OTT
             this.mSendEvLog('ott_click', '', '')
-            window.location.href = 'startimes://ottProduct?tab=all'
+            window.location.href = 'startimes://ottProduct'
           }
         }
       }
