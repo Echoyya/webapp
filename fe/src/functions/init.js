@@ -11,144 +11,178 @@ Vue.config.productionTip = false
 
 let appType = 0
 let token = ''
-let language = 'en' // default language en
+let language = 'en'
 let langObj = i18n.en
+let iosBridge = null
+let appInfo = null
+let pageComponent = ''
 
-let appInfo =
-  (window.getChannelId && window.getChannelId.jsGetHeadInfo && window.getChannelId.jsGetHeadInfo()) ||
-  (window.bridge && window.bridge.jsGetHeadInfo && window.bridge.jsGetHeadInfo())
+function setupWebViewJavascriptBridge(callback) {
+  if (window.WebViewJavascriptBridge) {
+    return callback(window.WebViewJavascriptBridge)
+  }
+  if (window.WVJBCallbacks) {
+    return window.WVJBCallbacks.push(callback)
+  }
+  window.WVJBCallbacks = [callback]
+  var WVJBIframe = document.createElement('iframe')
+  WVJBIframe.style.display = 'none'
+  WVJBIframe.src = 'wvjbscheme://__BRIDGE_LOADED__'
+  document.documentElement.appendChild(WVJBIframe)
+  setTimeout(function() {
+    document.documentElement.removeChild(WVJBIframe)
+  }, 0)
+}
 
-if (appInfo) {
-  appInfo = JSON.parse(appInfo)
-  token = appInfo.token
-  language = appInfo.lnCode
-  appType = window.getChannelId ? 1 : 2
-  Vue.prototype.$appVersion = appInfo.versionCode
-} else {
-  appInfo = {}
-  token = window.getChannelId && window.getChannelId.getToken && window.getChannelId.getToken()
-  language = navigator.language
-  if (token) {
-    appType = 1
+setupWebViewJavascriptBridge(function(bridge) {
+  iosBridge = bridge
+})
+
+export const initPage = function(page) {
+  pageComponent = page
+  setTimeout(() => {
+    // 因为ios的方法实在回调队列里
+    basicBridgeInfo()
+  }, 0)
+}
+
+function basicBridgeInfo() {
+  appInfo = window.getChannelId && window.getChannelId.jsGetHeadInfo && window.getChannelId.jsGetHeadInfo()
+  if (appInfo) {
+    appInfo = JSON.parse(appInfo)
   } else {
-    token = getCookie('token') || tokenMap['NG']
-    const ua = navigator.userAgent
-    if (ua.indexOf('iPhone') >= 0) {
-      const uaArr = ua.split(' ')
-      if (uaArr[uaArr.length - 1].indexOf('Mobile/') >= 0) {
-        appType = 2
-      } else {
-        appType = 0
-      }
+    iosBridge &&
+      iosBridge.callHandler('jsGetHeadInfo', '', function(response) {
+        appInfo = response
+      })
+  }
+  setTimeout(() => {
+    support()
+  }, 0)
+}
+
+function support() {
+  if (appInfo) {
+    appType = appInfo.client == 'android' ? 1 : 2
+    token = appInfo.token
+    language = appInfo.lnCode
+    Vue.prototype.$appVersion = appInfo.versionCode
+  } else {
+    appInfo = {}
+    token = window.getChannelId && window.getChannelId.getToken && window.getChannelId.getToken()
+    language = navigator.language
+    if (token) {
+      appType = 1
     } else {
+      token = getCookie('token') || tokenMap['NG']
       appType = 0
     }
   }
-}
-setCookie('token', token)
 
-// 初始化平台信息
-if (appType == 1) {
-  Vue.prototype.$platform = 'Android'
-} else if (appType == 2) {
-  Vue.prototype.$platform = 'iOS'
-} else {
-  Vue.prototype.$platform = 'web'
-}
+  setCookie('token', token)
 
-// 初始化多语言
-if (language.indexOf('fr') >= 0) {
-  langObj = i18n.fy
-} else if (language.indexOf('sw') >= 0) {
-  langObj = i18n.sy
-} else if (language.indexOf('pt') >= 0) {
-  langObj = i18n.py
-} else {
-  langObj = i18n.en
-}
-setCookie('lang', language)
-
-// 多语言函数
-Vue.prototype.$t = function(str, arr) {
-  const s = str.split('.')
-  let tmp = langObj
-  s.forEach(item => {
-    if (tmp[item]) {
-      tmp = tmp[item]
-    }
-  })
-
-  if (typeof tmp == 'string') {
-    if (arr && arr.length > 0) {
-      arr.forEach((item, index) => {
-        tmp = tmp.replace(`{${index}}`, item)
-      })
-      return tmp
-    } else {
-      return tmp
-    }
+  // 初始化多语言
+  if (language.indexOf('fr') >= 0) {
+    langObj = i18n.fy
+    language = 'fr'
+  } else if (language.indexOf('sw') >= 0) {
+    langObj = i18n.sy
+    language = 'sw'
+  } else if (language.indexOf('pt') >= 0) {
+    langObj = i18n.py
+    language = 'pt'
   } else {
-    return ''
+    langObj = i18n.en
+    language = 'en'
   }
-}
-
-Vue.prototype.$appType = appType
-Vue.prototype.$token = token
-
-// 初始化deviceId
-let deviceId = appInfo.deviceId
-if (!deviceId) {
-  deviceId = getCookie('_stdid')
-  if (!deviceId) {
-    deviceId = randomString(32)
-    // 为了不混淆切能做必要的统计，对未得到deviceId在app中的情形进行特殊处理
-    if (appType == 1) {
-      deviceId += '_h5andoid'
-    } else if (appType == 2) {
-      deviceId += '_h5ios'
-    }
-  }
-}
-
-// 初始化报数
-initAna(appType, deviceId, appType)
-
-axios.defaults.timeout = 10000 // ajax timeout 10s
-axios.defaults.baseURL = env.apiUrl
-axios.defaults.headers.token = token
-Vue.prototype.$axios = axios
-Vue.prototype.$sendEvLog = sendEvLog
-
-axios.interceptors.response.use(
-  function(response) {
-    // Any status code that lie within the range of 2xx cause this function to trigger
-    // Do something with response data
-    return response
-  },
-  function(error) {
-    // Any status codes that falls outside the range of 2xx cause this function to trigger
-    // Do something with response error
-    sendEvLog({
-      category: 'h5_open',
-      action: 'api_error',
-      label: error.config.url,
-      value: error.message,
-      postdata: error.config.data,
-      token: error.config.headers.token
+  // 多语言函数
+  Vue.prototype.$t = function(str, arr) {
+    const s = str.split('.')
+    let tmp = langObj
+    s.forEach(item => {
+      if (tmp[item]) {
+        tmp = tmp[item]
+      }
     })
 
-    // TODO 登录状态失效
-
-    return Promise.reject(error)
+    if (typeof tmp == 'string') {
+      if (arr && arr.length > 0) {
+        arr.forEach((item, index) => {
+          tmp = tmp.replace(`{${index}}`, item)
+        })
+        return tmp
+      } else {
+        return tmp
+      }
+    } else {
+      return ''
+    }
   }
-)
 
-export const initPage = function(page) {
+  // 初始化deviceId
+  let deviceId = appInfo.deviceId
+  if (!deviceId) {
+    deviceId = getCookie('_stdid')
+    if (!deviceId) {
+      deviceId = randomString(32)
+      if (appType == 1) {
+        deviceId += '_oldandoid' // <android 5.20
+      } else if (appType == 2) {
+        deviceId += '_oldios' // <ios 3.9
+      }
+    }
+  }
+
+  // 初始化报数
+  initAna(appType, deviceId, appType)
+
+  // 初始化平台信息
+  if (appType == 1) {
+    Vue.prototype.$platform = 'Android'
+  } else if (appType == 2) {
+    Vue.prototype.$platform = 'iOS'
+  } else {
+    Vue.prototype.$platform = 'web'
+  }
+
+  axios.defaults.timeout = 10000 // ajax timeout 10s
+  axios.defaults.baseURL = env.apiUrl
+  axios.defaults.headers.token = token
+  Vue.prototype.$axios = axios
+  Vue.prototype.$sendEvLog = sendEvLog
+  Vue.prototype.$lang = language
+  Vue.prototype.$appType = appType
+  Vue.prototype.$token = token
+  Vue.prototype.$deviceId = deviceId
+  Vue.prototype.$iosBridge = iosBridge
+
+  axios.interceptors.response.use(
+    function(response) {
+      // Any status code that lie within the range of 2xx cause this function to trigger
+      // Do something with response data
+      return response
+    },
+    function(error) {
+      // Any status codes that falls outside the range of 2xx cause this function to trigger
+      // Do something with response error
+      sendEvLog({
+        category: 'h5_open',
+        action: 'api_error',
+        label: error.config.url,
+        value: error.message,
+        postdata: error.config.data,
+        token: error.config.headers.token
+      })
+
+      // TODO 登录状态失效
+      return Promise.reject(error)
+    }
+  )
+
   axios
     .get('/cms/users/me')
     .then(res => {
       Vue.prototype.$serverTime = res.headers.server_time
-      Vue.prototype.$deviceId = deviceId
       if (res.data && res.data.id) {
         // 有用户信息
         const role = res.data.roleName
@@ -167,7 +201,7 @@ export const initPage = function(page) {
         }
       }
       new Vue({
-        render: h => h(page)
+        render: h => h(pageComponent)
       }).$mount('#app')
 
       setCookie('_stdid', deviceId)
