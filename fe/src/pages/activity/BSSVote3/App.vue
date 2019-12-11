@@ -865,7 +865,6 @@ export default {
     },
     // 唤醒转入活动页或下载App
     callOrDownApp(label) {
-      // 唤醒App
       const browser = getBrowser()
       if (browser.isIos) {
         this.$refs.confirm.show(
@@ -926,7 +925,7 @@ export default {
             this.isOttVip = res.data.data.user_ott_flag
             this.isLinkVip = res.data.data.user_dvb_flag
           } else {
-            this.voteLeft = 0 // 服务器端计算数据错误时
+            this.voteLeft = 0
             this.$refs.alert.show('Sign In Error! ' + res.data.message)
           }
         })
@@ -1065,8 +1064,8 @@ export default {
             if (res.data.code === 0) {
               this.lotteryLeft = res.data.data
             } else {
-              this.lotteryLeft = 0 // 服务器端计算数据错误时
-              this.$refs.alert.show('Get lottery chance error!')
+              this.lotteryLeft = 0
+              this.$refs.alert.show(res.data.message)
             }
           })
           .catch(err => {
@@ -1081,7 +1080,6 @@ export default {
       if (env.apiUrl == 'http://upms.startimestv.com') {
         url = 'http://m.startimestv.com' + url
       }
-
       this.$axios({
         method: 'POST',
         data: {
@@ -1099,28 +1097,22 @@ export default {
     },
     // 获取往期视频
     getVideoMsg() {
-      this.$axios
-        .get(`/voting/v1/program?vote_id=${this.vote_id}`)
-        .then(res => {
-          if (res.data.code === 0) {
-            res.data.data.forEach(item => {
-              if (item.name.substr(0, 5) == 'finals') {
-                this.clipsList.push(item)
-              } else if (item.name.substr(0, 5) == 'topic') {
-                this.topicList.push(item)
-              }
-            })
-            this.clipsList.forEach(item => {
-              this.mSendEvLog('video_show', item.description, '')
-            })
-            this.canClickTab2 = true
-          } else {
-            this.$refs.alert.show('Get program error!')
-          }
-        })
-        .catch(err => {
-          this.$refs.alert.show('Get program error!!' + err)
-        })
+      this.$axios.get(`/voting/v1/program?vote_id=${this.vote_id}`).then(res => {
+        if (res.data.code === 0) {
+          res.data.data.forEach(item => {
+            if (item.name.substr(0, 5) == 'finals') {
+              this.clipsList.push(item)
+            } else if (item.name.substr(0, 5) == 'topic') {
+              this.topicList.push(item)
+            }
+          })
+          // TODO
+          // this.clipsList.forEach(item => {
+          //   this.mSendEvLog('video_show', item.description, '')
+          // })
+          this.canClickTab2 = true
+        }
+      })
     }
   }
 }
