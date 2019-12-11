@@ -206,8 +206,8 @@ export default {
     const endTime = new Date('2019-12-12T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     return {
       // 页面
-      vote_id: 64,
-      lottery_id: 6,
+      vote_id: getQuery('voteid') || 64,
+      lottery_id: this.$appType == 2 ? 7 : 6,
       startTime: startTime,
       endTime: endTime,
 
@@ -242,7 +242,7 @@ export default {
       lotteryLeft: 0,
 
       // 弹幕
-      barrage_id: 17,
+      barrage_id: getQuery('barrageid') || 17,
       topic: '',
       during: 5, // 发送弹幕后倒计时
       disabled: false, // send状态
@@ -269,11 +269,6 @@ export default {
       canClickTab1: false,
       canClickTab2: false
     }
-  },
-  created() {
-    this.vote_id = getQuery('voteid') || 64
-    this.barrage_id = getQuery('barrageid') || 17
-    this.lottery_id = this.$appType == 2 ? 7 : 6
   },
   mounted() {
     this.mSendEvLog('page_show', '', '')

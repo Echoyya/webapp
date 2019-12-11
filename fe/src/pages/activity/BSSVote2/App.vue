@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="container">
       <div class="top">
-        <img src="@/assets/img/vote/BSSVote2/img-banner.jpg" alt="bg-img" class="bg-img" />
+        <img src="@/assets/img/vote/BSSVote2/img-banner.jpg" class="bg-img" />
         <div class="tab-box">
           <img src="@/assets/img/vote/BSSVote2/ic-rule.png" @click="showRule" />
           <img src="@/assets/img/vote/BSSVote2/ic-share.png" @click="toShare('upshare')" />
@@ -13,7 +13,7 @@
         <p :class="{'active':!pageVote}" @click="changePage('barrage')">MAONI</p>
       </div>
       <div v-if="pageVote" class="page-vote">
-        <img class="text text1" src="@/assets/img/vote/BSSVote2/text1.png" alt />
+        <img class="text text1" src="@/assets/img/vote/BSSVote2/text1.png" />
         <div class="date">NOVEMBA 18 - DESEMBA 11</div>
         <div class="vote-box">
           <div class="vote-remaining">
@@ -205,7 +205,7 @@ export default {
     const endTime2 = new Date('2019-12-21T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     return {
       // 页面
-      vote_id: 64,
+      vote_id: getQuery('voteid') || 64,
       lottery_id: 3,
       startTime: startTime,
       endTime: endTime,
@@ -242,7 +242,7 @@ export default {
       lotteryLeft: 0,
 
       // 弹幕
-      barrage_id: 17,
+      barrage_id: getQuery('barrageid') || 17,
       topic: '',
       during: 5, // 发送弹幕后倒计时
       disabled: false, // send状态
@@ -269,10 +269,6 @@ export default {
       canClickTab1: false,
       canClickTab2: false
     }
-  },
-  created() {
-    this.vote_id = getQuery('voteid') || 64
-    this.barrage_id = getQuery('barrageid') || 17
   },
   mounted() {
     this.mSendEvLog('page_show', '', '')
