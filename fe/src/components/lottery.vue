@@ -73,7 +73,10 @@ export default {
             reward_name = item.name
           }
         })
-        return this.$t('vote.team.boardcast_con',[this.msg.nick_name ? this.msg.nick_name : this.msg.user_name ? this.msg.user_name : this.msg.user_id,reward_name])
+        return this.$t('vote.team.boardcast_con', [
+          this.msg.nick_name ? this.msg.nick_name : this.msg.user_name ? this.msg.user_name : this.msg.user_id,
+          reward_name
+        ])
       } else {
         return ''
       }
@@ -331,7 +334,13 @@ img {
             height: 45%;
           }
           p {
-            font-size: 0.8rem;
+            width: 100%;
+            text-align: center;
+            font-size: 0.75rem;
+            display: -webkit-box;
+            -webkit-box-orient: vertical;
+            -webkit-line-clamp: 2;
+            overflow: hidden;
           }
         }
       }
