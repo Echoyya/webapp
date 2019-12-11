@@ -543,8 +543,8 @@ export default {
             this.canClickTab1 = true
             this.barrageIndex = 0
             this.t = setInterval(() => {
-              this.addToList(this.commentList[this.i])
-              this.i++
+              this.addToList(this.commentList[this.barrageIndex])
+              this.barrageIndex++
               for (let j = 0; j < this.barrageBox[0].childNodes.length; j++) {
                 if (this.barrageBox[0].childNodes[j].nodeName == 'DIV') {
                   this.barrageBox[0].childNodes[j].style.backgroundColor = '#846c08'
