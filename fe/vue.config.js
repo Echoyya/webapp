@@ -42,12 +42,17 @@ module.exports = {
       }
     }
   },
+
   css: {
     extract: false
   },
+
   assetsDir: 'assets',
   pages: pages,
+
   devServer: {
     port: 1024
-  }
+  },
+
+  productionSourceMap: false
 }
