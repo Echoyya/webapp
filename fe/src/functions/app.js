@@ -348,7 +348,7 @@ export const getQuery = function(key, queryStr) {
   }
 }
 
-export const addTicketByDownload = function(vote_id) {
+export const addTicketByDownload = function(vote_id, callback) {
   const user = getQuery('pin')
   const lastGetTicket = getCookie('get_ticket_time')
   if (user && !lastGetTicket) {
@@ -373,9 +373,12 @@ export const addTicketByDownload = function(vote_id) {
           url: '/voting/v1/ticket'
         }).then(() => {
           setCookie('get_ticket_time', 1, 1000 * 60 * 60 * 24 * 30)
+          callback && callback()
         })
       }
     })
+  } else {
+    callback && callback()
   }
 }
 

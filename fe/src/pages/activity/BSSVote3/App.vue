@@ -876,11 +876,24 @@ export default {
     // 唤醒转入活动页或下载App
     callOrDownApp(label) {
       // 唤醒App
-      this.$refs.loading.start()
       const browser = getBrowser()
       if (browser.isIos) {
-        callAppleStore.call(this)
+        this.$refs.confirm.show(
+          'Pakua Startimes ON app na shiriki BSS2019',
+          () => {
+            this.mSendEvLog('downloadpopup_clickok', label, '')
+            addTicketByDownload.call(this, this.vote_id, () => {
+              callAppleStore.call(this)
+            })
+          },
+          () => {
+            this.mSendEvLog('downloadpopup_clicknot', label, '')
+          },
+          'PAKUA',
+          'FUTA'
+        )
       } else {
+        this.$refs.loading.start()
         callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.href, () => {
           // 下载App
           this.mSendEvLog('downloadpopup_show', label, '')
