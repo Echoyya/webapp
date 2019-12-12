@@ -189,11 +189,10 @@ export const callMarket = function(failback) {
       utmParam.map
     )
   )
-
   if (browser.isIos) {
     this.$refs.loading.finish()
     window.location.href = appleStore
-  } else if (browser.ua.indexOf('MuMu') >= 0 || browser.ua.indexOf('I9502') > 0) {
+  } else if (browser.ua.indexOf('MuMu') >= 0 || browser.ua.indexOf('I9502') > 0 || browser.ua.indexOf('Firefox') > 0) {
     // android 6+
     invokeByIframe.call(this, `market://details?id=com.star.mobile.video${source}`, failback)
   } else {
