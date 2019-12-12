@@ -65,11 +65,12 @@
             :defaultPrizeIndex="7"
             :withMsgList="showMsg"
             :btnGray="lotteryBtnGray"
+            :btnText="'Anza'"
+            :hasGotText="'umeshinda'"
             @drawClick="startDraw"
             @end="endLottery"
             @getItemsError="lotteryError"
             @getResultError="lotteryError"
-            @getMsgListError="lotteryError"
           ></lottery>
           <div class="tip">
             <p>TAFUTA ZAWADI KWENYE ME -> KUPONI YANGU</p>
@@ -281,7 +282,7 @@ export default {
   },
   computed: {
     lotteryBtnGray() {
-      return !this.lotteryLeft
+      return this.appType > 0 && this.$isLogin && this.lotteryLeft <= 0
     }
   },
   mounted() {
@@ -716,15 +717,10 @@ export default {
       }
       // 活动已结束提示
       if (this.$serverTime >= this.endTime2) {
+        this.$refs.alert.show('Samahani, kura zimekwisha.',() => {},'SAWA')
         this.commentText = ''
-        this.$refs.alert.show(
-          'Samahani, kura zimekwisha.',
-          () => {
-            this.disabled = false
-            this.canClickTab1 = true
-          },
-          'SAWA'
-        )
+        this.disabled = false
+        this.canClickTab1 = true
         return
       }
       // 输入为空

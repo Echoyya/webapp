@@ -10,7 +10,7 @@
             </div>
           </div>
         </li>
-        <div class="getLuck" :class="{'getLuck-gray':btnGray}" @click="drawClick">{{$t('vote.team.draw_button')}}</div>
+        <div class="getLuck" :class="{'getLuck-gray':btnGray}" @click="drawClick">{{btnText}}</div>
       </ul>
     </div>
     <div v-if="withMsgList" class="msg-box">
@@ -58,6 +58,16 @@ export default {
       type: Boolean,
       default: true
     },
+    btnText: {
+      required: false,
+      type: String,
+      default: 'DRAW'
+    },
+    hasGotText: {
+      required: false,
+      type: String,
+      default: 'has got'
+    }
   },
   data() {
     return {
@@ -78,10 +88,13 @@ export default {
             reward_name = item.name
           }
         })
-        return this.$t('vote.team.boardcast_con', [
-          this.msg.nick_name ? this.msg.nick_name : this.msg.user_name ? this.msg.user_name : this.msg.user_id,
+        return (
+          (this.msg.nick_name ? this.msg.nick_name : this.msg.user_name ? this.msg.user_name : this.msg.user_id) +
+          ' ' +
+          this.hasGotText +
+          ' ' +
           reward_name
-        ])
+        )
       } else {
         return ''
       }
@@ -373,7 +386,7 @@ img {
         background-image: url('~@/assets/img/vote/BSSRegister/start-ac.png');
       }
       &.getLuck-gray {
-        color: #666;
+        color: #bcbcbc;
         background-image: url('~@/assets/img/vote/BSSRegister/start-gray.png');
       }
     }
