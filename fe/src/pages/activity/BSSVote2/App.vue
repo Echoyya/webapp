@@ -1111,16 +1111,13 @@ export default {
       this.$axios.get(`/voting/v1/program?vote_id=${this.vote_id}`).then(res => {
         if (res.data.code === 0) {
           res.data.data.forEach(item => {
-            if (item.name.substr(0, 5) == 'fuhuo') {
+            if (item.name.indexOf('fuhuo') >= 0) {
               this.clipsList.push(item)
-            } else if (item.name.substr(0, 5) == 'topic') {
+              this.mSendEvLog('video_show', item.description, '')
+            } else if (item.name.indexOf('topic') >= 0) {
               this.topicList.push(item)
             }
           })
-          // TODO
-          // this.clipsList.forEach(item => {
-          //   this.mSendEvLog('video_show', item.description, '')
-          // })
           this.canClickTab2 = true
           if (this.$serverTime > this.endTime) {
             this.changePage('barrage')
