@@ -124,7 +124,7 @@ export const callApp = function(page, failback) {
       invokeByHref.call(this, createScheme(page), failback)
     }
   } else {
-    if (navigator.userAgent.indexOf('HUAWEIY360') > 0) {
+    if (browser.ua.indexOf('HUAWEIY360') > 0 || browser.ua.indexOf('I9268') > 0 || browser.ua.indexOf('I9502') > 0) {
       invokeByIframe.call(this, createScheme(page), failback)
     } else {
       invokeByHref.call(this, createIntent(page), failback)
@@ -192,7 +192,12 @@ export const callMarket = function(failback) {
   if (browser.isIos) {
     this.$refs.loading.finish()
     window.location.href = appleStore
-  } else if (browser.ua.indexOf('MuMu') >= 0 || browser.ua.indexOf('I9502') > 0 || browser.ua.indexOf('Firefox') > 0) {
+  } else if (
+    browser.ua.indexOf('MuMu') >= 0 ||
+    browser.ua.indexOf('I9502') > 0 ||
+    browser.ua.indexOf('I9268') > 0 ||
+    browser.ua.indexOf('Firefox') > 0
+  ) {
     // android 6+
     invokeByIframe.call(this, `market://details?id=com.star.mobile.video${source}`, failback)
   } else {
