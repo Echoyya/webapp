@@ -9,24 +9,24 @@
         </div>
       </div>
       <div class="page-control">
-        <p :class="{'active':pageVote}" @click="changePage('vote')">KURA</p>
-        <p :class="{'active':!pageVote}" @click="changePage('barrage')">MAONI</p>
+        <p :class="{ active: pageVote }" @click="changePage('vote')">KURA</p>
+        <p :class="{ active: !pageVote }" @click="changePage('barrage')">MAONI</p>
       </div>
       <div v-if="pageVote" class="page-vote">
         <img class="text text1" src="@/assets/img/vote/BSSVote2/text1.png" />
         <div class="date">NOVEMBA 18 - DESEMBA 11</div>
         <div class="vote-box">
           <div class="vote-remaining">
-            <div class="remain">KURA ZILIZOBAKI:{{appType==0?0:(voteLeft>0?voteLeft:0)}}</div>
+            <div class="remain">KURA ZILIZOBAKI:{{ appType == 0 ? 0 : voteLeft > 0 ? voteLeft : 0 }}</div>
           </div>
-          <div v-if="advisorList.length>0">
+          <div v-if="advisorList.length > 0">
             <ul class="clearfix">
-              <li v-for="(item,key) in advisorList" :key="key">
+              <li v-for="(item, key) in advisorList" :key="key">
                 <div class="item-box">
                   <div>
-                    <img :src="item.icon+'?w=150'" class="icon" @click="toPlayer(item,'votepic_click',item.name)" />
+                    <img :src="item.icon + '?w=150'" class="icon" @click="toPlayer(item, 'votepic_click', item.name)" />
                   </div>
-                  <span class="name">{{item.name.toUpperCase()}}</span>
+                  <span class="name">{{ item.name.toUpperCase() }}</span>
                 </div>
                 <div class="vote-btn" @click="handleViceVote(item)">KURA</div>
               </li>
@@ -37,29 +37,29 @@
         <div class="more-vote">
           <div class="vip">
             <!-- APP外、匿名、登录都不是会员 -->
-            <img v-if="appType==0||(appType>0&&!isOttVip&&!isLinkVip)" src="@/assets/img/vote/BSSVote2/ic-noOtt-noLink.png" alt />
+            <img v-if="appType == 0 || (appType > 0 && !isOttVip && !isLinkVip)" src="@/assets/img/vote/BSSVote2/ic-noOtt-noLink.png" alt />
             <!-- 都是会员 -->
-            <img v-if="appType>0&&isOttVip&&isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-isLink.png" alt />
+            <img v-if="appType > 0 && isOttVip && isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-isLink.png" alt />
             <!-- 是OTT 不是LINK -->
-            <img v-if="appType>0&&isOttVip&&!isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-noLink.png" alt />
+            <img v-if="appType > 0 && isOttVip && !isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-noLink.png" alt />
             <!-- 不是OTT 是LINK -->
-            <img v-if="appType>0&&!isOttVip&&isLinkVip" src="@/assets/img/vote/BSSVote2/ic-noOtt-isLink.png" alt />
-            <div v-if="appType==0||appType>0&&!isOttVip" class="op open-ott" @click="toVip('ottvip')"></div>
-            <div v-if="appType==0||appType>0&&!isLinkVip" class="op open-dvb" @click="toVip('dvbvip')"></div>
+            <img v-if="appType > 0 && !isOttVip && isLinkVip" src="@/assets/img/vote/BSSVote2/ic-noOtt-isLink.png" alt />
+            <div v-if="appType == 0 || (appType > 0 && !isOttVip)" class="op open-ott" @click="toVip('ottvip')"></div>
+            <div v-if="appType == 0 || (appType > 0 && !isLinkVip)" class="op open-dvb" @click="toVip('dvbvip')"></div>
           </div>
-          <img v-if="appType>0&&isLogin" src="@/assets/img/vote/BSSVote2/ic-2login.png" alt />
+          <img v-if="appType > 0 && isLogin" src="@/assets/img/vote/BSSVote2/ic-2login.png" alt />
           <img v-else src="@/assets/img/vote/BSSVote2/ic-2login-no.png" alt @click="toSignIn" />
           <img src="@/assets/img/vote/BSSVote2/ic-3share.png" alt @click="toShare('invite')" />
           <div class="num">
-            <p>FANIKIWA KUALIKA RAFIKI {{share_num}}</p>
+            <p>FANIKIWA KUALIKA RAFIKI {{ share_num }}</p>
           </div>
         </div>
         <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
         <img src="@/assets/img/vote/BSSRegister/ic-link-comment.png" alt class="link" @click="toComment('mid')" />
-        <img v-if="appType>0&&!isLogin" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login-no.png" @click="toSignIn" />
-        <img v-if="!(appType>0&&!isLogin)" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login.png" alt />
+        <img v-if="appType > 0 && !isLogin" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login-no.png" @click="toSignIn" />
+        <img v-if="!(appType > 0 && !isLogin)" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login.png" alt />
         <div class="lottery-type">
-          <div class="count">NAFASI ZILIZOBAKI:{{appType>0&&isLogin?(lotteryLeft>0?lotteryLeft:0):0}}</div>
+          <div class="count">NAFASI ZILIZOBAKI:{{ appType > 0 && isLogin ? (lotteryLeft > 0 ? lotteryLeft : 0) : 0 }}</div>
           <lottery
             ref="lottery"
             :id="lottery_id"
@@ -78,34 +78,34 @@
       </div>
       <div v-else class="page-barrage">
         <div class="topic">
-          <img class="title" :src="topic+'?w=350'" alt />
+          <img class="title" :src="topic + '?w=350'" alt />
           <div class="pick-box">
             <div class="left">
               <div>
-                <img v-if="pageList[index]" :src="pageList[index].candidates[0].icon+'?w=250'" alt />
+                <img v-if="pageList[index]" :src="pageList[index].candidates[0].icon + '?w=250'" alt />
               </div>
             </div>
             <div class="middle">
               <img src="@/assets/img/vote/BSSVote2/ic-or.png" alt />
               <img src="@/assets/img/vote/BSSVote2/ic-pick-text.png" alt />
-              <p>{{allNum}}</p>
+              <p>{{ allNum }}</p>
             </div>
             <div class="right">
               <div>
-                <img v-if="pageList[index]" :src="pageList[index].candidates[1].icon+'?w=250'" alt />
+                <img v-if="pageList[index]" :src="pageList[index].candidates[1].icon + '?w=250'" alt />
               </div>
             </div>
-            <div v-show="!picked||appType==0" class="pick">
-              <div v-if="pageList[index]" class="btn" @click="handlePick('left',pageList[index].candidates)">CHAGUA</div>
-              <div v-if="pageList[index]" class="btn" @click="handlePick('right',pageList[index].candidates)">CHAGUA</div>
+            <div v-show="!picked || appType == 0" class="pick">
+              <div v-if="pageList[index]" class="btn" @click="handlePick('left', pageList[index].candidates)">CHAGUA</div>
+              <div v-if="pageList[index]" class="btn" @click="handlePick('right', pageList[index].candidates)">CHAGUA</div>
             </div>
-            <div v-show="picked&&appType>0" class="progress" :class="{'show-in':show_in}">
+            <div v-show="picked && appType > 0" class="progress" :class="{ 'show-in': show_in }">
               <div class="bar l"></div>
               <div class="bar r"></div>
-              <div class="left">{{leftNum}}%</div>
-              <div class="right">{{rightNum}}%</div>
-              <span class="add-one l" :class="{'l-show':l_show}">+1</span>
-              <span class="add-one r" :class="{'r-show':r_show}">+1</span>
+              <div class="left">{{ leftNum }}%</div>
+              <div class="right">{{ rightNum }}%</div>
+              <span class="add-one l" :class="{ 'l-show': l_show }">+1</span>
+              <span class="add-one r" :class="{ 'r-show': r_show }">+1</span>
             </div>
           </div>
         </div>
@@ -115,7 +115,7 @@
           </div>
           <div class="send-box">
             <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
-            <div class="btn" @click="sendComment">{{disabled?`${during}s`:`TUMA`}}</div>
+            <div class="btn" @click="sendComment">{{ disabled ? `${during}s` : `TUMA` }}</div>
           </div>
         </div>
         <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
@@ -123,11 +123,11 @@
       <img class="text text4" src="@/assets/img/vote/BSSVote2/text4.png" alt />
       <div class="past-programme">
         <ul class="clearfix">
-          <li v-for="(item,i) in clipsList" :key="i">
-            <div @click="toPlayer(item,'video_click',item.description)">
-              <img class="url" :src="item.cover+'?w=230'" />
+          <li v-for="(item, i) in clipsList" :key="i">
+            <div @click="toPlayer(item, 'video_click', item.description)">
+              <img class="url" :src="item.cover + '?w=230'" />
             </div>
-            <p class="title">{{(item.description)}}</p>
+            <p class="title">{{ item.description }}</p>
           </li>
         </ul>
       </div>
@@ -135,15 +135,18 @@
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
       <div class="rule-text">
-        Matokeo ya Kura yataamua moja kwa moja safari ya washiriki 20 ambao waliaga mashindano. Watachaguliwa Washiriki 2 kati ya washiriki 16 ambao waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5 watakaokwenda kwenye fainali
+        Matokeo ya Kura yataamua moja kwa moja safari ya washiriki 20 ambao waliaga mashindano. Watachaguliwa Washiriki 2 kati ya washiriki 16 ambao
+        waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5
+        watakaokwenda kwenye fainali
         <br />
-        <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
-        <br />2. Vigezo vya kupiga kura : Tafuta na pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
-        <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja.
-        <br />② Wanachama wa VIP(VIP: StarTimes On na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)).
-        <br />③ Shirikisha marafiki kwa kuwaalika kupakua APP ya StarTimes On na kupata kura 5 kwa kila mtumiaji ambae umempa mualiko na wewe kujipatia kura zaidi.
-        <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili.
-        <br />3. Matokeo ya washiriki waliopigiwa kura yatakua yakitangazwa kabla ya hatua inayofuata na matokeo ya mwisho ya kura yatatangazwa sehemu ya 10.
+        <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00. <br />2. Vigezo vya kupiga kura : Tafuta na
+        pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
+        <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja. <br />② Wanachama wa VIP(VIP: StarTimes On
+        na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)). <br />③
+        Shirikisha marafiki kwa kuwaalika kupakua APP ya StarTimes On na kupata kura 5 kwa kila mtumiaji ambae umempa mualiko na wewe kujipatia kura
+        zaidi. <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya
+        Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili. <br />3.
+        Matokeo ya washiriki waliopigiwa kura yatakua yakitangazwa kabla ya hatua inayofuata na matokeo ya mwisho ya kura yatatangazwa sehemu ya 10.
       </div>
       <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
@@ -151,16 +154,16 @@
     <div v-show="votePannel" class="handle-pick-box">
       <img src="@/assets/img/vote/BSSVote2/ic-pick.png" alt />
       <div class="title">CHAGUA KURA ZAKO</div>
-      <div class="votes">Kura zilizobaki: {{voteLeft}}</div>
+      <div class="votes">Kura zilizobaki: {{ voteLeft }}</div>
       <div class="pick">
-        <div class="vote-value" :class="voteLeft>=1?'abled':'disabled'" @click="handleVote(1)">+1</div>
-        <div class="vote-value" :class="voteLeft>=5?'abled':'disabled'" @click="handleVote(5)">+5</div>
-        <div class="vote-value" :class="voteLeft>=10?'abled':'disabled'" @click="handleVote(10)">+10</div>
+        <div class="vote-value" :class="voteLeft >= 1 ? 'abled' : 'disabled'" @click="handleVote(1)">+1</div>
+        <div class="vote-value" :class="voteLeft >= 5 ? 'abled' : 'disabled'" @click="handleVote(5)">+5</div>
+        <div class="vote-value" :class="voteLeft >= 10 ? 'abled' : 'disabled'" @click="handleVote(10)">+10</div>
       </div>
       <div class="cancel" @click="closeShadow">GHAIRI</div>
     </div>
-    <div v-show="show_rules||votePannel" class="shadow-box" @click="closeShadow"></div>
-    <mShare v-if="$appType==0" ref="share" />
+    <div v-show="show_rules || votePannel" class="shadow-box" @click="closeShadow"></div>
+    <mShare v-if="$appType == 0" ref="share" />
     <alert-dialog ref="alert" />
     <confirm-dialog ref="confirm" />
     <toast-dialog ref="toast" />
@@ -431,7 +434,6 @@ export default {
           this.$nextTick(() => {
             this.initPage()
           })
-          this.barrageIsShow = true
           this.getCommentList()
         }
       }
@@ -545,7 +547,8 @@ export default {
             this.last_id = res.data.data[res.data.data.length - 1].id
             this.commentList = res.data.data
             this.canClickTab1 = true
-            this.barrageIndex = 0
+            this.addToList(this.commentList[0])
+            this.barrageIndex = 1
             this.t = setInterval(() => {
               this.addToList(this.commentList[this.barrageIndex])
               this.barrageIndex++
@@ -804,12 +807,16 @@ export default {
         }
       } else if (this.appType == 2) {
         if (!this.isLogin) {
-          window.bridge.startLogin()
+          this.$iosBridge && this.$iosBridge.callHandler('startLogin')
         } else if (this.isLogin) {
           if (vip == 'dvbvip') {
             // 原生DVB
             this.mSendEvLog('dvb_click', '', '')
-            window.bridge.toAppPage('dvbLink', "{'isBackToSource':false}")
+            this.$iosBridge &&
+              this.$iosBridge.callHandler('toAppPage', {
+                pageName: 'dvbLink',
+                isBackToSource: false
+              })
           } else if (vip == 'ottvip') {
             // 原生OTT
             this.mSendEvLog('ott_click', '', '')
@@ -853,7 +860,7 @@ export default {
             encodeURIComponent(window.location.href)
         )
       } else {
-        window.bridge.startLogin()
+        this.$iosBridge && this.$iosBridge.callHandler('startLogin')
       }
     },
     // 调出分享弹层(app/web)
@@ -1111,16 +1118,13 @@ export default {
       this.$axios.get(`/voting/v1/program?vote_id=${this.vote_id}`).then(res => {
         if (res.data.code === 0) {
           res.data.data.forEach(item => {
-            if (item.name.substr(0, 5) == 'fuhuo') {
+            if (item.name.indexOf('fuhuo') >= 0) {
               this.clipsList.push(item)
-            } else if (item.name.substr(0, 5) == 'topic') {
+              this.mSendEvLog('video_show', item.description, '')
+            } else if (item.name.indexOf('topic') >= 0) {
               this.topicList.push(item)
             }
           })
-          // TODO
-          // this.clipsList.forEach(item => {
-          //   this.mSendEvLog('video_show', item.description, '')
-          // })
           this.canClickTab2 = true
           if (this.$serverTime > this.endTime) {
             this.changePage('barrage')

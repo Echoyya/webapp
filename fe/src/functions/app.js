@@ -244,10 +244,14 @@ export const shareInvite = (link, shareTitle, shareContent, shareImg) => {
   }
 }
 export const shareInviteIos = (link, shareTitle, shareContent, shareImg) => {
-  if (window.bridge && window.bridge.shareContent) {
-    const content = '【' + shareTitle + '】' + shareContent
-    window.bridge.shareContent(link, content, shareTitle, shareImg || '')
-  }
+  const content = '【' + shareTitle + '】' + shareContent
+  this.$iosBridge &&
+    this.$iosBridge.callHandler('shareContent', {
+      url: link,
+      content: content,
+      title: shareTitle,
+      imageUrl: shareImg || ''
+    })
 }
 export const shareByFacebook = (link, shareContent) => {
   if (window.getChannelId && window.getChannelId.shareFacebook) {
