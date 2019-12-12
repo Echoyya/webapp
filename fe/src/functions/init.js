@@ -36,13 +36,15 @@ function setupWebViewJavascriptBridge(callback) {
   }, 0)
 }
 
-setupWebViewJavascriptBridge(function(bridge) {
-  iosBridge = bridge
-})
+if (!window.getChannelId) {
+  setupWebViewJavascriptBridge(function(bridge) {
+    iosBridge = bridge
+  })
+}
 
 export const initPage = function(page, update) {
   pageComponent = page
-  
+
   updatePage = update ? update : updateComponent
   setTimeout(() => {
     // 因为ios的方法实在回调队列里
