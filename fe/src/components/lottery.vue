@@ -179,16 +179,14 @@ export default {
               this.beforeLeave()
             }
           } else {
-            this.items = []
-            this.$emit('getItemsError', {
+            this.$emit('getMsgListError', {
               code: 3,
               errMsg: 'Get winnings error!'
             })
           }
         })
         .catch(() => {
-          this.items = []
-          this.$emit('getItemsError', {
+          this.$emit('getMsgListError', {
             code: 3,
             errMsg: 'Get winnings error!'
           })
