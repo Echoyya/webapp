@@ -247,6 +247,7 @@ export default {
       votePickItem: -1, // 准备投票的投票单元id
 
       // 抽奖
+      click: true,
       lotteryLeft: 0,
 
       // 弹幕
@@ -297,6 +298,9 @@ export default {
       this.$refs.alert.show(err.errMsg)
     },
     startDraw() {
+      if (!this.click) {
+        return
+      }
       if (this.appType == 0 || !this.isLogin || this.$serverTime < this.startTime || this.$serverTime >= this.endTime || this.lotteryLeft <= 0) {
         this.mSendEvLog('lottery_click', '', '-1')
       }

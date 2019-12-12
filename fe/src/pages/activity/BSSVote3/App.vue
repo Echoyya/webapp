@@ -212,7 +212,7 @@ export default {
   },
   data() {
     const startTime = new Date('2019-12-09T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
-    const endTime = new Date('2019-12-11T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+    const endTime = new Date('2019-12-15T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     return {
       // 页面
       vote_id: getQuery('voteid') || 64,
@@ -248,6 +248,7 @@ export default {
       votePickItem: -1, // 准备投票的投票单元id
 
       // 抽奖
+      click: true,
       lotteryLeft: 0,
 
       // 弹幕
@@ -298,6 +299,9 @@ export default {
       this.$refs.alert.show(err.errMsg)
     },
     startDraw() {
+      if (!this.click) {
+        return
+      }
       if (this.appType == 0 || !this.isLogin || this.$serverTime < this.startTime || this.$serverTime >= this.endTime || this.lotteryLeft <= 0) {
         this.mSendEvLog('lottery_click', '', '-1')
       }
