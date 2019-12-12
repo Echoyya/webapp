@@ -420,10 +420,8 @@ export default {
           this.$nextTick(() => {
             this.initPage()
           })
-          setTimeout(() => {
-            this.barrageIsShow = true
-            this.getCommentList()
-          }, 1000)
+          this.barrageIsShow = true
+          this.getCommentList()
         }
       }
     },
@@ -542,6 +540,7 @@ export default {
             this.i = 0
             this.t = setInterval(() => {
               this.addToList(this.commentList[this.i])
+              this.i++
               for (let j = 0; j < this.barrageBox[0].childNodes.length; j++) {
                 if (this.barrageBox[0].childNodes[j].nodeName == 'DIV') {
                   this.barrageBox[0].childNodes[j].style.backgroundColor = '#848d34'
@@ -549,7 +548,6 @@ export default {
                   this.barrageBox[0].childNodes[j].style.color = '#fff'
                 }
               }
-              this.i++
               if (this.i >= this.number) {
                 this.i = 0
                 clearInterval(this.t)
@@ -1001,6 +999,7 @@ export default {
           'FUTA'
         )
       } else {
+        this.mSendEvLog('votebtn_click', advisor.name, '')
         const box = document.getElementsByClassName('handle-pick-box')[key]
         box.style.display = 'block'
         this.show_pick = true
@@ -1038,7 +1037,11 @@ export default {
       })
         .then(res => {
           if (res.data.code === 0) {
-            this.mSendEvLog('votecnt_click', '', value)
+            if (this.isOttVip || this.isLinkVip) {
+              this.mSendEvLog('votecnt_click', 'vip', value)
+            } else {
+              this.mSendEvLog('votecnt_click', 'nvip', value)
+            }
             this.voteLeft -= value
             this.getLeftLottery()
             if (this.voteLeft > 0) {
@@ -2119,7 +2122,7 @@ export default {
         position: relative;
         overflow: hidden;
         .comment-box {
-          width: 150%;
+          width: 135%;
           height: 212px;
           position: relative;
           left: 0;
@@ -2131,11 +2134,6 @@ export default {
             height: 212px;
             overflow: hidden;
             top: 0;
-            // .red{
-            //   color: red;
-            //   background: rgba(0,0,0,0.7);
-            //   border-radius: 100px;
-            // }
           }
         }
         .send-box {
