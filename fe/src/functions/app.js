@@ -44,7 +44,7 @@ export const pageDlay = function(callback, second) {
     window.requestAnimationFrame(exam)
   } else {
     const interval = 200
-    const deviation = 20
+    const deviation = 50
     const timer = setInterval(() => {
       const now = new Date().getTime()
       if (now - lastFired < deviation + interval) {
@@ -124,8 +124,11 @@ export const callApp = function(page, failback) {
       invokeByHref.call(this, createScheme(page), failback)
     }
   } else {
-    invokeByHref.call(this, createIntent(page), failback)
-    // invokeByIframe.call(this, createScheme(page), failback)
+    if (navigator.userAgent.indexOf('HUAWEIY360') > 0) {
+      invokeByIframe.call(this, createScheme(page), failback)
+    } else {
+      invokeByHref.call(this, createIntent(page), failback)
+    }
   }
 }
 
