@@ -429,7 +429,6 @@ export default {
           this.$nextTick(() => {
             this.initPage()
           })
-          this.barrageIsShow = true
           this.getCommentList()
         }
       }
@@ -542,7 +541,8 @@ export default {
             this.last_id = res.data.data[res.data.data.length - 1].id
             this.commentList = res.data.data
             this.canClickTab1 = true
-            this.barrageIndex = 0
+            this.addToList(this.commentList[0])
+            this.barrageIndex = 1
             this.t = setInterval(() => {
               this.addToList(this.commentList[this.barrageIndex])
               this.barrageIndex++
