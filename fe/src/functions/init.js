@@ -50,15 +50,14 @@ function basicBridgeInfo() {
   appInfo = window.getChannelId && window.getChannelId.jsGetHeadInfo && window.getChannelId.jsGetHeadInfo()
   if (appInfo) {
     appInfo = JSON.parse(appInfo)
+    support()
   } else {
     iosBridge &&
       iosBridge.callHandler('jsGetHeadInfo', '', function(response) {
-        appInfo = response
+        appInfo = JSON.parse(response)
+        support()
       })
   }
-  setTimeout(() => {
-    support()
-  }, 0)
 }
 
 function support() {
@@ -75,7 +74,18 @@ function support() {
       appType = 1
     } else {
       token = getCookie('token') || tokenMap['NG']
-      appType = 0
+      const ua = navigator.userAgent
+      if (ua.indexOf('iPhone') >= 0) {
+        const uaArr = ua.split(' ')
+        if (uaArr[uaArr.length - 1].indexOf('Mobile/') >= 0) {
+          appType = -1
+          return
+        } else {
+          appType = 0
+        }
+      } else {
+        appType = 0
+      }
     }
   }
 
