@@ -1,17 +1,16 @@
 <template>
   <div class="error">
     <img src="@/assets/img/alert.png" alt />
-    Sorry, there is a network error.
+    You must upgrade to use this feature
     <br />
-    <a href="javascript:void(0)" @click="login">Please login and try again</a>.
+    <a href="javascript:void(0)" @click="update">click to update</a>.
   </div>
 </template>
 <script>
-import { toNativePage } from '@/functions/app'
 export default {
   methods: {
-    login() {
-      toNativePage('com.star.mobile.video.account.LoginActivity')
+    update() {
+      window.location.href = 'https://itunes.apple.com/us/app/startimes/id1168518958?l=zh&ls=1&mt=8'
     }
   }
 }
