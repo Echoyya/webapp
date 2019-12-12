@@ -878,7 +878,7 @@ export default {
       } else if (this.appType == 0) {
         this.$refs.share.show()
       } else {
-        shareInviteIos(url, this.shareTitle, this.shareText, this.imgUrl)
+        shareInviteIos.call(this, url, this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     // 唤醒转入活动页或下载App

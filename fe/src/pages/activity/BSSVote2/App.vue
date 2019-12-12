@@ -140,13 +140,18 @@
         waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5
         watakaokwenda kwenye fainali
         <br />
-        <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00. <br />2. Vigezo vya kupiga kura : Tafuta na
+        <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
+        <br />2. Vigezo vya kupiga kura : Tafuta na
         pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
-        <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja. <br />② Wanachama wa VIP(VIP: StarTimes On
-        na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)). <br />③
+        <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja.
+        <br />② Wanachama wa VIP(VIP: StarTimes On
+        na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)).
+        <br />③
         Shirikisha marafiki kwa kuwaalika kupakua APP ya StarTimes On na kupata kura 5 kwa kila mtumiaji ambae umempa mualiko na wewe kujipatia kura
-        zaidi. <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya
-        Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili. <br />3.
+        zaidi.
+        <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya
+        Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili.
+        <br />3.
         Matokeo ya washiriki waliopigiwa kura yatakua yakitangazwa kabla ya hatua inayofuata na matokeo ya mwisho ya kura yatatangazwa sehemu ya 10.
       </div>
       <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
@@ -882,7 +887,7 @@ export default {
       } else if (this.appType == 0) {
         this.$refs.share.show()
       } else {
-        shareInviteIos(url, this.shareTitle, this.shareText, this.imgUrl)
+        shareInviteIos.call(this, url, this.shareTitle, this.shareText, this.imgUrl)
       }
     },
     // 唤醒转入活动页或下载App

@@ -3,9 +3,10 @@ import axios from 'axios'
 import tokenMap from '@/functions/token'
 import env from '@/functions/config'
 import { getCookie, setCookie, randomString } from '@/functions/utils'
-import errorPage from '@/components/error.vue'
 import i18n from '@/i18n/'
 import { initAna, sendEvLog } from '@/functions/analysis.js'
+import errorPage from '@/components/error'
+import updateComponent from '@/components/iosUpdate'
 
 Vue.config.productionTip = false
 
@@ -16,6 +17,7 @@ let langObj = i18n.en
 let iosBridge = null
 let appInfo = null
 let pageComponent = ''
+let updatePage = updateComponent
 
 function setupWebViewJavascriptBridge(callback) {
   if (window.WebViewJavascriptBridge) {
@@ -38,8 +40,10 @@ setupWebViewJavascriptBridge(function(bridge) {
   iosBridge = bridge
 })
 
-export const initPage = function(page) {
+export const initPage = function(page, update) {
   pageComponent = page
+  
+  updatePage = update ? update : updateComponent
   setTimeout(() => {
     // 因为ios的方法实在回调队列里
     basicBridgeInfo()
@@ -50,15 +54,17 @@ function basicBridgeInfo() {
   appInfo = window.getChannelId && window.getChannelId.jsGetHeadInfo && window.getChannelId.jsGetHeadInfo()
   if (appInfo) {
     appInfo = JSON.parse(appInfo)
-  } else {
-    iosBridge &&
-      iosBridge.callHandler('jsGetHeadInfo', '', function(response) {
-        appInfo = response
-      })
-  }
-  setTimeout(() => {
     support()
-  }, 0)
+  } else {
+    if (iosBridge) {
+      iosBridge.callHandler('jsGetHeadInfo', '', function(response) {
+        appInfo = JSON.parse(response)
+        support()
+      })
+    } else {
+      support()
+    }
+  }
 }
 
 function support() {
@@ -75,7 +81,21 @@ function support() {
       appType = 1
     } else {
       token = getCookie('token') || tokenMap['NG']
-      appType = 0
+      const ua = navigator.userAgent
+      if (ua.indexOf('iPhone') >= 0) {
+        const uaArr = ua.split(' ')
+        if (uaArr[uaArr.length - 1].indexOf('Mobile/') >= 0) {
+          new Vue({
+            render: h => h(updatePage)
+          }).$mount('#app')
+          // TODO 发埋点
+          return
+        } else {
+          appType = 0
+        }
+      } else {
+        appType = 0
+      }
     }
   }
 

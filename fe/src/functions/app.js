@@ -243,7 +243,7 @@ export const shareInvite = (link, shareTitle, shareContent, shareImg) => {
     window.getChannelId.showCustorm(content, link, link, link, link, link, link, shareImg || '', shareTitle)
   }
 }
-export const shareInviteIos = (link, shareTitle, shareContent, shareImg) => {
+export const shareInviteIos = function(link, shareTitle, shareContent, shareImg) {
   const content = '【' + shareTitle + '】' + shareContent
   this.$iosBridge &&
     this.$iosBridge.callHandler('shareContent', {
