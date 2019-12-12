@@ -16,13 +16,13 @@
           <div>
             <div>
               <img v-if="team[1]" :src="team[1].logo" />
-              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" @click="showShare"/>
             </div>
           </div>
           <div>
             <div>
               <img v-if="team[2]" :src="team[2].logo" />
-              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" />
+              <img v-else src="@/assets/img/vote/TeamFission/bg-add.png" @click="showShare"/>
             </div>
           </div>
         </div>
@@ -176,7 +176,7 @@ export default {
       activity_id: getQuery('activity') || 1,
       activityStart: 0,
       activityEnd: 0,
-      imgUrl: 'http://cdn.startimestv.com/banner/team-banner.png',
+      imgUrl: 'http://cdn.startimestv.com/banner/team-banner2.png',
       shareTitle: this.$t('vote.team.shareTitle'),
       shareText: this.$t('vote.team.shareText'),
 
@@ -259,6 +259,7 @@ export default {
     })
   },
   mounted() {
+    this.mSendEvLog('page_show','','1')
     const teamno = getQuery('teamno')
     const searchFullTeamStatus = sessionStorage.getItem('search_full_team')
     if ((teamno && !isNaN(teamno) && window.history.length <= 1) || searchFullTeamStatus) {
@@ -795,6 +796,7 @@ export default {
       .title {
         width: 100%;
         background-color: #c20044;
+        color: #fff;
       }
       .contant {
         padding: 0.5rem 0.5rem 1.5rem;
@@ -883,20 +885,19 @@ export default {
           color: #ffffff;
           height: 3rem;
           line-height: 2.6rem;
+          text-align: center;
+          overflow: hidden;
+          text-overflow: ellipsis;
+          white-space: nowrap;
+          padding: 0 0.5rem;
           img {
             height: 1.2rem;
-            position: absolute;
-            left: 7%;
-            top: 0.7rem;
+            vertical-align: middle;
           }
           p {
-            width: 80%;
-            text-align: center;
+            display: inline;
             font-weight: bold;
-            margin-left: 17%;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            white-space: nowrap;
+            margin-left: 0.5rem;
           }
         }
       }

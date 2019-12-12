@@ -112,7 +112,7 @@ export default {
   min-height: 100vh;
   .prize {
     width: 95%;
-    margin: -18% auto 0;
+    margin: -14% auto 0;
     border-radius: 1rem;
     overflow: hidden;
     position: relative;

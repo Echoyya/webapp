@@ -271,36 +271,36 @@ export const shareByXender = (teamno, type) => {
 
 export const getUtmParam = function() {
   const query = location.search
-  const referrer = query.referrer
+  const referrer = getQuery('referrer')
   let source = '&referrer='
   let utmSource = ''
   let utmCampaign = ''
   let utmMedium = ''
 
-  if (query.referrer) {
+  if (referrer) {
     // 通过referrer 参数接收
     source = source + referrer
     utmSource = getQuery('utm_source', decodeURIComponent(referrer)) || ''
     utmMedium = getQuery('utm_medium', decodeURIComponent(referrer)) || ''
     utmCampaign = getQuery('utm_campaign', decodeURIComponent(referrer)) || ''
-  } else if (query.utm_source) {
+  } else if (getQuery('utm_source')) {
     // 通过utm_source格式接收
-    let str = `utm_source=${query.utm_source}`
-    if (query.utm_medium) str += `&utm_medium=${query.utm_medium}`
-    if (query.utm_campaign) str += `&utm_campaign=${query.utm_campaign}`
+    utmSource = getQuery('utm_source') || ''
+    utmMedium = getQuery('utm_medium')
+    utmCampaign = getQuery('utm_campaign')
+    let str = `utm_source=${utmSource}`
+    if (utmMedium) str += `&utm_medium=${utmMedium}`
+    if (utmCampaign) str += `&utm_campaign=${utmCampaign}`
     source = source + encodeURIComponent(str)
-    utmSource = query.utm_source || ''
-    utmMedium = query.utm_medium || ''
-    utmCampaign = query.utm_campaign || ''
   } else if (query.utms) {
     // 通过utms简写方式(utms,utmm,utmc)
-    let str = `utm_source=${query.utms}`
-    if (query.utmm) str += `&utm_medium=${query.utmm}`
-    if (query.utmc) str += `&utm_campaign=${query.utmc}`
+    utmSource = getQuery('utms') || ''
+    utmMedium = getQuery('utmm')
+    utmCampaign = getQuery('utmc')
+    let str = `utm_source=${utmSource}`
+    if (utmMedium) str += `&utm_medium=${utmMedium}`
+    if (utmCampaign) str += `&utm_campaign=${utmCampaign}`
     source = source + encodeURIComponent(str)
-    utmSource = query.utms || ''
-    utmMedium = query.utmm || ''
-    utmCampaign = query.utmc || ''
   } else {
     // 通过会话缓存接收
     const utmCache = sessionStorage.getItem('utm_str')
