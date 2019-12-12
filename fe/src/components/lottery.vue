@@ -10,7 +10,7 @@
             </div>
           </div>
         </li>
-        <div class="getLuck" @click="drawClick">{{$t('vote.team.draw_button')}}</div>
+        <div class="getLuck" :class="{'getLuck-gray':btnGray}" @click="drawClick">{{$t('vote.team.draw_button')}}</div>
       </ul>
     </div>
     <div v-if="withMsgList" class="msg-box">
@@ -52,7 +52,12 @@ export default {
       required: false,
       type: Boolean,
       default: true
-    }
+    },
+    btnGray: {
+      required: false,
+      type: Boolean,
+      default: true
+    },
   },
   data() {
     return {
@@ -366,6 +371,10 @@ img {
       }
       &:active {
         background-image: url('~@/assets/img/vote/BSSRegister/start-ac.png');
+      }
+      &.getLuck-gray {
+        color: #666;
+        background-image: url('~@/assets/img/vote/BSSRegister/start-gray.png');
       }
     }
   }

@@ -65,6 +65,7 @@
             :id="lottery_id"
             :defaultPrizeIndex="7"
             :withMsgList="showMsg"
+            :btnGray="lotteryBtnGray"
             @drawClick="startDraw"
             @end="endLottery"
             @getItemsError="lotteryError"
@@ -204,7 +205,7 @@ export default {
   },
   data() {
     const startTime = new Date('2019-11-18T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
-    const endTime = new Date('2019-12-21T06:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+    const endTime = new Date('2019-12-11T06:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     const endTime2 = new Date('2019-12-21T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     return {
       // 页面
@@ -271,6 +272,11 @@ export default {
       last_id: 0, // 上一次请求的最后一条弹幕id
       canClickTab1: false,
       canClickTab2: false
+    }
+  },
+  computed: {
+    lotteryBtnGray() {
+      return !this.lotteryLeft
     }
   },
   mounted() {
