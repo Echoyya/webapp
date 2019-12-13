@@ -36,20 +36,20 @@ function setupWebViewJavascriptBridge(callback) {
   }, 0)
 }
 
-if (!window.getChannelId) {
-  setupWebViewJavascriptBridge(function(bridge) {
-    iosBridge = bridge
-  })
-}
-
 export const initPage = function(page, update) {
   pageComponent = page
 
   updatePage = update ? update : updateComponent
-  setTimeout(() => {
+
+  if (!window.getChannelId) {
+    setupWebViewJavascriptBridge(function(bridge) {
+      iosBridge = bridge
+      basicBridgeInfo()
+    })
+  } else {
     // 因为ios的方法实在回调队列里
     basicBridgeInfo()
-  }, 0)
+  }
 }
 
 function basicBridgeInfo() {
