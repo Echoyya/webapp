@@ -403,7 +403,7 @@ export default {
     addToList(v) {
       const maxTime = 5
       const minTime = 3
-      let time = 75 / (10 + decodeURI(v.content).length * 0.5)
+      let time = 50 / (10 + decodeURI(v.content).length * 0.5)
       if (time > maxTime) time = maxTime
       if (time < minTime) time = minTime
       this.barrageList.push({
@@ -415,7 +415,8 @@ export default {
           : 'http://cdn.startimestv.com/banner/DD_user_icon.png',
         msg: decodeURI(v.content),
         time: time,
-        type: MESSAGE_TYPE.NORMAL
+        type: MESSAGE_TYPE.NORMAL,
+        barrageStyle: 'barrageStyle'
       })
     },
     changePage(page) {
@@ -567,13 +568,6 @@ export default {
             this.t = setInterval(() => {
               this.addToList(this.commentList[this.barrageIndex])
               this.barrageIndex++
-              for (let j = 0; j < this.barrageBox[0].childNodes.length; j++) {
-                if (this.barrageBox[0].childNodes[j].nodeName == 'DIV') {
-                  this.barrageBox[0].childNodes[j].style.backgroundColor = '#848d34'
-                  this.barrageBox[0].childNodes[j].style.borderRadius = '100px'
-                  this.barrageBox[0].childNodes[j].style.color = '#fff'
-                }
-              }
               if (this.barrageIndex >= this.number) {
                 this.barrageIndex = 0
                 clearInterval(this.t)
@@ -717,7 +711,7 @@ export default {
       }
       // 活动已结束提示
       if (this.$serverTime >= this.endTime2) {
-        this.$refs.alert.show('Samahani, kura zimekwisha.',() => {},'SAWA')
+        this.$refs.alert.show('Samahani, kura zimekwisha.', () => {}, 'SAWA')
         this.commentText = ''
         this.disabled = false
         this.canClickTab1 = true
@@ -1683,7 +1677,7 @@ export default {
     position: relative;
     overflow: hidden;
     .comment-box {
-      width: 135%;
+      width: 100%;
       height: 212px;
       position: relative;
       left: 0;
@@ -1695,6 +1689,11 @@ export default {
         height: 212px;
         overflow: hidden;
         top: 0;
+        /deep/ .baberrage-item.barrageStyle {
+          background-color: #846c08;
+          color: #fff;
+          border-radius: 100px;
+        }
       }
     }
     .send-box {
