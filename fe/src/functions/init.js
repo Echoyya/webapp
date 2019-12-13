@@ -42,12 +42,18 @@ export const initPage = function(page, update) {
   updatePage = update ? update : updateComponent
 
   if (!window.getChannelId) {
+    let tag = 1
     setupWebViewJavascriptBridge(function(bridge) {
       iosBridge = bridge
+      tag = 0
       basicBridgeInfo()
     })
+    setTimeout(() => {
+      if (tag) {
+        basicBridgeInfo()
+      }
+    }, 200)
   } else {
-    // 因为ios的方法实在回调队列里
     basicBridgeInfo()
   }
 }
