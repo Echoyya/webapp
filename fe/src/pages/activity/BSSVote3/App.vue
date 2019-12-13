@@ -14,7 +14,7 @@
       </div>
       <div v-if="pageVote" class="page-vote">
         <img class="text text1" src="@/assets/img/vote/BSSVote3/text1.png" alt />
-        <div class="date">DESEMBA 23 - DESEMBA 24</div>
+        <div class="date">DESEMBA 22 - DESEMBA 24</div>
         <div class="vote-box">
           <div class="vote-remaining">
             <div class="remain">KURA ZILIZOBAKI:{{ appType == 0 ? 0 : voteLeft > 0 ? voteLeft : 0 }}</div>
@@ -139,7 +139,7 @@
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
       <div class="rule-text">
-        1. <span>Fainali ya kupiga kura</span>: kuanzia tarehe 23 Disemba 2019 saa 6:00 usiku mpaka Disemba  25, 2019 saa 6:00 Usiku.
+        1. <span>Fainali ya kupiga kura</span>: kuanzia tarehe 22 Disemba 2019 saa 4:00 usiku mpaka Disemba 24, 2019 saa 5:00 Usiku.
         <br/>2. <span>Sheria za fainali za kupiga kura</span>: tafuta na pakua APP ya StarTimes ON kwenye simu yako ya mkononi kisha ingia sehemu ya kupigia kura, washiriki wa Bongo Star Search 2019 na umpigie kura mshiriki umpendae.
         <br/>a. Watumiaji wa kawaida wa APP ya StarTimes ON watapata nafasi 5 kila siku kupigia kura kwa kila mshiriki aliyeingia 5 bora au kupiga kura zote 5 kwa mshiriki mmoja aliyempenda.
         <br/>b. Watumiaji Maalumu(VIP): Mtumiaji mpya kujisajili na StarTimes On atapata nafasi ya kupiga kura 50 kwa washiriki wa BSS. Mtumiaji ambaye ameshajisajili kabla na akajiunga na kifurushi cha VIP atajipatia nafasi 50 za kupiga kura siku inayofuata.
@@ -203,8 +203,8 @@ export default {
     lottery
   },
   data() {
-    const startTime = new Date('2019-12-09T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
-    const endTime = new Date('2019-12-15T00:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+    const startTime = new Date('2019-12-09T17:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+    const endTime = new Date('2019-12-15T18:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     return {
       // 页面
       vote_id: getQuery('voteid') || 64,
