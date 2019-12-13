@@ -283,7 +283,7 @@ export const getUtmParam = function() {
 
   if (referrer) {
     // 通过referrer 参数接收
-    source = source + referrer
+    source = source + encodeURIComponent(referrer)
     utmSource = getQuery('utm_source', decodeURIComponent(referrer)) || ''
     utmMedium = getQuery('utm_medium', decodeURIComponent(referrer)) || ''
     utmCampaign = getQuery('utm_campaign', decodeURIComponent(referrer)) || ''
