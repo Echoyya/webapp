@@ -566,13 +566,14 @@ export default {
             this.addToList(this.commentList[0])
             this.barrageIndex = 1
             this.t = setInterval(() => {
-              this.addToList(this.commentList[this.barrageIndex])
-              this.barrageIndex++
               if (this.barrageIndex >= this.number) {
                 this.barrageIndex = 0
                 clearInterval(this.t)
                 this.barrageList = []
                 this.getCommentList()
+              } else {
+                this.addToList(this.commentList[this.barrageIndex])
+                this.barrageIndex++
               }
             }, 1500)
           } else {
@@ -1690,7 +1691,7 @@ export default {
         overflow: hidden;
         top: 0;
         /deep/ .baberrage-item.barrageStyle {
-          background-color: #846c08;
+          background-color: #848c39;
           color: #fff;
           border-radius: 100px;
         }

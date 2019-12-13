@@ -555,7 +555,7 @@ export default {
         return
       }
       this.$axios
-        .get(`/voting/v1/comments?comment_activity_id=${this.index + 13}&last_id=${this.last_id}&num_per_page=${this.number}`)
+        .get(`/voting/v1/comments?comment_activity_id=${this.index + 18}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
             this.last_id = res.data.data[res.data.data.length - 1].id
@@ -564,13 +564,14 @@ export default {
             this.addToList(this.commentList[0])
             this.barrageIndex = 1
             this.t = setInterval(() => {
-              this.addToList(this.commentList[this.barrageIndex])
-              this.barrageIndex++
               if (this.barrageIndex >= this.number) {
                 this.barrageIndex = 0
                 clearInterval(this.t)
                 this.barrageList = []
                 this.getCommentList()
+              } else {
+                this.addToList(this.commentList[this.barrageIndex])
+                this.barrageIndex++
               }
             }, 1500)
           } else {
@@ -750,7 +751,7 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
-          comment_activity_id: this.index + 13,
+          comment_activity_id: this.index + 18,
           content: encodeURI(this.commentText)
         })
       })
