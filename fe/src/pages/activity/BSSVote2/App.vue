@@ -760,11 +760,11 @@ export default {
           if (res.data.code === 0) {
             this.mSendEvLog('send_click', this.commentText, '')
             const during = this.during
-            this.addToList({
-              id: this.currentId++,
+            this.commentList[this.barrageIndex] = {
+              id: ++this.currentId,
               avatar: this.$user.head || 'http://cdn.startimestv.com/banner/DD_user_icon.png',
               content: this.commentText
-            })
+            }
             const duringTime = setInterval(() => {
               this.during--
               if (this.during == 0) {
