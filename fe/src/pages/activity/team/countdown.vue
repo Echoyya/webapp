@@ -27,7 +27,7 @@
 </template>
 <script>
 import { toNativePage, getQuery } from '@/functions/app'
-import { formatAmount, getCookie } from '@/functions/utils'
+import { formatAmount } from '@/functions/utils'
 export default {
   props: {
     activityStart: {
@@ -41,7 +41,7 @@ export default {
     teamNo: {
       required: false
     },
-    isFull:{
+    isFull: {
       required: false,
       type: Boolean
     }
@@ -64,7 +64,7 @@ export default {
       hour: '',
       min: '',
       sed: '',
-      lang: getCookie('lang') || 'en'
+      lang: this.$lang
     }
   },
   filters: {
@@ -135,8 +135,8 @@ export default {
     toAwards() {
       if (this.$isLogin) {
         this.mSendEvLog('myprize_click', '', '1')
-        if(this.isFull){
-          sessionStorage.setItem('search_full_team',1)
+        if (this.isFull) {
+          sessionStorage.setItem('search_full_team', 1)
         }
         window.location.href = `/activity/team/awards.html?activity=${this.activity_id}&teamno=${this.teamNo}`
       } else {
@@ -191,12 +191,12 @@ export default {
       background-size: 100% 2.5rem;
       text-align: center;
       font-size: 1.2rem;
-      color: #8A80A0;
+      color: #8a80a0;
       span {
         font-size: 1.3rem;
         font-weight: bold;
         letter-spacing: 0.15rem;
-        color: #8A80A0;
+        color: #8a80a0;
       }
       &:first-child {
         margin-bottom: 0.5rem;

@@ -2,10 +2,10 @@
   <div class="wrapper">
     <div class="container">
       <div class="top">
-        <img src="@/assets/img/vote/BSSVote2/img-banner.jpg" class="bg-img" />
+        <img src="@/assets/img/vote/BSSVote3/img-banner.png" alt="bg-img" class="bg-img" />
         <div class="tab-box">
-          <img src="@/assets/img/vote/BSSVote2/ic-rule.png" @click="showRule" />
-          <img src="@/assets/img/vote/BSSVote2/ic-share.png" @click="toShare('upshare')" />
+          <img src="@/assets/img/vote/BSSVote3/ic-rule.png" @click="showRule" />
+          <img src="@/assets/img/vote/BSSVote3/ic-share.png" @click="toShare('upshare')" />
         </div>
       </div>
       <div class="page-control">
@@ -13,8 +13,8 @@
         <p :class="{ active: !pageVote }" @click="changePage('barrage')">MAONI</p>
       </div>
       <div v-if="pageVote" class="page-vote">
-        <img class="text text1" src="@/assets/img/vote/BSSVote2/text1.png" />
-        <div class="date">NOVEMBA 18 - DESEMBA 11</div>
+        <img class="text text1" src="@/assets/img/vote/BSSVote3/text1.png" alt />
+        <div class="date">DESEMBA 22 - DESEMBA 24</div>
         <div class="vote-box">
           <div class="vote-remaining">
             <div class="remain">KURA ZILIZOBAKI:{{ appType == 0 ? 0 : voteLeft > 0 ? voteLeft : 0 }}</div>
@@ -33,30 +33,30 @@
             </ul>
           </div>
         </div>
-        <img class="text text2" src="@/assets/img/vote/BSSVote2/text2.png" alt />
+        <img class="text text2" src="@/assets/img/vote/BSSVote3/text2.png" alt />
         <div class="more-vote">
           <div class="vip">
             <!-- APP外、匿名、登录都不是会员 -->
-            <img v-if="appType == 0 || (appType > 0 && !isOttVip && !isLinkVip)" src="@/assets/img/vote/BSSVote2/ic-noOtt-noLink.png" alt />
+            <img v-if="appType == 0 || (appType > 0 && !isOttVip && !isLinkVip)" src="@/assets/img/vote/BSSVote3/ic-noOtt-noLink.png" alt />
             <!-- 都是会员 -->
-            <img v-if="appType > 0 && isOttVip && isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-isLink.png" alt />
+            <img v-if="appType > 0 && isOttVip && isLinkVip" src="@/assets/img/vote/BSSVote3/ic-isOtt-isLink.png" alt />
             <!-- 是OTT 不是LINK -->
-            <img v-if="appType > 0 && isOttVip && !isLinkVip" src="@/assets/img/vote/BSSVote2/ic-isOtt-noLink.png" alt />
+            <img v-if="appType > 0 && isOttVip && !isLinkVip" src="@/assets/img/vote/BSSVote3/ic-isOtt-noLink.png" alt />
             <!-- 不是OTT 是LINK -->
-            <img v-if="appType > 0 && !isOttVip && isLinkVip" src="@/assets/img/vote/BSSVote2/ic-noOtt-isLink.png" alt />
+            <img v-if="appType > 0 && !isOttVip && isLinkVip" src="@/assets/img/vote/BSSVote3/ic-noOtt-isLink.png" alt />
             <div v-if="appType == 0 || (appType > 0 && !isOttVip)" class="op open-ott" @click="toVip('ottvip')"></div>
             <div v-if="appType == 0 || (appType > 0 && !isLinkVip)" class="op open-dvb" @click="toVip('dvbvip')"></div>
           </div>
-          <img v-if="appType > 0 && isLogin" src="@/assets/img/vote/BSSVote2/ic-2login.png" alt />
-          <img v-else src="@/assets/img/vote/BSSVote2/ic-2login-no.png" alt @click="toSignIn" />
-          <img src="@/assets/img/vote/BSSVote2/ic-3share.png" alt @click="toShare('invite')" />
+          <img v-if="appType > 0 && isLogin" src="@/assets/img/vote/BSSVote3/ic-2login.png" alt />
+          <img v-else src="@/assets/img/vote/BSSVote3/ic-2login-no.png" alt @click="toSignIn" />
+          <img src="@/assets/img/vote/BSSVote3/ic-3share.png" alt @click="toShare('invite')" />
           <div class="num">
             <p>FANIKIWA KUALIKA RAFIKI {{ share_num }}</p>
           </div>
         </div>
         <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
-        <img v-if="appType > 0 && !isLogin" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login-no.png" @click="toSignIn" />
-        <img v-if="!(appType > 0 && !isLogin)" class="text text3" src="@/assets/img/vote/BSSVote2/text3-login.png" alt />
+        <img v-if="appType > 0 && !isLogin" class="text text3" src="@/assets/img/vote/BSSVote3/text3-login-no.png" @click="toSignIn" />
+        <img v-if="!(appType > 0 && !isLogin)" class="text text3" src="@/assets/img/vote/BSSVote3/text3-login.png" alt />
         <div class="lottery-type">
           <div class="count">NAFASI ZILIZOBAKI:{{ appType > 0 && isLogin ? (lotteryLeft > 0 ? lotteryLeft : 0) : 0 }}</div>
           <lottery
@@ -87,8 +87,8 @@
               </div>
             </div>
             <div class="middle">
-              <img src="@/assets/img/vote/BSSVote2/ic-or.png" alt />
-              <img src="@/assets/img/vote/BSSVote2/ic-pick-text.png" alt />
+              <img src="@/assets/img/vote/BSSVote3/ic-or.png" alt />
+              <img src="@/assets/img/vote/BSSVote3/ic-pick-text.png" alt />
               <p>{{ allNum }}</p>
             </div>
             <div class="right">
@@ -116,12 +116,15 @@
           </div>
           <div class="send-box">
             <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
-            <div class="btn" @click="sendComment">{{ disabled ? `${during}s` : `TUMA` }}</div>
+            <div class="btn" @click="sendComment">
+              <img src="@/assets/img/vote/BSSVote3/ic-send.png" alt />
+              <span>{{ disabled ? `${during}s` : `TUMA` }}</span>
+            </div>
           </div>
         </div>
         <img src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('midshare')" />
       </div>
-      <img class="text text4" src="@/assets/img/vote/BSSVote2/text4.png" alt />
+      <img class="text text4" src="@/assets/img/vote/BSSVote3/text4.png" alt />
       <div class="past-programme">
         <ul class="clearfix">
           <li v-for="(item, i) in clipsList" :key="i">
@@ -136,23 +139,19 @@
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
       <div class="rule-text">
-        Matokeo ya Kura yataamua moja kwa moja safari ya washiriki 20 ambao waliaga mashindano. Watachaguliwa Washiriki 2 kati ya washiriki 16 ambao
-        waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5
-        watakaokwenda kwenye fainali
-        <br />
-        <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
-        <br />2. Vigezo vya kupiga kura : Tafuta na
-        pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
-        <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja.
-        <br />② Wanachama wa VIP(VIP: StarTimes On
-        na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)).
-        <br />③
-        Shirikisha marafiki kwa kuwaalika kupakua APP ya StarTimes On na kupata kura 5 kwa kila mtumiaji ambae umempa mualiko na wewe kujipatia kura
-        zaidi.
-        <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya
-        Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili.
+        1.
+        <span>Fainali ya kupiga kura</span>: kuanzia tarehe 22 Disemba 2019 saa 4:00 usiku mpaka Disemba 24, 2019 saa 5:00 Usiku.
+        <br />2.
+        <span>Sheria za fainali za kupiga kura</span>: tafuta na pakua APP ya StarTimes ON kwenye simu yako ya mkononi kisha ingia sehemu ya kupigia kura, washiriki wa Bongo Star Search 2019 na umpigie kura mshiriki umpendae.
+        <br />a. Watumiaji wa kawaida wa APP ya StarTimes ON watapata nafasi 5 kila siku kupigia kura kwa kila mshiriki aliyeingia 5 bora au kupiga kura zote 5 kwa mshiriki mmoja aliyempenda.
+        <br />b. Watumiaji Maalumu(VIP): Mtumiaji mpya kujisajili na StarTimes On atapata nafasi ya kupiga kura 50 kwa washiriki wa BSS. Mtumiaji ambaye ameshajisajili kabla na akajiunga na kifurushi cha VIP atajipatia nafasi 50 za kupiga kura siku inayofuata.
+        <br />Mbali na hilo, share link na marafiki wapakue APP ya StarTimes ON ujipatie kura zaidi. Kila Mtumiaji mpya wa APP utakayemualika atakupa nafasi 5 zaidi za kupiga kura. Kadiri unavyoalika marafiki ndivyo unavyojiongezea nafasi za kupiga kura.
         <br />3.
-        Matokeo ya washiriki waliopigiwa kura yatakua yakitangazwa kabla ya hatua inayofuata na matokeo ya mwisho ya kura yatatangazwa sehemu ya 10.
+        <span>Zawadi</span>: ukipiga kura 5 utakuwa kwenye nafasi ya kupata zawadi ya sabufa ya Tsh 85,000, na bluetooth ya Aborder ni Tsh 35,000, VIP wa APP ya StartimesON na kuponi.
+        <br />4.
+        <span>Tathmini ya upigaji kura</span>: ili kutendea haki washiriki walio katika fainali, kura zitahesabiwa papo hapo.Nafasi ya mwisho ya washiriki itakua na sehemu tatu ya kupiga kura zikiwemo: kupiga kura kupitia Startimes ON, upigaji kura kwa ujumbe mfupi, na kupiga kura moja kwa moja ukumbini. Na akaunti za kupiga kura kupitia Startimes ON zitachukua uzito wa asilimia 30.
+        <br />5.
+        <span>Kutangazwa kwa matokeo ya fainali</span>: Mashindano ya fainali yatarushwa Live na matokeo ya mwisho ya kura yatarushwa Live vilevile.
       </div>
       <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
@@ -210,20 +209,18 @@ export default {
     lottery
   },
   data() {
-    const startTime = new Date('2019-11-18T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
-    const endTime = new Date('2019-12-11T06:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
-    const endTime2 = new Date('2019-12-21T09:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+    const startTime = new Date('2019-12-09T17:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+    const endTime = new Date('2019-12-15T18:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     return {
       // 页面
       vote_id: getQuery('voteid') || 64,
-      lottery_id: 3,
+      lottery_id: this.$appType == 2 ? 7 : 6,
       startTime: startTime,
       endTime: endTime,
-      endTime2: endTime2,
 
-      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote2-banner.png',
+      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote3-banner.png',
       shareTitle: 'Bongo Star Search 2019',
-      shareText: 'Saidia mshiriki wako unayempenda kurudi kwenye show!',
+      shareText: 'Kura yako muhimu! Mpigie kura awe mshindi wa Bongo Star Search',
       show_rules: false,
       appType: this.$appType,
       isLogin: this.$isLogin,
@@ -325,7 +322,6 @@ export default {
         return
       }
       if (!this.isLogin) {
-        // 移动端未登录
         this.$refs.alert.show(
           'Tafadhali jisajili ili uanze mchuano wa bahati.',
           () => {
@@ -354,7 +350,6 @@ export default {
       this.$refs.lottery.tween()
     },
     endLottery(prize) {
-      console.log(prize)
       if (prize.prizeIndex < 5) {
         if (prize.prizeIndex == 2) this.mSendEvLog('lottery_click', 'vip', '1')
         else if (prize.prizeIndex == 3) this.mSendEvLog('lottery_click', '40offcoupon', '1')
@@ -479,7 +474,6 @@ export default {
       })
     },
     initPage() {
-      // pageList数据
       // 投票状态
       if (this.pageList[this.index].ticket_num > 0) {
         this.picked = false
@@ -572,7 +566,7 @@ export default {
         return
       }
       this.$axios
-        .get(`/voting/v1/comments?comment_activity_id=${this.index + 13}&last_id=${this.last_id}&num_per_page=${this.number}`)
+        .get(`/voting/v1/comments?comment_activity_id=${this.index + 18}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
             this.last_id = res.data.data[res.data.data.length - 1].id
@@ -615,7 +609,7 @@ export default {
       // 活动未开始提示
       if (this.$serverTime < this.startTime) {
         this.$refs.alert.show(
-          'Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!',
+          'Upigaji kura utaanza tarehe 23th Desemba, kwa hiyo kaa tayari!',
           () => {
             this.canVote = true
           },
@@ -624,7 +618,7 @@ export default {
         return
       }
       // 活动已结束提示
-      if (this.$serverTime >= this.endTime2) {
+      if (this.$serverTime >= this.endTime) {
         this.$refs.alert.show(
           'Samahani, kura zimekwisha.',
           () => {
@@ -719,14 +713,14 @@ export default {
       }
       // 活动未开始提示
       if (this.$serverTime < this.startTime) {
-        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
+        this.$refs.alert.show('Upigaji kura utaanza tarehe 23th Desemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
         this.commentText = ''
         this.disabled = false
         this.canClickTab1 = true
         return
       }
       // 活动已结束提示
-      if (this.$serverTime >= this.endTime2) {
+      if (this.$serverTime >= this.endTime) {
         this.$refs.alert.show('Samahani, kura zimekwisha.', () => {}, 'SAWA')
         this.commentText = ''
         this.disabled = false
@@ -753,7 +747,7 @@ export default {
           this.$refs.alert.show(
             'Maoni yako yana maudhui yasiyofaa. Tafadhali ondoa maneno ambayo yatasababisha uvunjaji wa sheria.',
             () => {},
-            'GOT IT'
+            'SAWA'
           )
           this.disabled = false
           this.canClickTab1 = true
@@ -768,7 +762,7 @@ export default {
           'Content-Type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
-          comment_activity_id: this.index + 13,
+          comment_activity_id: this.index + 18,
           content: encodeURI(this.commentText)
         })
       })
@@ -856,12 +850,11 @@ export default {
     // 埋点方法
     mSendEvLog(action, label, value) {
       this.$sendEvLog({
-        category: 'form_BSSVote2_' + this.$platform,
+        category: 'form_BSSVote3_' + this.$platform,
         action: action,
         label: label,
         value: value
       })
-      console.log('form_BSSVote2_' + this.$platform, action, label, value)
     },
     // app登录方法
     toSignIn() {
@@ -1004,7 +997,7 @@ export default {
         return
       }
       if (this.$serverTime < this.startTime) {
-        this.$refs.alert.show('Upigaji kura utaanza tarehe 18th Novemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
+        this.$refs.alert.show('Upigaji kura utaanza tarehe 23th Desemba, kwa hiyo kaa tayari!', () => {}, 'SAWA')
         return
       } else if (this.$serverTime > this.endTime) {
         this.$refs.alert.show('Samahani, kura zimekwisha.', () => {}, 'SAWA')
@@ -1028,8 +1021,8 @@ export default {
     closeShadow() {
       document.body.style.overflow = 'auto'
       document.body.style.position = 'static'
-      this.show_rules = false
       this.votePannel = false
+      this.show_rules = false
     },
     // 投票1，5，10
     handleVote(value) {
@@ -1111,7 +1104,6 @@ export default {
       if (env.apiUrl == 'http://upms.startimestv.com') {
         url = 'http://m.startimestv.com' + url
       }
-
       this.$axios({
         method: 'POST',
         data: {
@@ -1129,11 +1121,10 @@ export default {
     },
     // 获取往期视频
     getVideoMsg() {
-      // 获取投票单元数据
       this.$axios.get(`/voting/v1/program?vote_id=${this.vote_id}`).then(res => {
         if (res.data.code === 0) {
           res.data.data.forEach(item => {
-            if (item.name.indexOf('fuhuo') >= 0) {
+            if (item.name.indexOf('finals') >= 0) {
               this.clipsList.push(item)
               this.mSendEvLog('video_show', item.description, '')
             } else if (item.name.indexOf('topic') >= 0) {
@@ -1141,9 +1132,6 @@ export default {
             }
           })
           this.canClickTab2 = true
-          if (this.$serverTime > this.endTime) {
-            this.changePage('barrage')
-          }
         }
       })
     }
@@ -1169,17 +1157,15 @@ export default {
     transform: scale(5);
   }
 }
-
 .wrapper {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  background-color: #29331b;
-  img,
+  background-color: #141515;
   div,
-  li {
+  li,
+  img {
     box-sizing: border-box;
   }
 }
-
 .top {
   position: relative;
   .bg-img {
@@ -1206,8 +1192,8 @@ export default {
 .page-control {
   width: 100%;
   height: 3rem;
-  border-top: 0.1rem solid #def004;
-  border-bottom: 0.1rem solid #def004;
+  border-top: 0.1rem solid #fbb508;
+  border-bottom: 0.1rem solid #fbb508;
   position: relative;
   margin: -0.3rem auto 0.5rem;
   text-align: center;
@@ -1220,14 +1206,14 @@ export default {
     width: 50%;
     position: relative;
     &.active {
-      color: #def004;
+      color: #fbb508;
       &::before,
       &::after {
         content: '';
         display: block;
         width: 0.3rem;
         height: 0.3rem;
-        background-color: #def004;
+        background-color: #fbb508;
         border-radius: 50%;
         position: absolute;
         top: 1.35rem;
@@ -1244,7 +1230,7 @@ export default {
 .page-vote {
   .date {
     width: 100%;
-    color: #def004;
+    color: #eaad38;
     text-align: center;
     height: 2rem;
     line-height: 1.5rem;
@@ -1253,7 +1239,7 @@ export default {
   }
   .vote-box {
     width: 95%;
-    background-color: rgba(48, 133, 39, 0.64);
+    background-color: #563f13;
     border-radius: 0.2rem;
     margin: 0.5rem auto 0;
     padding: 1rem 0;
@@ -1267,11 +1253,11 @@ export default {
         line-height: 1.2rem;
         text-align: center;
         border-radius: 0.2rem;
-        background-color: #135702;
+        background-color: #482801;
         &.remain {
           margin: 0 auto;
           width: 12rem;
-          color: #00b600;
+          color: #b0872d;
         }
       }
     }
@@ -1364,7 +1350,7 @@ export default {
         height: 0;
         &.open-ott {
           padding-bottom: 7%;
-          top: 37.5%;
+          top: 38.5%;
         }
         &.open-dvb {
           padding-bottom: 8%;
@@ -1391,15 +1377,12 @@ export default {
   }
   .lottery-type {
     width: 90%;
-    background-color: #fea42f;
+    background-color: #fab512;
     margin: 1rem auto 0;
     border-radius: 0.5rem;
     padding: 1rem 2%;
     position: relative;
     z-index: 2;
-    /deep/ .lottery {
-      background-image: url('~@/assets/img/vote/BSSRegister/bg-border.png');
-    }
     /deep/ .lottery ul li {
       &:nth-child(1),
       &:nth-child(2) {
@@ -1407,16 +1390,13 @@ export default {
         background-size: 100% 100%;
       }
     }
-    /deep/ .msg-box .msg {
-      background-color: #c86a02;
-    }
     .count {
       width: 11rem;
       height: 1.5rem;
       line-height: 1.5rem;
       border-radius: 0.2rem;
       color: #fff;
-      background-color: #ff6d21;
+      background-color: #a57200;
       text-align: center;
       margin: 0 auto 0.5rem;
       font-size: 0.75rem;
@@ -1427,7 +1407,7 @@ export default {
       font-size: 0.75rem;
       line-height: 1.3rem;
       text-align: center;
-      color: #fff;
+      color: #9a6100;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1520,7 +1500,7 @@ export default {
         div {
           position: relative;
           width: 100%;
-          background-image: url('~@/assets/img/vote/BSSVote2/bg-border.png');
+          background-image: url('~@/assets/img/vote/BSSVote3/bg-border2.png');
           background-size: 100% 100%;
           overflow: hidden;
           img {
@@ -1593,7 +1573,7 @@ export default {
           font-size: 0.9rem;
           width: 30%;
           height: 2rem;
-          background-image: url('~@/assets/img/vote/BSSVote2/btn-pick.png');
+          background-image: url('~@/assets/img/vote/BSSVote3/btn-pick.png');
           background-size: 100% 2rem;
           text-align: center;
           line-height: 2rem;
@@ -1689,6 +1669,7 @@ export default {
       }
     }
   }
+
   .comment {
     position: relative;
     overflow: hidden;
@@ -1706,7 +1687,7 @@ export default {
         overflow: hidden;
         top: 0;
         /deep/ .baberrage-item.barrageStyle {
-          background-color: #848c39;
+          background-color: #846c08;
           color: #fff;
           border-radius: 100px;
         }
@@ -1716,7 +1697,7 @@ export default {
       width: 90%;
       margin: 0.5rem 5%;
       height: 2.5rem;
-      background-color: #b8c104;
+      background-color: #fabd0c;
       border-radius: 1.25rem;
       position: relative;
       textarea {
@@ -1725,7 +1706,7 @@ export default {
         border: none;
         outline: none;
         display: block;
-        width: 70%;
+        width: 60%;
         height: 1.8rem;
         line-height: 1.8rem;
         font-size: 0.8rem;
@@ -1749,12 +1730,18 @@ export default {
         }
       }
       .btn {
-        display: block;
-        width: 25%;
-        margin-left: 75%;
+        img {
+          width: 1.2rem;
+          height: 1.2rem;
+          position: relative;
+          top: 0.2rem;
+          margin-right: 0.3rem;
+        }
+        width: 33%;
+        margin-left: 66%;
         height: 2.5rem;
         line-height: 2.5rem;
-        color: #616a00;
+        color: #5d4401;
         font-size: 1rem;
         font-weight: bold;
         text-align: center;
@@ -1769,7 +1756,6 @@ export default {
     margin: 0 auto;
     padding-top: 1rem;
     width: 95%;
-    height: auto;
     &.link {
       width: 90%;
       margin: 0.3rem auto 0.8rem;
@@ -1880,8 +1866,12 @@ export default {
     padding: 0.5rem;
     overflow-x: hidden;
     overflow-y: scroll;
+    font-size: 0.9rem;
     &::-webkit-scrollbar {
       display: none;
+    }
+    span {
+      font-weight: bold;
     }
   }
   .share-btn {

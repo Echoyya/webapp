@@ -254,7 +254,16 @@ export const shareInvite = (link, shareTitle, shareContent, shareImg) => {
     window.getChannelId.showCustorm(content, link, link, link, link, link, link, shareImg || '', shareTitle)
   }
 }
-
+export const shareInviteIos = function(link, shareTitle, shareContent, shareImg) {
+  const content = '【' + shareTitle + '】' + shareContent
+  this.$iosBridge &&
+    this.$iosBridge.callHandler('shareContent', {
+      url: link,
+      content: content,
+      title: shareTitle,
+      imageUrl: shareImg || ''
+    })
+}
 export const shareByFacebook = (link, shareContent) => {
   if (window.getChannelId && window.getChannelId.shareFacebook) {
     window.getChannelId.shareFacebook('', shareContent, link, link, '')
@@ -354,7 +363,7 @@ export const getQuery = function(key, queryStr) {
   }
 }
 
-export const addTicketByDownload = function(vote_id) {
+export const addTicketByDownload = function(vote_id, callback) {
   const user = getQuery('pin')
   const lastGetTicket = getCookie('get_ticket_time')
   if (user && !lastGetTicket) {
@@ -379,9 +388,12 @@ export const addTicketByDownload = function(vote_id) {
           url: '/voting/v1/ticket'
         }).then(() => {
           setCookie('get_ticket_time', 1, 1000 * 60 * 60 * 24 * 30)
+          callback && callback()
         })
       }
     })
+  } else {
+    callback && callback()
   }
 }
 

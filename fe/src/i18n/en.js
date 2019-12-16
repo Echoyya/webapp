@@ -2,7 +2,8 @@ export default {
   vote: {
     team: {
       about_title: 'Rules',
-      about_con: '<p>1. The team member can invite 2 friends to form a team to participate in the lucky draw. </p>\
+      about_con:
+        '<p>1. The team member can invite 2 friends to form a team to participate in the lucky draw. </p>\
         <p>2. The gifts are 1 Day VIP, 7 Days VIP , 30 Days VIP, Phone, TV, Decoder, Recharge card.</p>\
         <p>3. Only new devices and accounts which are identified as new users can join the team.</p>\
         <p>4. Each user has a maximum of 10 lucky draw opportunities.</p>\
@@ -48,7 +49,7 @@ export default {
       input_error: 'Please enter a valid Team ID.',
       network_error: 'Network error.',
       tips: `Tips: <br/>The VIP gift you got will be effective from today.`,
-      no_awards: "No gift yet.",
+      no_awards: 'No gift yet.',
       draw_title: 'Draw your gift',
       draw_button: 'DRAW',
       draw_none: 'Thank you, it will be better next time.',
@@ -69,8 +70,8 @@ export default {
       newuser_popup: 'if you were invited by friends',
       or: 'or',
 
-      //no need 
-      prize_step: 'Follow the steps below to get gift now.',
+      //no need
+      prize_step: 'Follow the steps below to get gift now.'
     }
   }
 }

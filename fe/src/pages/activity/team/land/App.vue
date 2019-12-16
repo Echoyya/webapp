@@ -18,19 +18,18 @@
 </template>
 <script>
 import { downApk, callApp, callMarket, getQuery } from '@/functions/app'
-import { getBrowser, getCookie } from '@/functions/utils'
+import { getBrowser } from '@/functions/utils'
 export default {
   components: {},
   data() {
     return {
       activity_id: getQuery('activity') || 1,
       appType: 0,
-      lang: 'en'
+      lang: this.$lang
     }
   },
   mounted() {
     this.appType = getBrowser().isIos ? 2 : 1
-    this.lang = getCookie('lang') || 'en'
   },
   methods: {
     mSendEvLog(action, label, value) {
@@ -40,10 +39,8 @@ export default {
         label: label,
         value: value
       })
-      console.log(11)
     },
     down() {
-      console.log(22)
       this.mSendEvLog('callApp', 'landingpage', '1')
       callApp.call(
         this,

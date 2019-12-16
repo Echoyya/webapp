@@ -1,11 +1,7 @@
 <template>
   <div class="confirm-box">
     <div :style="{display:style}" class="shadow-box"></div>
-    <div
-      :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}"
-      ref="confirms"
-      class="dialog"
-    >
+    <div :style="{display:style,'margin-left':offsetLeft,'margin-top':offsetTop}" ref="confirms" class="dialog">
       <div class="dialog-body">
         <div class="pop-default">
           <p>
@@ -24,55 +20,55 @@
 export default {
   data() {
     return {
-      msg: "",
-      yes: "YES",
-      no: "NO",
-      style: "none",
-      callback: "",
-      cancel: "",
+      msg: '',
+      yes: 'YES',
+      no: 'NO',
+      style: 'none',
+      callback: '',
+      cancel: '',
       offsetLeft: 0,
       offsetTop: 0
-    };
+    }
   },
   methods: {
     close() {
-      this.style = "none";
+      this.style = 'none'
       if (this.cancel) {
-        this.cancel();
+        this.cancel()
       }
     },
     sure() {
-      this.style = "none";
+      this.style = 'none'
       if (this.callback) {
-        this.callback();
+        this.callback()
       }
     },
     show(msg, callback, cancel, yes, no) {
-      const _this = this;
-      if (yes) this.yes = yes;
-      if (no) this.no = no;
-      this.msg = msg;
-      this.style = "block";
+      const _this = this
+      if (yes) this.yes = yes
+      if (no) this.no = no
+      this.msg = msg
+      this.style = 'block'
       this.$nextTick(() => {
-        const dialog = _this.$refs.confirms;
-        const dh = dialog.offsetHeight;
-        const dw = dialog.offsetWidth;
-        _this.offsetLeft = -dw / 2 + "px";
-        _this.offsetTop = -dh / 2 + "px";
-      });
+        const dialog = _this.$refs.confirms
+        const dh = dialog.offsetHeight
+        const dw = dialog.offsetWidth
+        _this.offsetLeft = -dw / 2 + 'px'
+        _this.offsetTop = -dh / 2 + 'px'
+      })
       if (callback) {
-        this.callback = callback;
+        this.callback = callback
       } else {
-        this.callback = "";
+        this.callback = ''
       }
       if (cancel) {
-        this.cancel = cancel;
+        this.cancel = cancel
       } else {
-        this.cancel = "";
+        this.cancel = ''
       }
     }
   }
-};
+}
 </script>
 <style lang="less" scoped>
 .confirm-box {
