@@ -112,7 +112,7 @@
         </div>
         <div id="comment" class="comment">
           <div class="comment-box">
-            <vue-baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></vue-baberrage>
+            <baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></baberrage>
           </div>
           <div class="send-box">
             <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
@@ -139,14 +139,19 @@
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
       <div class="rule-text">
-        1. <span>Fainali ya kupiga kura</span>: kuanzia tarehe 22 Disemba 2019 saa 4:00 usiku mpaka Disemba 24, 2019 saa 5:00 Usiku.
-        <br/>2. <span>Sheria za fainali za kupiga kura</span>: tafuta na pakua APP ya StarTimes ON kwenye simu yako ya mkononi kisha ingia sehemu ya kupigia kura, washiriki wa Bongo Star Search 2019 na umpigie kura mshiriki umpendae.
-        <br/>a. Watumiaji wa kawaida wa APP ya StarTimes ON watapata nafasi 5 kila siku kupigia kura kwa kila mshiriki aliyeingia 5 bora au kupiga kura zote 5 kwa mshiriki mmoja aliyempenda.
-        <br/>b. Watumiaji Maalumu(VIP): Mtumiaji mpya kujisajili na StarTimes On atapata nafasi ya kupiga kura 50 kwa washiriki wa BSS. Mtumiaji ambaye ameshajisajili kabla na akajiunga na kifurushi cha VIP atajipatia nafasi 50 za kupiga kura siku inayofuata.
-        <br/>Mbali na hilo, share link na marafiki wapakue APP ya StarTimes ON ujipatie kura zaidi. Kila Mtumiaji mpya wa APP utakayemualika atakupa nafasi 5 zaidi za kupiga kura. Kadiri unavyoalika marafiki ndivyo unavyojiongezea nafasi za kupiga kura.
-        <br/>3. <span>Zawadi</span>: ukipiga kura 5 utakuwa kwenye nafasi ya kupata zawadi ya sabufa ya Tsh 85,000, na bluetooth ya Aborder ni Tsh 35,000, VIP wa APP ya StartimesON na kuponi.
-        <br/>4. <span>Tathmini ya upigaji kura</span>: ili kutendea haki washiriki walio katika fainali, kura zitahesabiwa papo hapo.Nafasi ya mwisho ya washiriki itakua na sehemu tatu ya kupiga kura zikiwemo: kupiga kura kupitia Startimes ON, upigaji kura kwa ujumbe mfupi, na kupiga kura moja kwa moja ukumbini. Na akaunti za kupiga kura kupitia Startimes ON zitachukua uzito wa asilimia 30.
-        <br/>5. <span>Kutangazwa kwa matokeo ya fainali</span>: Mashindano ya fainali yatarushwa Live na matokeo ya mwisho ya kura yatarushwa Live vilevile.
+        1.
+        <span>Fainali ya kupiga kura</span>: kuanzia tarehe 22 Disemba 2019 saa 4:00 usiku mpaka Disemba 24, 2019 saa 5:00 Usiku.
+        <br />2.
+        <span>Sheria za fainali za kupiga kura</span>: tafuta na pakua APP ya StarTimes ON kwenye simu yako ya mkononi kisha ingia sehemu ya kupigia kura, washiriki wa Bongo Star Search 2019 na umpigie kura mshiriki umpendae.
+        <br />a. Watumiaji wa kawaida wa APP ya StarTimes ON watapata nafasi 5 kila siku kupigia kura kwa kila mshiriki aliyeingia 5 bora au kupiga kura zote 5 kwa mshiriki mmoja aliyempenda.
+        <br />b. Watumiaji Maalumu(VIP): Mtumiaji mpya kujisajili na StarTimes On atapata nafasi ya kupiga kura 50 kwa washiriki wa BSS. Mtumiaji ambaye ameshajisajili kabla na akajiunga na kifurushi cha VIP atajipatia nafasi 50 za kupiga kura siku inayofuata.
+        <br />Mbali na hilo, share link na marafiki wapakue APP ya StarTimes ON ujipatie kura zaidi. Kila Mtumiaji mpya wa APP utakayemualika atakupa nafasi 5 zaidi za kupiga kura. Kadiri unavyoalika marafiki ndivyo unavyojiongezea nafasi za kupiga kura.
+        <br />3.
+        <span>Zawadi</span>: ukipiga kura 5 utakuwa kwenye nafasi ya kupata zawadi ya sabufa ya Tsh 85,000, na bluetooth ya Aborder ni Tsh 35,000, VIP wa APP ya StartimesON na kuponi.
+        <br />4.
+        <span>Tathmini ya upigaji kura</span>: ili kutendea haki washiriki walio katika fainali, kura zitahesabiwa papo hapo.Nafasi ya mwisho ya washiriki itakua na sehemu tatu ya kupiga kura zikiwemo: kupiga kura kupitia Startimes ON, upigaji kura kwa ujumbe mfupi, na kupiga kura moja kwa moja ukumbini. Na akaunti za kupiga kura kupitia Startimes ON zitachukua uzito wa asilimia 30.
+        <br />5.
+        <span>Kutangazwa kwa matokeo ya fainali</span>: Mashindano ya fainali yatarushwa Live na matokeo ya mwisho ya kura yatarushwa Live vilevile.
       </div>
       <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
@@ -190,7 +195,7 @@ import {
   callAppleStore
 } from '@/functions/app'
 import { getBrowser } from '@/functions/utils'
-import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
+import baberrage from '@/components/baberrage/index'
 import env from '@/functions/config'
 export default {
   components: {
@@ -198,7 +203,7 @@ export default {
     alertDialog,
     confirmDialog,
     toastDialog,
-    vueBaberrage,
+    baberrage,
     loading,
     lottery
   },
@@ -405,7 +410,7 @@ export default {
           : 'http://cdn.startimestv.com/banner/DD_user_icon.png',
         msg: decodeURI(v.content),
         time: time,
-        type: MESSAGE_TYPE.NORMAL,
+        type: 'NORMAL',
         barrageStyle: 'barrageStyle'
       })
     },
