@@ -300,8 +300,9 @@ export default {
       this.$nextTick(() => {
         document.documentElement.style.height = '100%'
         document.body.style.height = '100%'
-        document.body.style.overflow = 'hidden'
-        new BScroll('body', {
+        document.querySelector('.wrapper').style.height = '100%'
+        document.querySelector('.wrapper').style.overflow = 'hidden'
+        new BScroll('.wrapper', {
           scrollY: true,
           click: true,
           bounce: false
