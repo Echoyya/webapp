@@ -183,6 +183,7 @@ import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
 import loading from '@/components/loading'
 import lottery from '@/components/lottery'
+import BScroll from 'better-scroll'
 import {
   callApp,
   downApk,
@@ -290,6 +291,20 @@ export default {
     this.getLeftLottery()
     this.getVideoMsg()
     this.getShareNum()
+    const browser = getBrowser()
+    // 解决scroll卡顿在789系统
+    if (browser.isAndroid && browser.androidVer >= 6) {
+      this.$nextTick(() => {
+        document.documentElement.style.height = '100%'
+        document.body.style.height = '100%'
+        document.body.style.overflow = 'hidden'
+        new BScroll('body', {
+          scrollY: true,
+          click: true,
+          bounce: false
+        })
+      })
+    }
   },
   methods: {
     lotteryError(err) {
