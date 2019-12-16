@@ -14,8 +14,7 @@
     "clipboard": "^2.0.4",
     "core-js": "^3.4.8",
     "qs": "^6.9.1",
-    "vue": "^2.6.10",
-    "vue-baberrage": "^2.1.9"
+    "vue": "^2.6.10"
   },
   "devDependencies": {
     "@vue/cli-plugin-babel": "^4.1.1",

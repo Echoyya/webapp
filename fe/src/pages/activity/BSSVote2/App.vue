@@ -112,7 +112,7 @@
         </div>
         <div id="comment" class="comment">
           <div class="comment-box">
-            <vue-baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></vue-baberrage>
+            <baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></baberrage>
           </div>
           <div class="send-box">
             <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
@@ -196,7 +196,7 @@ import {
   callAppleStore
 } from '@/functions/app'
 import { getBrowser } from '@/functions/utils'
-import { vueBaberrage, MESSAGE_TYPE } from 'vue-baberrage'
+import baberrage from '@/components/baberrage/index'
 import env from '@/functions/config'
 export default {
   components: {
@@ -204,7 +204,7 @@ export default {
     alertDialog,
     confirmDialog,
     toastDialog,
-    vueBaberrage,
+    baberrage,
     loading,
     lottery
   },
@@ -415,7 +415,7 @@ export default {
           : 'http://cdn.startimestv.com/banner/DD_user_icon.png',
         msg: decodeURI(v.content),
         time: time,
-        type: MESSAGE_TYPE.NORMAL,
+        type: 'NORMAL',
         barrageStyle: 'barrageStyle'
       })
     },
