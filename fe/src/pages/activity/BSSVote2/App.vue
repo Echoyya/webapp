@@ -136,23 +136,25 @@
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
       <div class="rule-text">
-        Matokeo ya Kura yataamua moja kwa moja safari ya washiriki 20 ambao waliaga mashindano. Watachaguliwa Washiriki 2 kati ya washiriki 16 ambao
-        waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5
-        watakaokwenda kwenye fainali
-        <br />
-        <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
-        <br />2. Vigezo vya kupiga kura : Tafuta na
-        pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
-        <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja.
-        <br />② Wanachama wa VIP(VIP: StarTimes On
-        na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)).
-        <br />③
-        Shirikisha marafiki kwa kuwaalika kupakua APP ya StarTimes On na kupata kura 5 kwa kila mtumiaji ambae umempa mualiko na wewe kujipatia kura
-        zaidi.
-        <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya
-        Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili.
-        <br />3.
-        Matokeo ya washiriki waliopigiwa kura yatakua yakitangazwa kabla ya hatua inayofuata na matokeo ya mwisho ya kura yatatangazwa sehemu ya 10.
+        <div>
+          Matokeo ya Kura yataamua moja kwa moja safari ya washiriki 20 ambao waliaga mashindano. Watachaguliwa Washiriki 2 kati ya washiriki 16 ambao
+          waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5
+          watakaokwenda kwenye fainali
+          <br />
+          <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
+          <br />2. Vigezo vya kupiga kura : Tafuta na
+          pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
+          <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja.
+          <br />② Wanachama wa VIP(VIP: StarTimes On
+          na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)).
+          <br />③
+          Shirikisha marafiki kwa kuwaalika kupakua APP ya StarTimes On na kupata kura 5 kwa kila mtumiaji ambae umempa mualiko na wewe kujipatia kura
+          zaidi.
+          <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya
+          Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili.
+          <br />3.
+          Matokeo ya washiriki waliopigiwa kura yatakua yakitangazwa kabla ya hatua inayofuata na matokeo ya mwisho ya kura yatatangazwa sehemu ya 10.
+        </div>
       </div>
       <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
@@ -229,6 +231,7 @@ export default {
       isLogin: this.$isLogin,
 
       scrollWrapper: null,
+      scrollRule: null,
 
       share_num: 0,
       clipsList: [],
@@ -869,6 +872,11 @@ export default {
       this.$nextTick(() => {
         if (this.scrollWrapper) {
           this.scrollWrapper.disable()
+          this.scrollRule = new BScroll('.rule-text', {
+            scrollY: true,
+            click: true,
+            bounce: false
+          })
         }
       })
     },
@@ -1051,6 +1059,7 @@ export default {
       this.votePannel = false
       this.$nextTick(() => {
         if (this.scrollWrapper) {
+          this.scrollRule.destroy()
           this.scrollWrapper.enable()
         }
       })
@@ -1766,7 +1775,6 @@ export default {
         top: 0.35rem;
         white-space: nowrap;
         overflow: hidden;
-        overflow-x: auto;
         resize: none;
         &::-webkit-input-placeholder {
           color: #acacac;
@@ -1902,8 +1910,10 @@ export default {
     left: 1rem;
     top: 4rem;
     padding: 0.5rem;
+    padding-top: 0;
     overflow-x: hidden;
     overflow-y: scroll;
+    font-size: 0.8rem;
     &::-webkit-scrollbar {
       display: none;
     }
