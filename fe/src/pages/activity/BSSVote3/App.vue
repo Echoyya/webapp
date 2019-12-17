@@ -211,14 +211,12 @@ export default {
     lottery
   },
   data() {
-    const startTime = new Date('2019-12-09T17:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
-    const endTime = new Date('2019-12-23T18:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     return {
       // 页面
       vote_id: getQuery('voteid') || 64,
       lottery_id: this.$appType == 2 ? 7 : 6,
-      startTime: startTime,
-      endTime: endTime,
+      startTime: '',
+      endTime: '',
 
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote3-banner.png',
       shareTitle: 'Bongo Star Search 2019',
@@ -246,7 +244,7 @@ export default {
       voteLeft: 0,
       advisorList: [],
       canVotes: true,
-      showMsg: this.$serverTime >= startTime,
+      showMsg: true,
       votePannel: false,
       votePickItem: -1, // 准备投票的投票单元id
 
@@ -291,11 +289,7 @@ export default {
   mounted() {
     this.mSendEvLog('page_show', '', '')
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
-    this.getAdvisorList()
-    this.getVoteRemain()
-    this.getLeftLottery()
-    this.getVideoMsg()
-    this.getShareNum()
+    this.getLotteryInfo()
     const browser = getBrowser()
     // 解决scroll卡顿在789系统
     if (browser.isAndroid && browser.androidVer >= 6) {
@@ -313,6 +307,29 @@ export default {
     }
   },
   methods: {
+    getLotteryInfo() {
+      this.$axios
+        .get(`/voting/lottery/v1/info?lottery_id=${this.lottery_id}`)
+        .then(res => {
+          if (res.data.code == 0) {
+            this.startTime = new Date(res.data.data.start_time.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+            this.endTime = new Date(res.data.data.end_time.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+            if (this.$serverTime < this.startTime) {
+              this.showMsg = false
+            }
+            this.getAdvisorList()
+            this.getVoteRemain()
+            this.getLeftLottery()
+            this.getVideoMsg()
+            this.getShareNum()
+          } else {
+            this.$refs.alert.show('Get Lottery Info Error! ' + res.data.message)
+          }
+        })
+        .catch(err => {
+          this.$refs.alert.show('Get Lottery Info Error!! ' + err)
+        })
+    },
     lotteryError(err) {
       this.$refs.alert.show(err.errMsg)
     },
