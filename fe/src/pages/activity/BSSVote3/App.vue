@@ -115,7 +115,7 @@
             <baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></baberrage>
           </div>
           <div class="send-box">
-            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
+            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" @blur="inputBlur"/>
             <div class="btn" @click="sendComment">
               <img src="@/assets/img/vote/BSSVote3/ic-send.png" alt />
               <span>{{ disabled ? `${during}s` : `TUMA` }}</span>
@@ -225,6 +225,8 @@ export default {
       appType: this.$appType,
       isLogin: this.$isLogin,
 
+      scrollWrapper: null,
+
       share_num: 0,
       clipsList: [],
       topicList: [],
@@ -299,7 +301,7 @@ export default {
         document.body.style.height = '100%'
         document.querySelector('.wrapper').style.height = '100%'
         document.querySelector('.wrapper').style.overflow = 'hidden'
-        new BScroll('.wrapper', {
+        this.scrollWrapper = new BScroll('.wrapper', {
           scrollY: true,
           click: true,
           bounce: false
@@ -506,7 +508,17 @@ export default {
       this.nowarp()
     },
     inputFocus() {
-      document.getElementById('comment').scrollIntoView()
+      // document.getElementById('comment').scrollIntoView()
+      this.scrollWrapper.scrollTo(0,-640)
+      if (this.scrollWrapper) {
+        this.scrollWrapper.disable()
+      }
+    },
+    inputBlur() {
+      if (this.scrollWrapper) {
+        this.scrollWrapper.enable()
+        this.scrollWrapper.refresh()
+      }
     },
     getIndexToIns(arr, num) {
       const index = arr.sort((a, b) => a - b).findIndex(currentPage => num <= currentPage)
@@ -847,6 +859,11 @@ export default {
       document.body.style.position = 'fixed'
       document.body.style.left = '0'
       document.body.style.right = '0'
+      this.$nextTick(() => {
+        if (this.scrollWrapper) {
+          this.scrollWrapper.disable()
+        }
+      })
     },
     // 埋点方法
     mSendEvLog(action, label, value) {
@@ -1024,6 +1041,11 @@ export default {
       document.body.style.position = 'static'
       this.votePannel = false
       this.show_rules = false
+      this.$nextTick(() => {
+        if (this.scrollWrapper) {
+          this.scrollWrapper.enable()
+        }
+      })
     },
     // 投票1，5，10
     handleVote(value) {
