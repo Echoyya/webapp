@@ -528,8 +528,8 @@ export default {
       }
     },
     getIndexToIns(arr, num) {
-      const index = arr.sort((a, b) => a - b).findIndex(currentPage => num <= currentPage)
-      return index <= 0 ? 1 : index
+      const index = arr.findIndex(currentPage => num <= currentPage)
+      return index == 0 ? 1 : index < 0 ? arr.length : index
     },
     // 获取期数，播出时间，票数，状态，投票单元
     getPagelist() {
