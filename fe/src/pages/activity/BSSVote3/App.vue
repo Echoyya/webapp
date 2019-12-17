@@ -115,7 +115,7 @@
             <baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></baberrage>
           </div>
           <div class="send-box">
-            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" @blur="inputBlur"/>
+            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" @blur="inputBlur" />
             <div class="btn" @click="sendComment">
               <img src="@/assets/img/vote/BSSVote3/ic-send.png" alt />
               <span>{{ disabled ? `${during}s` : `TUMA` }}</span>
@@ -508,10 +508,11 @@ export default {
       this.nowarp()
     },
     inputFocus() {
-      // document.getElementById('comment').scrollIntoView()
-      this.scrollWrapper.scrollTo(0,-640)
       if (this.scrollWrapper) {
+        this.scrollWrapper.scrollTo(0, -document.getElementById('comment').offsetTop)
         this.scrollWrapper.disable()
+      } else {
+        document.getElementById('comment').scrollIntoView()
       }
     },
     inputBlur() {
