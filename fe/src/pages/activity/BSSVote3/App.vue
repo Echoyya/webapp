@@ -603,7 +603,7 @@ export default {
         .get(`/voting/v1/comments?comment_activity_id=${this.index + 18}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
-            if (this.commmentLoad == 0) this.commmentLoad = 1
+            this.commmentLoad = 1
             this.last_id = res.data.data[res.data.data.length - 1].id
             this.commentList = res.data.data
             this.canClickTab1 = true

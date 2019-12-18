@@ -66,7 +66,7 @@ export default {
   mounted() {
     // Calculate the size of Stage
     if (this.boxWidthVal === 0) {
-      this.boxWidthVal = this.$refs.stage.parentNode.offsetWidth + 50
+      this.boxWidthVal = this.$refs.stage.parentNode.offsetWidth
     }
     if (this.boxHeightVal === 0) {
       this.boxHeightVal = this.$refs.stage.parentNode.offsetHeight
