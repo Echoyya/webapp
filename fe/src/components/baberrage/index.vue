@@ -97,7 +97,8 @@ export default {
       this.randomShowQueue = array
     },
     insertToReadyShowQueue() {
-      this.$nextTick(() => {
+      clearTimeout(this.readyId)
+      this.readyId = setTimeout(() => {
         while (this.barrageList.length > 0) {
           let current = this.barrageList.splice(0, this.laneNum)
           this.addTask(() => {
@@ -105,7 +106,7 @@ export default {
           })
         }
         this.updateBarrageDate()
-      })
+      }, 300)
     },
     // 更新弹幕数据
     updateBarrageDate(timestamp) {
