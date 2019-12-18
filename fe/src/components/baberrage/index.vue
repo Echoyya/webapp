@@ -1,5 +1,5 @@
 <template>
-  <div class="baberrage-stage" v-show="isShow" ref="stage">
+  <div class="baberrage-stage" ref="stage">
     <div class="baberrage-top">
       <VueBaberrageMsg v-for="item in topQueue" v-bind:key="item.id" class="baberrage-item" :item="item" />
     </div>
@@ -16,10 +16,6 @@ export default {
     VueBaberrageMsg
   },
   props: {
-    isShow: {
-      type: Boolean,
-      default: true
-    },
     barrageList: {
       type: Array,
       default() {
@@ -248,7 +244,6 @@ export default {
         this.taskIsRunning = false
       }
     },
-    // ========================= Tools ===========================
     // 计算中英文的长度
     strlen(str) {
       let len = 0
