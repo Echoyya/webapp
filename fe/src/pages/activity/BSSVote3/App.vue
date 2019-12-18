@@ -613,7 +613,7 @@ export default {
             this.t = setInterval(() => {
               if (this.barrageIndex >= this.number) {
                 this.barrageIndex = 0
-              } else if (this.barrageIndex >= this.number - 15) {
+              } else if (this.barrageIndex >= this.number-1) {
                 this.getCommentList()
               }
               this.addToList(this.commentList[this.barrageIndex])

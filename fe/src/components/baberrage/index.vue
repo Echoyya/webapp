@@ -178,7 +178,7 @@ export default {
     },
     moveTo(item) {
       this.$set(item, 'style', {
-        transform: 'translate3d(' + item.left + 'px,' + item.top + 'px,0)'
+        transform: 'translate(' + item.left + 'px,' + item.top + 'px)'
       })
     },
     addTask(fun) {
