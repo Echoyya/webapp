@@ -292,7 +292,7 @@ export default {
     this.getLotteryInfo()
     const browser = getBrowser()
     // 解决scroll卡顿在789系统
-    if (browser.isAndroid && browser.androidVer >= 6) {
+    if (browser.isAndroid && browser.androidVer >= 6&&browser.ua.indexOf('Infinix-X521')<0) {
       this.$nextTick(() => {
         document.documentElement.style.height = '100%'
         document.body.style.height = '100%'

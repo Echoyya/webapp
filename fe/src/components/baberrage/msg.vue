@@ -15,13 +15,9 @@ export default {
         return {}
       }
     }
-  },
-  data() {
-    return {}
   }
 }
 </script>
-
 <style lang="less">
 .baberrage-item {
   position: absolute;

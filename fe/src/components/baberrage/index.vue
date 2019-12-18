@@ -1,12 +1,6 @@
 <template>
   <div class="baberrage-stage" ref="stage">
-    <div class="baberrage-top">
-      <VueBaberrageMsg v-for="item in topQueue" v-bind:key="item.id" class="baberrage-item" :item="item" />
-    </div>
     <VueBaberrageMsg v-for="item in normalQueue" v-bind:key="item.id" class="baberrage-item" :item="item" />
-    <div class="baberrage-bottom">
-      <VueBaberrageMsg v-for="item in bottomQueue" v-bind:key="item.id" class="baberrage-item" :item="item" />
-    </div>
   </div>
 </template>
 <script>
@@ -61,8 +55,6 @@ export default {
       startTime: 0,
       frameId: null,
       readyId: 0,
-      topQueue: [], // 顶部队列
-      bottomQueue: [], // 底部队列
       normalQueue: [], // 正常队列，新弹幕先进入队列，一定时限内再显示在ShowList
       randomInd: 0, // 用指针来代替频繁环操作
       randomShowQueue: [], // 随机展示位置环
@@ -104,21 +96,14 @@ export default {
       }
       this.randomShowQueue = array
     },
-    // 节流函数
     insertToReadyShowQueue() {
-      clearTimeout(this.readyId)
-      this.readyId = setTimeout(() => {
-        while (this.barrageList.length > 0) {
-          let current = this.barrageList.splice(0, this.laneNum)
-          // 判断长度
-          // if (this.strlen(current.msg) === 0 || this.strlen(current.msg) > this.maxWordCount) continue
-          // this.normalQueue.push(current)
-          this.addTask(() => {
-            this.normalQueue = [...this.normalQueue, ...current]
-          })
-        }
-        this.updateBarrageDate()
-      }, 300)
+      while (this.barrageList.length > 0) {
+        let current = this.barrageList.splice(0, this.laneNum)
+        this.addTask(() => {
+          this.normalQueue = [...this.normalQueue, ...current]
+        })
+      }
+      this.updateBarrageDate()
     },
     // 更新弹幕数据
     updateBarrageDate(timestamp) {
@@ -126,8 +111,7 @@ export default {
       if (typeof timestamp !== 'undefined') {
         this.move(timestamp)
       }
-      if (this.normalQueue.length > 0 || this.topQueue.length > 0 || this.bottomQueue.length > 0) {
-        // console.log('go play')
+      if (this.normalQueue.length > 0) {
         this.play()
       } else {
         // 如果弹幕序列为空发出事件 barrageListEmpty
@@ -138,17 +122,6 @@ export default {
     // 开始弹幕
     play() {
       this.frameId = requestAnimationFrame(this.updateBarrageDate)
-    },
-    // 暂停弹幕
-    pause() {
-      cancelAnimationFrame(this.frameId)
-    },
-    // 重设弹幕
-    replay() {
-      this.normalQueue.forEach(item => {
-        item.startTime = null
-      })
-      this.play()
     },
     // 弹幕移动
     move(timestamp) {
@@ -170,8 +143,6 @@ export default {
           this.itemReset(item, timestamp)
         }
       })
-      // 更新队列
-      this.queueRefresh(timestamp)
     },
     // 正常移动
     normalMove(item, timestamp) {
@@ -186,28 +157,7 @@ export default {
       // 设置移动
       this.moveTo(item, { x: item.left, y: item.top })
     },
-    // 固定弹幕
-    fixMove(item) {
-      // 判断是否在队列中
-      if (!this[item.position + 'Queue'].includes(item)) {
-        this[item.position + 'Queue'].push(item)
-      }
-    },
-    // 队列数据刷新
-    queueRefresh(currentTime) {
-      this.topQueue.forEach(item => {
-        if (item.startTime + item.time * 1000 <= currentTime) {
-          this.topQueue.shift()
-        }
-      })
-      this.bottomQueue.forEach(item => {
-        if (item.startTime + item.time * 1000 <= currentTime) {
-          this.bottomQueue.shift()
-        }
-      })
-    },
     itemReset(item, timestamp) {
-      item.position = item.position || 'top'
       item.barrageStyle = item.barrageStyle || 'normal'
       item.startTime = timestamp
       item.currentTime = timestamp
@@ -259,7 +209,6 @@ export default {
   }
 }
 </script>
-
 <style lang="less">
 .baberrage-stage {
   position: absolute;
