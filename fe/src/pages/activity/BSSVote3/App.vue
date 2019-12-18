@@ -150,8 +150,6 @@
           <br />3.
           <span>Zawadi</span>: ukipiga kura 5 utakuwa kwenye nafasi ya kupata zawadi ya sabufa ya Tsh 85,000, na bluetooth ya Aborder ni Tsh 35,000, VIP wa APP ya StartimesON na kuponi.
           <br />4.
-          <span>Tathmini ya upigaji kura</span>: ili kutendea haki washiriki walio katika fainali, kura zitahesabiwa papo hapo.Nafasi ya mwisho ya washiriki itakua na sehemu tatu ya kupiga kura zikiwemo: kupiga kura kupitia Startimes ON, upigaji kura kwa ujumbe mfupi, na kupiga kura moja kwa moja ukumbini. Na akaunti za kupiga kura kupitia Startimes ON zitachukua uzito wa asilimia 30.
-          <br />5.
           <span>Kutangazwa kwa matokeo ya fainali</span>: Mashindano ya fainali yatarushwa Live na matokeo ya mwisho ya kura yatarushwa Live vilevile.
         </div>
       </div>
