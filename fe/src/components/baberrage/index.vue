@@ -59,7 +59,8 @@ export default {
       randomShowQueue: [], // 随机展示位置环
       taskQueue: [],
       taskIsRunning: false,
-      taskLastTime: null
+      taskLastTime: null,
+      firstRun: true
     }
   },
   mounted() {
@@ -104,18 +105,24 @@ export default {
       }
       this.updateBarrageDate()
     },
-    // 更新弹幕数据
     updateBarrageDate(timestamp) {
       if (this.startTime == null) this.startTime = timestamp
       if (typeof timestamp !== 'undefined') {
         this.move(timestamp)
       }
       if (this.normalQueue.length > 0) {
-        this.play()
+        if (typeof timestamp !== 'undefined') {
+          this.play()
+        } else {
+          if (this.firstRun) {
+            this.play()
+            this.firstRun = false
+          }
+        }
       } else {
         // 如果弹幕序列为空发出事件 barrageListEmpty
         this.$emit('barrage-list-empty')
-        this.frameId = null
+        window.cancelAnimationFrame(this.frameId)
       }
     },
     // 开始弹幕
