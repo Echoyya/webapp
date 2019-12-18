@@ -97,13 +97,15 @@ export default {
       this.randomShowQueue = array
     },
     insertToReadyShowQueue() {
-      while (this.barrageList.length > 0) {
-        let current = this.barrageList.splice(0, this.laneNum)
-        this.addTask(() => {
-          this.normalQueue = [...this.normalQueue, ...current]
-        })
-      }
-      this.updateBarrageDate()
+      this.$nextTick(() => {
+        while (this.barrageList.length > 0) {
+          let current = this.barrageList.splice(0, this.laneNum)
+          this.addTask(() => {
+            this.normalQueue = [...this.normalQueue, ...current]
+          })
+        }
+        this.updateBarrageDate()
+      })
     },
     // 更新弹幕数据
     updateBarrageDate(timestamp) {
