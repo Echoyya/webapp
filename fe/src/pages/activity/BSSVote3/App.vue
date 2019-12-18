@@ -112,7 +112,8 @@
         </div>
         <div id="comment" class="comment">
           <div class="comment-box">
-            <baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></baberrage>
+            <baberrage ref="babarrage" v-if="commmentLoad==1" :barrageList="barrageList" :loop="false" :throttleGap="1500"></baberrage>
+            <div v-if="commmentLoad==2" class="retry" @click="getCommentList">Click to retry</div>
           </div>
           <div class="send-box">
             <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" @blur="inputBlur" />
@@ -257,6 +258,7 @@ export default {
       disabled: false, // send状态
       index: 0, // 当前所在的节目期数
       commentList: [],
+      commmentLoad: 0,
       words: ['kuma', 'mbolo', 'mpumbavu', 'mshenzi', 'matako', 'pumbavu', 'msenge'],
       show_in: false,
       l_show: false,
@@ -601,30 +603,28 @@ export default {
         .get(`/voting/v1/comments?comment_activity_id=${this.index + 18}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
+            if (this.commmentLoad == 0) this.commmentLoad = 1
             this.last_id = res.data.data[res.data.data.length - 1].id
             this.commentList = res.data.data
             this.canClickTab1 = true
             this.addToList(this.commentList[0])
             this.barrageIndex = 1
+            if (this.t) clearInterval(this.t)
             this.t = setInterval(() => {
               if (this.barrageIndex >= this.number) {
                 this.barrageIndex = 0
-                clearInterval(this.t)
-                this.barrageList = []
+              } else if (this.barrageIndex >= this.number - 15) {
                 this.getCommentList()
-              } else {
-                this.addToList(this.commentList[this.barrageIndex])
-                this.barrageIndex++
               }
+              this.addToList(this.commentList[this.barrageIndex])
+              this.barrageIndex++
             }, 1500)
           } else {
-            this.commentList = []
-            this.$refs.alert.show('Get comment list error! ' + res.data.message)
+            if (this.commmentLoad == 0) this.commmentLoad = 2
           }
         })
-        .catch(err => {
-          this.commentList = []
-          this.$refs.alert.show('Get comment list error!! ' + err)
+        .catch(() => {
+          if (this.commmentLoad == 0) this.commmentLoad = 2
         })
     },
     handlePick(local, advisorList) {
@@ -1946,5 +1946,11 @@ export default {
   opacity: 0.5;
   background-color: #000;
   z-index: 998;
+}
+.retry {
+  height: 212px;
+  line-height: 212px;
+  text-align: center;
+  color: #fabd0c;
 }
 </style>
