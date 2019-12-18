@@ -9,14 +9,14 @@
         </div>
       </div>
       <div class="page-vote">
-        <img v-if="appType!==0" src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="toShare('home')" />
-        <img v-else src="@/assets/img/vote/BSSVote2/img-share.png" class="share" @click="callOrDownApp('download now')" />
+        <img v-if="appType!==0" src="@/assets/img/vote/ngDraw/ic-share.png" class="share" @click="toShare('home')" />
+        <img v-else src="@/assets/img/vote/ngDraw/ic-callapp.png" class="share" @click="callOrDownApp('download now')" />
         <div class="lottery-type">
           <div class="count">CHANCES REMAINING:{{ appType > 0 && isLogin ? (lotteryLeft > 0 ? lotteryLeft : 0) : 0 }}</div>
           <lottery
             ref="lottery"
             :id="lottery_id"
-            :defaultPrizeIndex="7"
+            :defaultPrizeIndex="4"
             :withMsgList="showMsg"
             :btnGray="lotteryBtnGray"
             :btnText="'WIN'"
@@ -31,7 +31,7 @@
           </div>
         </div>
       </div>
-      <img v-if="clipsList.length>0" class="text text4" src="@/assets/img/vote/BSSVote3/text4.png" alt />
+      <img v-if="clipsList.length>0" class="text text4" src="@/assets/img/vote/ngDraw/text4.png" alt />
       <div v-if="clipsList.length>0" class="past-programme">
         <ul class="clearfix">
           <li v-for="(item, i) in clipsList" :key="i">
@@ -47,14 +47,14 @@
       <img src="@/assets/img/vote/ngDraw/bg-rules.png" alt />
       <div class="rule-text">
         <div>
-          Are you a lover of comedy and a good laugh? Then Alibaba's January 1st Concert  is just what you need; to get a chance to win a ticket to attend the show come 1st of January, 2020.
-          <br/>The King of comedy is set to host Lagos with music, comedy and celebration. Each ticket costs ₦ 6000!
-          <br/>From Dec 20th to 27th you have 1 chance to win a free ticket each day.
-          <br/>Share the link to invite your friends to download StarTimes ON APP to get more chances. Each new user you invite will get you 1 more chance to win. The more you invite, the more chances you can get.
-          <br/>You can also following our social media page @startimesng to get more informations.
-          <br/>Ticket collection: Take the prize information at the appointed StarTimes Business Hall or the Performance Site.
-          <br/>Time: January 1, 2020 @ 6:00 pm - 11:30 pm
-          <br/>Venue: Eko Hotel Convention Centre, Victoria Island, Lagos.
+          <p>Are you a lover of comedy and a good laugh? Then Alibaba's January 1st Concert  is just what you need; to get a chance to win a ticket to attend the show come 1st of January, 2020.</p>
+          <p>The King of comedy is set to host Lagos with music, comedy and celebration. Each ticket costs ₦ 6000!</p>
+          <p>1. From Dec 20th to 27th you have 1 chance to win a free ticket each day.</p>
+          <p>2. Share the link to invite your friends to download StarTimes ON APP to get more chances. Each new user you invite will get you 1 more chance to win. The more you invite, the more chances you can get.</p>
+          <p>3. You can also following our social media page @startimesng to get more informations.</p>
+          <p>4. Ticket collection: Take the prize information at the appointed StarTimes Business Hall or the Performance Site.</p>
+          <p>5. Time: January 1, 2020 @ 6:00 pm - 11:30 pm</p>
+          <p>6. Venue: Eko Hotel Convention Centre, Victoria Island, Lagos.</p>
         </div>
       </div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
@@ -87,7 +87,7 @@ import confirmDialog from '@/components/confirm'
 import toastDialog from '@/components/toast'
 import mShare from '@/components/web/share.vue'
 import loading from '@/components/loading'
-import lottery from '@/components/lottery'
+import lottery from '@/components/lotteryFull'
 import BScroll from 'better-scroll'
 import { callApp, downApk, playVodinApp, shareInvite, shareInviteIos, addTicketByDownload, getQuery, callAppleStore } from '@/functions/app'
 import { getBrowser } from '@/functions/utils'
@@ -103,8 +103,8 @@ export default {
   data() {
     return {
       // 页面
-      vote_id: getQuery('voteid') || 64,
-      lottery_id: this.$appType == 2 ? 7 : 6,
+      vote_id: getQuery('voteid') || 74,
+      lottery_id: this.$appType == 2 ? 9 : 8,
       startTime: '',
       endTime: '',
 
@@ -187,7 +187,7 @@ export default {
   },
   computed: {
     lotteryBtnGray() {
-      return this.appType > 0 && this.$isLogin && this.lotteryLeft <= 0
+      return this.appType > 0 && this.lotteryLeft <= 0
     }
   },
   mounted() {
@@ -272,31 +272,45 @@ export default {
       this.$refs.lottery.tween()
     },
     endLottery(prize) {
-      if (prize.prizeIndex <= 2) {
+      if (prize.prizeIndex == 0) {
         setTimeout(() => {
           this.$refs.alert.show(
-            `Hit the Jackpot! You've got ${prize.name}!`,
+            "You've got Alibaba's Jan 1st Concert Ticket!",
             () => {
-              if (prize.prizeIndex == 1) {
-                this.toShare('ticket')
-              } else if (prize.prizeIndex == 2) {
-                this.toShare('30dayvip')
-              }
+              this.toShare('ticket')
               this.click = true
             },
             'Share the joy with friends'
           )
         }, 1000)
-      } else if (prize.prizeIndex <= 5) {
+      } else if (prize.prizeIndex == 1) {
         setTimeout(() => {
           this.$refs.alert.show(
-            `So lucky! You've got ${prize.name}!`,
+            "You've got Monthly MAX VIP!",
             () => {
-              if (prize.prizeIndex == 3 || prize.prizeIndex == 5) {
-                this.toShare('1dayvip')
-              } else if (prize.prizeIndex == 4) {
-                this.toShare('7dayvip')
-              }
+              this.toShare('30dayvip')
+              this.click = true
+            },
+            'Share the joy with friends'
+          )
+        }, 1000)
+      }else if (prize.prizeIndex == 7) {
+        setTimeout(() => {
+          this.$refs.alert.show(
+            "You've got Weekly MAX VIP!",
+            () => {
+              this.toShare('7dayvip')
+              this.click = true
+            },
+            'Share the joy with friends'
+          )
+        }, 1000)
+      }else if (prize.prizeIndex == 3 || prize.prizeIndex == 5) {
+        setTimeout(() => {
+          this.$refs.alert.show(
+            "You've got 1 DAY MAX VIP!",
+            () => {
+              this.toShare('ticket')
               this.click = true
             },
             'Share the joy with friends'
@@ -314,7 +328,7 @@ export default {
             'Share the joy with friends'
           )
         }, 1000)
-      } else if (prize.prizeIndex === 7) {
+      } else if (prize.prizeIndex === 4) {
         setTimeout(() => {
           this.$refs.alert.show(
             'Thanks for your participation. Share for more chances!',
@@ -584,26 +598,23 @@ export default {
   > img {
     display: block;
     margin: 0 auto;
-    padding-top: 1rem;
-    width: 95%;
-    &.share {
-      width: 90%;
-      padding: 1.5rem 0 0.5rem;
-    }
+    padding: 1rem 0 ;
+    width: 90%;
   }
   .lottery-type {
     width: 90%;
     background-color: #fab512;
-    margin: 1rem auto 0;
+    margin: 0 auto;
     border-radius: 0.5rem;
     padding: 1rem 2%;
     position: relative;
     z-index: 2;
-    /deep/ .lottery ul li {
-      &:nth-child(1),
-      &:nth-child(2) {
-        background-image: url('~@/assets/img/vote/BSSRegister/bg-lottery-light.png');
-        background-size: 100% 100%;
+    /deep/ .getLuck{
+      color: #fff;
+      background-image: url('~@/assets/img/vote/ngDraw/bg-lobtn.png');
+      &.getLuck-gray {
+        color: #bcbcbc;
+        background-image: url('~@/assets/img/vote/ngDraw/bg-lobtn-gray.png');
       }
     }
     .count {
@@ -714,15 +725,15 @@ export default {
     position: absolute;
     left: 1rem;
     top: 4rem;
-    padding: 0 0.5rem;
+    padding: 0 1rem;
     overflow-x: hidden;
     overflow-y: scroll;
     font-size: 0.8rem;
     &::-webkit-scrollbar {
       display: none;
     }
-    span {
-      font-weight: bold;
+    p {
+      margin-bottom: 0.5rem;
     }
   }
 }
@@ -750,10 +761,10 @@ export default {
   }
   .award-item {
     width: 15rem;
-    height: 16.5rem;
+    height: 11.5rem;
     position: absolute;
     left: 1rem;
-    top: 4rem;
+    top: 8.5rem;
     padding: 0 0.5rem;
     overflow-x: hidden;
     overflow-y: scroll;
@@ -762,7 +773,7 @@ export default {
       display: none;
     }
     ul li {
-      line-height: 2.5rem;
+      line-height: 2.2rem;
       img {
         width: 2.2rem;
         height: 2.2rem;
@@ -772,7 +783,7 @@ export default {
       }
       span {
         width: 5.5rem;
-        height: 2.5rem;
+        height: 2.2rem;
         display: inline-block;
         color: #949494;
         &:nth-child(2) {
