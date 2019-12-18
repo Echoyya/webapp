@@ -620,13 +620,35 @@ export default {
               }
             }, 1500)
           } else {
-            this.commentList = []
-            this.$refs.alert.show('Get comment list error! ' + res.data.message)
+            if (this.commentList.length > 0) {
+              this.t = setInterval(() => {
+                if (this.barrageIndex >= this.number) {
+                  this.barrageIndex = 0
+                  clearInterval(this.t)
+                  this.barrageList = []
+                  this.getCommentList()
+                } else {
+                  this.addToList(this.commentList[this.barrageIndex])
+                  this.barrageIndex++
+                }
+              }, 1500)
+            }
           }
         })
-        .catch(err => {
-          this.commentList = []
-          this.$refs.alert.show('Get comment list error!! ' + err)
+        .catch(() => {
+          if (this.commentList.length > 0) {
+            this.t = setInterval(() => {
+              if (this.barrageIndex >= this.number) {
+                this.barrageIndex = 0
+                clearInterval(this.t)
+                this.barrageList = []
+                this.getCommentList()
+              } else {
+                this.addToList(this.commentList[this.barrageIndex])
+                this.barrageIndex++
+              }
+            }, 1500)
+          }
         })
     },
     handlePick(local, advisorList) {

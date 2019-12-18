@@ -54,7 +54,6 @@ export default {
       laneNum: 0, // 将舞台分为固定泳道，防止弹幕重叠
       startTime: 0,
       frameId: null,
-      readyId: 0,
       normalQueue: [], // 正常队列，新弹幕先进入队列，一定时限内再显示在ShowList
       randomInd: 0, // 用指针来代替频繁环操作
       randomShowQueue: [], // 随机展示位置环
@@ -97,16 +96,13 @@ export default {
       this.randomShowQueue = array
     },
     insertToReadyShowQueue() {
-      clearTimeout(this.readyId)
-      this.readyId = setTimeout(() => {
-        while (this.barrageList.length > 0) {
-          let current = this.barrageList.splice(0, this.laneNum)
-          this.addTask(() => {
-            this.normalQueue = [...this.normalQueue, ...current]
-          })
-        }
-        this.updateBarrageDate()
-      }, 300)
+      while (this.barrageList.length > 0) {
+        let current = this.barrageList.splice(0, this.laneNum)
+        this.addTask(() => {
+          this.normalQueue = [...this.normalQueue, ...current]
+        })
+      }
+      this.updateBarrageDate()
     },
     // 更新弹幕数据
     updateBarrageDate(timestamp) {
