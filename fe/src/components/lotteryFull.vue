@@ -370,8 +370,8 @@ img {
       left: 36%;
       font-size: 1.1rem;
       font-weight: bold;
-      color: #d35b05;
-      background-image: url('~@/assets/img/vote/BSSRegister/start.png');
+      color: #fff;
+      background-image: url('~@/assets/img/vote/ngDraw/bg-lobtn.png');
       background-size: 100% 100%;
       &:before {
         content: '';
@@ -381,10 +381,9 @@ img {
         vertical-align: middle;
       }
       &:active {
-        background-image: url('~@/assets/img/vote/ngDraw/bg-lobtn.png');
+        background-image: url('~@/assets/img/vote/ngDraw/bg-lobtn-gray.png');
       }
       &.getLuck-gray {
-        color: #bcbcbc;
         background-image: url('~@/assets/img/vote/ngDraw/bg-lobtn-gray.png');
       }
     }

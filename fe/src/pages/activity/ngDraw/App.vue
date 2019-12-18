@@ -12,7 +12,7 @@
         <img v-if="appType!==0" src="@/assets/img/vote/ngDraw/ic-share.png" class="share" @click="toShare('home')" />
         <img v-else src="@/assets/img/vote/ngDraw/ic-callapp.png" class="share" @click="callOrDownApp('download now')" />
         <div class="lottery-type">
-          <div class="count">CHANCES REMAINING:{{ appType > 0 && isLogin ? (lotteryLeft > 0 ? lotteryLeft : 0) : 0 }}</div>
+          <div class="count">CHANCES REMAINING:{{ appType > 0 ? lotteryLeft : 0 }}</div>
           <lottery
             ref="lottery"
             :id="lottery_id"
@@ -64,9 +64,9 @@
       <div class="award-item">
         <ul v-if="awardsList.length>0">
           <li v-for="(item, i) in awardsList" :key="i">
-            <img :src="item.icon" alt />
-            <span>{{item.name}}</span>
-            <span>{{item.time}}</span>
+            <img :src="item.reward_picture_url" alt />
+            <span>{{item.reward_name}}</span>
+            <span>{{item.created_time.substr(0,10)}}</span>
           </li>
         </ul>
       </div>
@@ -121,63 +121,7 @@ export default {
 
       showMsg: true,
       clipsList: [],
-      awardsList: [
-        {
-          name: 'VIP 30 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days30.png',
-          time: '2020-02-02'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        },
-        {
-          name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/days7.png',
-          time: '2020-02-08'
-        }
-      ],
+      awardsList: [],
 
       // 抽奖
       voteLeft: 0,
@@ -361,6 +305,7 @@ export default {
     },
     showAward() {
       this.mSendEvLog('myprize_click', '', '1')
+      this.getAwardsList()
       this.show_awards = true
       document.body.style.overflow = 'hidden'
       document.body.style.position = 'fixed'
@@ -482,19 +427,17 @@ export default {
         data: qs.stringify({
           vote_id: this.vote_id
         }),
-        url: '/voting/v2/ticket/sign-in'
+        url: '/voting/v1/ticket/sign-in'
       })
         .then(res => {
           if (res.data.code == 0 || res.data.code == 1) {
             if (this.$serverTime >= this.startTime && this.$serverTime <= this.endTime) {
-              this.voteLeft = res.data.data.ticket
+              this.voteLeft = res.data.data
               this.getLeftLottery()
             } else {
               this.voteLeft = 0
               this.lotteryLeft = 0
             }
-            this.isOttVip = res.data.data.user_ott_flag
-            this.isLinkVip = res.data.data.user_dvb_flag
           } else {
             this.voteLeft = 0
             this.lotteryLeft = 0
@@ -536,6 +479,18 @@ export default {
             }
           })
         }
+      })
+    },
+    getAwardsList() {
+      this.$axios.get(`/voting/lottery/v1/user/winnings?lottery_id=${this.lottery_id}&user_id=${this.$user.id}`).then(res => {
+        if (res.data.code === 0) {
+          this.awardsList = res.data.data
+          console.log(this.awardsList)
+        }else {
+          this.$refs.alert.show('Get Prize List Error! '+res.data.message)
+        }
+      }).catch(err=>{
+        this.$refs.alert.show('Get Prize List Error!! ' + err)
       })
     }
   }
@@ -591,14 +546,6 @@ export default {
     padding: 1rem 2%;
     position: relative;
     z-index: 2;
-    /deep/ .getLuck{
-      color: #fff;
-      background-image: url('~@/assets/img/vote/ngDraw/bg-lobtn.png');
-      &.getLuck-gray {
-        color: #bcbcbc;
-        background-image: url('~@/assets/img/vote/ngDraw/bg-lobtn-gray.png');
-      }
-    }
     .count {
       width: 11rem;
       height: 1.5rem;
