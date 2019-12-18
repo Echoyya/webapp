@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="container">
       <div class="top">
-        <img src="@/assets/img/vote/BSSVote3/img-banner.png" alt="bg-img" class="bg-img" />
+        <img src="@/assets/img/vote/ngDraw/img-banner.png" alt="bg-img" class="bg-img" />
         <div class="tab-box">
           <img src="@/assets/img/vote/ngDraw/ic-rules.png" @click="showRule" />
           <img src="@/assets/img/vote/ngDraw/ic-prize.png" @click="showAward" />
@@ -542,27 +542,9 @@ export default {
 }
 </script>
 <style lang="less" scoped>
-@keyframes go_in {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes add_one {
-  0% {
-    opacity: 1;
-    transform: scale(0);
-  }
-  100% {
-    opacity: 0.2;
-    transform: scale(5);
-  }
-}
 .wrapper {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-  background-color: #141515;
+  background-color: #000;
   div,
   li,
   img {
