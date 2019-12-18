@@ -291,7 +291,6 @@ export default {
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
     this.getLotteryInfo()
     const browser = getBrowser()
-    alert(browser.ua)
     // 解决scroll卡顿在789系统
     if (browser.isAndroid && browser.androidVer >= 6 && browser.ua.indexOf('Infinix-X521') < 0) {
       this.$nextTick(() => {
