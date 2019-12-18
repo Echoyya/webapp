@@ -4,8 +4,8 @@
       <div class="top">
         <img src="@/assets/img/vote/BSSVote3/img-banner.png" alt="bg-img" class="bg-img" />
         <div class="tab-box">
-          <img src="@/assets/img/vote/BSSVote3/ic-rule.png" @click="showRule" />
-          <img src="@/assets/img/vote/BSSVote3/ic-share.png" @click="showAward" />
+          <img src="@/assets/img/vote/ngDraw/ic-rules.png" @click="showRule" />
+          <img src="@/assets/img/vote/ngDraw/ic-prize.png" @click="showAward" />
         </div>
       </div>
       <div class="page-vote">
@@ -44,28 +44,23 @@
       </div>
     </div>
     <div v-show="show_rules" class="rules-box">
-      <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
+      <img src="@/assets/img/vote/ngDraw/bg-rules.png" alt />
       <div class="rule-text">
         <div>
-          1.
-          <span>Fainali ya kupiga kura</span>: kuanzia tarehe 22 Disemba 2019 saa 4:00 usiku mpaka Disemba 24, 2019 saa 5:00 Usiku.
-          <br />2.
-          <span>Sheria za fainali za kupiga kura</span>: tafuta na pakua APP ya StarTimes ON kwenye simu yako ya mkononi kisha ingia sehemu ya kupigia kura, washiriki wa Bongo Star Search 2019 na umpigie kura mshiriki umpendae.
-          <br />a. Watumiaji wa kawaida wa APP ya StarTimes ON watapata nafasi 5 kila siku kupigia kura kwa kila mshiriki aliyeingia 5 bora au kupiga kura zote 5 kwa mshiriki mmoja aliyempenda.
-          <br />b. Watumiaji Maalumu(VIP): Mtumiaji mpya kujisajili na StarTimes On atapata nafasi ya kupiga kura 50 kwa washiriki wa BSS. Mtumiaji ambaye ameshajisajili kabla na akajiunga na kifurushi cha VIP atajipatia nafasi 50 za kupiga kura siku inayofuata.
-          <br />Mbali na hilo, share link na marafiki wapakue APP ya StarTimes ON ujipatie kura zaidi. Kila Mtumiaji mpya wa APP utakayemualika atakupa nafasi 5 zaidi za kupiga kura. Kadiri unavyoalika marafiki ndivyo unavyojiongezea nafasi za kupiga kura.
-          <br />3.
-          <span>Zawadi</span>: ukipiga kura 5 utakuwa kwenye nafasi ya kupata zawadi ya sabufa ya Tsh 85,000, na bluetooth ya Aborder ni Tsh 35,000, VIP wa APP ya StartimesON na kuponi.
-          <br />4.
-          <span>Tathmini ya upigaji kura</span>: ili kutendea haki washiriki walio katika fainali, kura zitahesabiwa papo hapo.Nafasi ya mwisho ya washiriki itakua na sehemu tatu ya kupiga kura zikiwemo: kupiga kura kupitia Startimes ON, upigaji kura kwa ujumbe mfupi, na kupiga kura moja kwa moja ukumbini. Na akaunti za kupiga kura kupitia Startimes ON zitachukua uzito wa asilimia 30.
-          <br />5.
-          <span>Kutangazwa kwa matokeo ya fainali</span>: Mashindano ya fainali yatarushwa Live na matokeo ya mwisho ya kura yatarushwa Live vilevile.
+          Are you a lover of comedy and a good laugh? Then Alibaba's January 1st Concert  is just what you need; to get a chance to win a ticket to attend the show come 1st of January, 2020.
+          <br/>The King of comedy is set to host Lagos with music, comedy and celebration. Each ticket costs ₦ 6000!
+          <br/>From Dec 20th to 27th you have 1 chance to win a free ticket each day.
+          <br/>Share the link to invite your friends to download StarTimes ON APP to get more chances. Each new user you invite will get you 1 more chance to win. The more you invite, the more chances you can get.
+          <br/>You can also following our social media page @startimesng to get more informations.
+          <br/>Ticket collection: Take the prize information at the appointed StarTimes Business Hall or the Performance Site.
+          <br/>Time: January 1, 2020 @ 6:00 pm - 11:30 pm
+          <br/>Venue: Eko Hotel Convention Centre, Victoria Island, Lagos.
         </div>
       </div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
     </div>
     <div v-show="show_awards" class="awards-box">
-      <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
+      <img src="@/assets/img/vote/ngDraw/bg-prize.png" alt />
       <div class="award-item">
         <ul v-if="awardsList.length>0">
           <li v-for="(item, i) in awardsList" :key="i">
@@ -114,7 +109,7 @@ export default {
       endTime: '',
 
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote3-banner.png',
-      shareTitle: 'Comedy Show',
+      shareTitle: 'StarTimes Giveaway',
       shareText: "Come on, I'm drawing the Alibaba's Jan 1st Concert Ticket Free, Join with me!",
       show_rules: false,
       show_awards: false,
@@ -129,12 +124,57 @@ export default {
       awardsList: [
         {
           name: 'VIP 30 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/bss-month1.png',
+          icon: 'http://cdn.startimestv.com/banner/days30.png',
           time: '2020-02-02'
         },
         {
           name: 'VIP 7 DAYS',
-          icon: 'http://cdn.startimestv.com/banner/bss-month1.png',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
+          time: '2020-02-08'
+        },
+        {
+          name: 'VIP 7 DAYS',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
+          time: '2020-02-08'
+        },
+        {
+          name: 'VIP 7 DAYS',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
+          time: '2020-02-08'
+        },
+        {
+          name: 'VIP 7 DAYS',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
+          time: '2020-02-08'
+        },
+        {
+          name: 'VIP 7 DAYS',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
+          time: '2020-02-08'
+        },
+        {
+          name: 'VIP 7 DAYS',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
+          time: '2020-02-08'
+        },
+        {
+          name: 'VIP 7 DAYS',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
+          time: '2020-02-08'
+        },
+        {
+          name: 'VIP 7 DAYS',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
+          time: '2020-02-08'
+        },
+        {
+          name: 'VIP 7 DAYS',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
+          time: '2020-02-08'
+        },
+        {
+          name: 'VIP 7 DAYS',
+          icon: 'http://cdn.startimestv.com/banner/days7.png',
           time: '2020-02-08'
         }
       ],
@@ -670,7 +710,7 @@ export default {
   .rule-text {
     width: 15rem;
     height: 16.5rem;
-    color: #1b9145;
+    color: #4f3b16;
     position: absolute;
     left: 1rem;
     top: 4rem;
@@ -711,7 +751,6 @@ export default {
   .award-item {
     width: 15rem;
     height: 16.5rem;
-    color: #1b9145;
     position: absolute;
     left: 1rem;
     top: 4rem;
@@ -723,18 +762,22 @@ export default {
       display: none;
     }
     ul li {
+      line-height: 2.5rem;
       img {
         width: 2.2rem;
         height: 2.2rem;
         display: inline-block;
         margin-right: 0.5rem;
+        vertical-align: middle;
       }
       span {
         width: 5.5rem;
+        height: 2.5rem;
         display: inline-block;
-        &:nth-child(1) {
-          width: 6rem;
+        color: #949494;
+        &:nth-child(2) {
           margin-right: 0.3rem;
+          color: #4f3b16;
         }
       }
     }
