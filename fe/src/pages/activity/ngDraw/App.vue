@@ -182,6 +182,9 @@ export default {
             if (this.appType > 0 && this.isLogin && this.$serverTime >= this.startTime && this.$serverTime < this.endTime) {
               this.getVoteRemain()
             }
+            if (this.appType > 0 && this.isLogin && this.$serverTime >= this.startTime) {
+              this.getAwardsList()
+            }
             this.getVideoMsg()
           } else {
             this.$refs.alert.show('Get Lottery Info Error! ' + res.data.message)
@@ -241,9 +244,10 @@ export default {
     },
     endLottery(prize) {
       if (prize.prizeIndex == 0) {
+        this.getAwardsList()
         setTimeout(() => {
           this.$refs.alert.show(
-            `<p>Hit the Jackpot!</p><p>You've got Alibaba's Jan 1st Concert Ticket!</p>`,
+            `<p>Hit the Jackpot!</p><p>You've got Alibaba's Jan 1st Concert Ticket!</p><p style="text-align:left;font-size:0.8rem;color:#666;">Take the prize information at StarTimes lagos office. Before 30th Dec 5:00 pm (Afribank house, Fatai Atere way, Mushin), Or you can collect at event. Marketing Mnagaer Contact: 08172398138.</p>`,
             () => {
               this.toShare('ticket')
               this.click = true
@@ -252,6 +256,7 @@ export default {
           )
         }, 1000)
       } else if (prize.prizeIndex == 1) {
+        this.getAwardsList()
         setTimeout(() => {
           this.$refs.alert.show(
             `<p>Hit the Jackpot!</p><p>You've got Monthly MAX VIP!</p>`,
@@ -263,6 +268,7 @@ export default {
           )
         }, 1000)
       } else if (prize.prizeIndex == 7) {
+        this.getAwardsList()
         setTimeout(() => {
           this.$refs.alert.show(
             `<p>So lucky!</p><p>You've got Weekly MAX VIP!</p>`,
@@ -274,6 +280,7 @@ export default {
           )
         }, 1000)
       } else if (prize.prizeIndex == 3 || prize.prizeIndex == 5) {
+        this.getAwardsList()
         setTimeout(() => {
           this.$refs.alert.show(
             `<p>So lucky!</p><p>You've got 1 DAY MAX VIP!</p>`,
@@ -350,7 +357,6 @@ export default {
         )
         return
       }
-      this.getAwardsList()
       this.show_awards = true
       document.body.style.overflow = 'hidden'
       document.body.style.position = 'fixed'
@@ -421,6 +427,7 @@ export default {
         this.$refs.loading.start()
         this.mSendEvLog('callApp', label, '1')
         callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + encodeURIComponent(window.location.href), () => {
+          addTicketByDownload.call(this, this.vote_id)
           callMarket.call(this, () => {
             // 下载App
             this.mSendEvLog('downloadpopup_show', label, '1')
@@ -430,7 +437,6 @@ export default {
               () => {
                 this.mSendEvLog('downloadpopup_clickok', label, '1')
                 downApk.call(this)
-                addTicketByDownload.call(this, this.vote_id)
               },
               () => {
                 this.mSendEvLog('downloadpopup_clicknot', label, '1')
