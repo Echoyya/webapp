@@ -12,7 +12,7 @@
         <img v-if="appType!==0" src="@/assets/img/vote/ngDraw/ic-share.png" class="share" @click="toShare('home')" />
         <img v-else src="@/assets/img/vote/ngDraw/ic-callapp.png" class="share" @click="callOrDownApp('download now')" />
         <div class="lottery-type">
-          <div class="count">CHANCES REMAINING:{{ appType>0&&isLogin?lotteryLeft:0 }}</div>
+          <div class="count">CHANCES REMAINING:{{lotteryLeft}}</div>
           <lottery
             ref="lottery"
             :id="lottery_id"
@@ -178,7 +178,9 @@ export default {
             if (this.$serverTime < this.startTime) {
               this.showMsg = false
             }
-            this.getVoteRemain()
+            if (this.appType > 0 && this.isLogin) {
+              this.getVoteRemain()
+            }
             this.getVideoMsg()
           } else {
             this.$refs.alert.show('Get Lottery Info Error! ' + res.data.message)
