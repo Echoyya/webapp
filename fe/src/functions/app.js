@@ -29,7 +29,7 @@ export const pageDlay = function(callback, second) {
   if (browser.browserVer > 40) {
     const exam = () => {
       const now = new Date().getTime()
-      if (now - lastFired < 100) {
+      if (now - lastFired < 250) {
         // 健康状态
         if (now - timerStart > timeout) {
           if (!document.hidden) callback && callback()
@@ -55,7 +55,6 @@ export const pageDlay = function(callback, second) {
             callback && callback()
           }
           clearInterval(timer)
-          this.$refs.loading.finish()
         }
       } else {
         // 不健康,代表浏览器进入后台，则不做操作
