@@ -55,7 +55,6 @@ export const pageDlay = function(callback, second) {
             callback && callback()
           }
           clearInterval(timer)
-          this.$refs.loading.finish()
         }
       } else {
         // 不健康,代表浏览器进入后台，则不做操作
