@@ -426,7 +426,7 @@ export default {
             this.mSendEvLog('downloadpopup_show', label, '1')
             this.$refs.loading.finish()
             this.$refs.confirm.show(
-              'Pakua Startimes ON app na shiriki BSS2019',
+              'Start downloading apk now? (12M)',
               () => {
                 this.mSendEvLog('downloadpopup_clickok', label, '1')
                 downApk.call(this)
@@ -435,8 +435,8 @@ export default {
               () => {
                 this.mSendEvLog('downloadpopup_clicknot', label, '1')
               },
-              'PAKUA',
-              'FUTA'
+              'OK',
+              'NOT NOW'
             )
           })
         })
@@ -521,9 +521,7 @@ export default {
       this.$axios.get(`/voting/v1/program?vote_id=${this.vote_id}`).then(res => {
         if (res.data.code === 0) {
           res.data.data.forEach(item => {
-            if (item.name.indexOf('video') >= 0) {
-              this.clipsList.push(item)
-            }
+            this.clipsList.push(item)
           })
         }
       })
