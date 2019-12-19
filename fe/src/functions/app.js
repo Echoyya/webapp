@@ -128,11 +128,9 @@ export const callApp = function(page, failback) {
       invokeByHref.call(this, createScheme(page), failback)
     }
   } else {
-    if (browser.ua.indexOf('HUAWEIY360') > 0 || browser.ua.indexOf('I9268') > 0 || browser.ua.indexOf('I9502') > 0) {
-      invokeByIframe.call(this, createScheme(page), failback)
-    } else {
-      invokeByHref.call(this, createIntent(page), failback)
-    }
+    // 用ifame是常态，其他做兼容
+    invokeByIframe.call(this, createScheme(page), failback)
+    // HUAWEIY360 I9268 I9502 HUAWEINOVA
   }
 }
 

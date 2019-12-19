@@ -115,7 +115,7 @@
             <baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></baberrage>
           </div>
           <div class="send-box">
-            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
+            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" @blur="inputBlur" />
             <div class="btn" @click="sendComment">{{ disabled ? `${during}s` : `TUMA` }}</div>
           </div>
         </div>
@@ -136,23 +136,25 @@
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
       <div class="rule-text">
-        Matokeo ya Kura yataamua moja kwa moja safari ya washiriki 20 ambao waliaga mashindano. Watachaguliwa Washiriki 2 kati ya washiriki 16 ambao
-        waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5
-        watakaokwenda kwenye fainali
-        <br />
-        <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
-        <br />2. Vigezo vya kupiga kura : Tafuta na
-        pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
-        <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja.
-        <br />② Wanachama wa VIP(VIP: StarTimes On
-        na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)).
-        <br />③
-        Shirikisha marafiki kwa kuwaalika kupakua APP ya StarTimes On na kupata kura 5 kwa kila mtumiaji ambae umempa mualiko na wewe kujipatia kura
-        zaidi.
-        <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya
-        Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili.
-        <br />3.
-        Matokeo ya washiriki waliopigiwa kura yatakua yakitangazwa kabla ya hatua inayofuata na matokeo ya mwisho ya kura yatatangazwa sehemu ya 10.
+        <div>
+          Matokeo ya Kura yataamua moja kwa moja safari ya washiriki 20 ambao waliaga mashindano. Watachaguliwa Washiriki 2 kati ya washiriki 16 ambao
+          waliondolewa kwenye mashindano na kurudi kushindana na washiriki 4 wanaokwenda kwenye hatua inayofuata,ambapo watachuana na kubaki washindi 5
+          watakaokwenda kwenye fainali
+          <br />
+          <br />1. Muda wa kupiga Kura ni kuanzia saa 12:00 Novemba 18,2019 Mpaka Disemba 11,2019 saa 9:00.
+          <br />2. Vigezo vya kupiga kura : Tafuta na
+          pakua APP ya StarTimes ON kwenye simu yako,ingia sehemu ya nafasi ya pili ya Bongo Star Search 2019 na umpigie kura Mshiriki Unayempenda.
+          <br />① Watumiaji wa kawaida wanaweza kumpigia kura mshiriki wanaempenda kwa mara 5 kwa siku moja.
+          <br />② Wanachama wa VIP(VIP: StarTimes On
+          na watumiaji wa Dikoda watapata kura 50 kwa siku (Mwanachama utapata kura 50 katika siku ya pili inayofuata ukinunua kifurushi)).
+          <br />③
+          Shirikisha marafiki kwa kuwaalika kupakua APP ya StarTimes On na kupata kura 5 kwa kila mtumiaji ambae umempa mualiko na wewe kujipatia kura
+          zaidi.
+          <br />④ Upigaji kura utaambatana na utoaji wa zawadi,mshiriki atapata nafasi 5 za kupata zawadi, Kutakua nza zawadi za Sabufa ya
+          Aborder ya shilingi Tsh 85,000. Au Bluetooth ya Aborder ya Tsh 35,000. Na kwa washiriki wa StarTimes On watapata kuponi siku ya pili.
+          <br />3.
+          Matokeo ya washiriki waliopigiwa kura yatakua yakitangazwa kabla ya hatua inayofuata na matokeo ya mwisho ya kura yatatangazwa sehemu ya 10.
+        </div>
       </div>
       <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
@@ -228,6 +230,9 @@ export default {
       appType: this.$appType,
       isLogin: this.$isLogin,
 
+      scrollWrapper: null,
+      scrollRule: null,
+
       share_num: 0,
       clipsList: [],
       topicList: [],
@@ -300,8 +305,9 @@ export default {
       this.$nextTick(() => {
         document.documentElement.style.height = '100%'
         document.body.style.height = '100%'
-        document.body.style.overflow = 'hidden'
-        new BScroll('body', {
+        document.querySelector('.wrapper').style.height = '100%'
+        document.querySelector('.wrapper').style.overflow = 'hidden'
+        this.scrollWrapper = new BScroll('.wrapper', {
           scrollY: true,
           click: true,
           bounce: false
@@ -511,11 +517,22 @@ export default {
       this.nowarp()
     },
     inputFocus() {
-      document.getElementById('comment').scrollIntoView()
+      if (this.scrollWrapper) {
+        this.scrollWrapper.scrollTo(0, -document.getElementById('comment').offsetTop)
+        this.scrollWrapper.disable()
+      } else {
+        document.getElementById('comment').scrollIntoView()
+      }
+    },
+    inputBlur() {
+      if (this.scrollWrapper) {
+        this.scrollWrapper.enable()
+        this.scrollWrapper.refresh()
+      }
     },
     getIndexToIns(arr, num) {
-      const index = arr.sort((a, b) => a - b).findIndex(currentPage => num <= currentPage)
-      return index <= 0 ? 1 : index
+      const index = arr.findIndex(currentPage => num <= currentPage)
+      return index == 0 ? 1 : index < 0 ? arr.length : index
     },
     // 获取期数，播出时间，票数，状态，投票单元
     getPagelist() {
@@ -852,6 +869,16 @@ export default {
       document.body.style.position = 'fixed'
       document.body.style.left = '0'
       document.body.style.right = '0'
+      this.$nextTick(() => {
+        if (this.scrollWrapper) {
+          this.scrollWrapper.disable()
+          this.scrollRule = new BScroll('.rule-text', {
+            scrollY: true,
+            click: true,
+            bounce: false
+          })
+        }
+      })
     },
     // 埋点方法
     mSendEvLog(action, label, value) {
@@ -898,6 +925,7 @@ export default {
     callOrDownApp(label) {
       const browser = getBrowser()
       if (browser.isIos) {
+        this.mSendEvLog('downloadpopup_show', label, '')
         this.$refs.confirm.show(
           'Pakua Startimes ON app na shiriki BSS2019',
           () => {
@@ -1030,6 +1058,12 @@ export default {
       document.body.style.position = 'static'
       this.show_rules = false
       this.votePannel = false
+      this.$nextTick(() => {
+        if (this.scrollWrapper) {
+          this.scrollRule.destroy()
+          this.scrollWrapper.enable()
+        }
+      })
     },
     // 投票1，5，10
     handleVote(value) {
@@ -1742,7 +1776,6 @@ export default {
         top: 0.35rem;
         white-space: nowrap;
         overflow: hidden;
-        overflow-x: auto;
         resize: none;
         &::-webkit-input-placeholder {
           color: #acacac;
@@ -1878,8 +1911,10 @@ export default {
     left: 1rem;
     top: 4rem;
     padding: 0.5rem;
+    padding-top: 0;
     overflow-x: hidden;
     overflow-y: scroll;
+    font-size: 0.8rem;
     &::-webkit-scrollbar {
       display: none;
     }

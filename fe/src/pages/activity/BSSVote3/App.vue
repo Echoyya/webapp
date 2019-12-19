@@ -112,10 +112,11 @@
         </div>
         <div id="comment" class="comment">
           <div class="comment-box">
-            <baberrage :isShow="true" :barrageList="barrageList" :loop="false" :throttleGap="1500"></baberrage>
+            <baberrage ref="babarrage" v-if="commmentLoad==1" :barrageList="barrageList" :loop="false" :throttleGap="1500"></baberrage>
+            <div v-if="commmentLoad==2" class="retry" @click="getCommentList">Click to retry</div>
           </div>
           <div class="send-box">
-            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" />
+            <textarea v-model="commentText" type="text" placeholder="SHIRIKISHA HISIA YAKO..." maxlength="100" @focus="inputFocus" @blur="inputBlur" />
             <div class="btn" @click="sendComment">
               <img src="@/assets/img/vote/BSSVote3/ic-send.png" alt />
               <span>{{ disabled ? `${during}s` : `TUMA` }}</span>
@@ -139,19 +140,19 @@
     <div v-show="show_rules" class="rules-box">
       <img src="@/assets/img/vote/BSSRegister/bg-rule.png" alt />
       <div class="rule-text">
-        1.
-        <span>Fainali ya kupiga kura</span>: kuanzia tarehe 22 Disemba 2019 saa 4:00 usiku mpaka Disemba 24, 2019 saa 5:00 Usiku.
-        <br />2.
-        <span>Sheria za fainali za kupiga kura</span>: tafuta na pakua APP ya StarTimes ON kwenye simu yako ya mkononi kisha ingia sehemu ya kupigia kura, washiriki wa Bongo Star Search 2019 na umpigie kura mshiriki umpendae.
-        <br />a. Watumiaji wa kawaida wa APP ya StarTimes ON watapata nafasi 5 kila siku kupigia kura kwa kila mshiriki aliyeingia 5 bora au kupiga kura zote 5 kwa mshiriki mmoja aliyempenda.
-        <br />b. Watumiaji Maalumu(VIP): Mtumiaji mpya kujisajili na StarTimes On atapata nafasi ya kupiga kura 50 kwa washiriki wa BSS. Mtumiaji ambaye ameshajisajili kabla na akajiunga na kifurushi cha VIP atajipatia nafasi 50 za kupiga kura siku inayofuata.
-        <br />Mbali na hilo, share link na marafiki wapakue APP ya StarTimes ON ujipatie kura zaidi. Kila Mtumiaji mpya wa APP utakayemualika atakupa nafasi 5 zaidi za kupiga kura. Kadiri unavyoalika marafiki ndivyo unavyojiongezea nafasi za kupiga kura.
-        <br />3.
-        <span>Zawadi</span>: ukipiga kura 5 utakuwa kwenye nafasi ya kupata zawadi ya sabufa ya Tsh 85,000, na bluetooth ya Aborder ni Tsh 35,000, VIP wa APP ya StartimesON na kuponi.
-        <br />4.
-        <span>Tathmini ya upigaji kura</span>: ili kutendea haki washiriki walio katika fainali, kura zitahesabiwa papo hapo.Nafasi ya mwisho ya washiriki itakua na sehemu tatu ya kupiga kura zikiwemo: kupiga kura kupitia Startimes ON, upigaji kura kwa ujumbe mfupi, na kupiga kura moja kwa moja ukumbini. Na akaunti za kupiga kura kupitia Startimes ON zitachukua uzito wa asilimia 30.
-        <br />5.
-        <span>Kutangazwa kwa matokeo ya fainali</span>: Mashindano ya fainali yatarushwa Live na matokeo ya mwisho ya kura yatarushwa Live vilevile.
+        <div>
+          1.
+          <span>Fainali ya kupiga kura</span>: kuanzia tarehe 22 Disemba 2019 saa 4:00 usiku mpaka Disemba 24, 2019 saa 5:00 Usiku.
+          <br />2.
+          <span>Sheria za fainali za kupiga kura</span>: tafuta na pakua APP ya StarTimes ON kwenye simu yako ya mkononi kisha ingia sehemu ya kupigia kura, washiriki wa Bongo Star Search 2019 na umpigie kura mshiriki umpendae.
+          <br />a. Watumiaji wa kawaida wa APP ya StarTimes ON watapata nafasi 5 kila siku kupigia kura kwa kila mshiriki aliyeingia 5 bora au kupiga kura zote 5 kwa mshiriki mmoja aliyempenda.
+          <br />b. Watumiaji Maalumu(VIP): Mtumiaji mpya kujisajili na StarTimes On atapata nafasi ya kupiga kura 50 kwa washiriki wa BSS. Mtumiaji ambaye ameshajisajili kabla na akajiunga na kifurushi cha VIP atajipatia nafasi 50 za kupiga kura siku inayofuata.
+          <br />Mbali na hilo, share link na marafiki wapakue APP ya StarTimes ON ujipatie kura zaidi. Kila Mtumiaji mpya wa APP utakayemualika atakupa nafasi 5 zaidi za kupiga kura. Kadiri unavyoalika marafiki ndivyo unavyojiongezea nafasi za kupiga kura.
+          <br />3.
+          <span>Zawadi</span>: ukipiga kura 5 utakuwa kwenye nafasi ya kupata zawadi ya sabufa ya Tsh 85,000, na bluetooth ya Aborder ni Tsh 35,000, VIP wa APP ya StartimesON na kuponi.
+          <br />4.
+          <span>Kutangazwa kwa matokeo ya fainali</span>: Mashindano ya fainali yatarushwa Live na matokeo ya mwisho ya kura yatarushwa Live vilevile.
+        </div>
       </div>
       <div class="share-btn" @click="toShare('voterules')">SHIRIKI</div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
@@ -209,14 +210,12 @@ export default {
     lottery
   },
   data() {
-    const startTime = new Date('2019-12-09T17:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
-    const endTime = new Date('2019-12-23T18:00:00'.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
     return {
       // 页面
       vote_id: getQuery('voteid') || 64,
       lottery_id: this.$appType == 2 ? 7 : 6,
-      startTime: startTime,
-      endTime: endTime,
+      startTime: '',
+      endTime: '',
 
       imgUrl: 'http://cdn.startimestv.com/banner/BSSVote3-banner.png',
       shareTitle: 'Bongo Star Search 2019',
@@ -224,6 +223,9 @@ export default {
       show_rules: false,
       appType: this.$appType,
       isLogin: this.$isLogin,
+
+      scrollWrapper: null,
+      scrollRule: null,
 
       share_num: 0,
       clipsList: [],
@@ -241,7 +243,7 @@ export default {
       voteLeft: 0,
       advisorList: [],
       canVotes: true,
-      showMsg: this.$serverTime >= startTime,
+      showMsg: true,
       votePannel: false,
       votePickItem: -1, // 准备投票的投票单元id
 
@@ -256,6 +258,7 @@ export default {
       disabled: false, // send状态
       index: 0, // 当前所在的节目期数
       commentList: [],
+      commmentLoad: 0,
       words: ['kuma', 'mbolo', 'mpumbavu', 'mshenzi', 'matako', 'pumbavu', 'msenge'],
       show_in: false,
       l_show: false,
@@ -286,19 +289,16 @@ export default {
   mounted() {
     this.mSendEvLog('page_show', '', '')
     this.barrageBox = document.getElementsByClassName('baberrage-stage')
-    this.getAdvisorList()
-    this.getVoteRemain()
-    this.getLeftLottery()
-    this.getVideoMsg()
-    this.getShareNum()
+    this.getLotteryInfo()
     const browser = getBrowser()
     // 解决scroll卡顿在789系统
-    if (browser.isAndroid && browser.androidVer >= 6) {
+    if (browser.isAndroid && browser.androidVer >= 7) {
       this.$nextTick(() => {
         document.documentElement.style.height = '100%'
         document.body.style.height = '100%'
-        document.body.style.overflow = 'hidden'
-        new BScroll('body', {
+        document.querySelector('.wrapper').style.height = '100%'
+        document.querySelector('.wrapper').style.overflow = 'hidden'
+        this.scrollWrapper = new BScroll('.wrapper', {
           scrollY: true,
           click: true,
           bounce: false
@@ -307,6 +307,29 @@ export default {
     }
   },
   methods: {
+    getLotteryInfo() {
+      this.$axios
+        .get(`/voting/lottery/v1/info?lottery_id=${this.lottery_id}`)
+        .then(res => {
+          if (res.data.code == 0) {
+            this.startTime = new Date(res.data.data.start_time.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+            this.endTime = new Date(res.data.data.end_time.replace(/-/g, '/').replace('T', ' ') + '+0000').getTime()
+            if (this.$serverTime < this.startTime) {
+              this.showMsg = false
+            }
+            this.getAdvisorList()
+            this.getVoteRemain()
+            this.getLeftLottery()
+            this.getVideoMsg()
+            this.getShareNum()
+          } else {
+            this.$refs.alert.show('Get Lottery Info Error! ' + res.data.message)
+          }
+        })
+        .catch(err => {
+          this.$refs.alert.show('Get Lottery Info Error!! ' + err)
+        })
+    },
     lotteryError(err) {
       this.$refs.alert.show(err.errMsg)
     },
@@ -505,11 +528,22 @@ export default {
       this.nowarp()
     },
     inputFocus() {
-      document.getElementById('comment').scrollIntoView()
+      if (this.scrollWrapper) {
+        this.scrollWrapper.scrollTo(0, -document.getElementById('comment').offsetTop)
+        this.scrollWrapper.disable()
+      } else {
+        document.getElementById('comment').scrollIntoView()
+      }
+    },
+    inputBlur() {
+      if (this.scrollWrapper) {
+        this.scrollWrapper.enable()
+        this.scrollWrapper.refresh()
+      }
     },
     getIndexToIns(arr, num) {
-      const index = arr.sort((a, b) => a - b).findIndex(currentPage => num <= currentPage)
-      return index <= 0 ? 1 : index
+      const index = arr.findIndex(currentPage => num <= currentPage)
+      return index == 0 ? 1 : index < 0 ? arr.length : index
     },
     // 获取期数，播出时间，票数，状态，投票单元
     getPagelist() {
@@ -569,30 +603,28 @@ export default {
         .get(`/voting/v1/comments?comment_activity_id=${this.index + 18}&last_id=${this.last_id}&num_per_page=${this.number}`)
         .then(res => {
           if (res.data.code === 0) {
+            this.commmentLoad = 1
             this.last_id = res.data.data[res.data.data.length - 1].id
             this.commentList = res.data.data
             this.canClickTab1 = true
             this.addToList(this.commentList[0])
             this.barrageIndex = 1
+            if (this.t) clearInterval(this.t)
             this.t = setInterval(() => {
               if (this.barrageIndex >= this.number) {
                 this.barrageIndex = 0
-                clearInterval(this.t)
-                this.barrageList = []
+              } else if (this.barrageIndex >= this.number-1) {
                 this.getCommentList()
-              } else {
-                this.addToList(this.commentList[this.barrageIndex])
-                this.barrageIndex++
               }
+              this.addToList(this.commentList[this.barrageIndex])
+              this.barrageIndex++
             }, 1500)
           } else {
-            this.commentList = []
-            this.$refs.alert.show('Get comment list error! ' + res.data.message)
+            if (this.commmentLoad == 0) this.commmentLoad = 2
           }
         })
-        .catch(err => {
-          this.commentList = []
-          this.$refs.alert.show('Get comment list error!! ' + err)
+        .catch(() => {
+          if (this.commmentLoad == 0) this.commmentLoad = 2
         })
     },
     handlePick(local, advisorList) {
@@ -846,6 +878,16 @@ export default {
       document.body.style.position = 'fixed'
       document.body.style.left = '0'
       document.body.style.right = '0'
+      this.$nextTick(() => {
+        if (this.scrollWrapper) {
+          this.scrollWrapper.disable()
+          this.scrollRule = new BScroll('.rule-text', {
+            scrollY: true,
+            click: true,
+            bounce: false
+          })
+        }
+      })
     },
     // 埋点方法
     mSendEvLog(action, label, value) {
@@ -891,6 +933,7 @@ export default {
     callOrDownApp(label) {
       const browser = getBrowser()
       if (browser.isIos) {
+        this.mSendEvLog('downloadpopup_show', label, '')
         this.$refs.confirm.show(
           'Pakua Startimes ON app na shiriki BSS2019',
           () => {
@@ -1023,6 +1066,12 @@ export default {
       document.body.style.position = 'static'
       this.votePannel = false
       this.show_rules = false
+      this.$nextTick(() => {
+        if (this.scrollWrapper) {
+          this.scrollRule.destroy()
+          this.scrollWrapper.enable()
+        }
+      })
     },
     // 投票1，5，10
     handleVote(value) {
@@ -1723,7 +1772,6 @@ export default {
         top: 0.35rem;
         white-space: nowrap;
         overflow: hidden;
-        overflow-x: auto;
         resize: none;
         &::-webkit-input-placeholder {
           color: #acacac;
@@ -1864,9 +1912,10 @@ export default {
     left: 1rem;
     top: 4rem;
     padding: 0.5rem;
+    padding-top: 0;
     overflow-x: hidden;
     overflow-y: scroll;
-    font-size: 0.9rem;
+    font-size: 0.8rem;
     &::-webkit-scrollbar {
       display: none;
     }
@@ -1897,5 +1946,11 @@ export default {
   opacity: 0.5;
   background-color: #000;
   z-index: 998;
+}
+.retry {
+  height: 212px;
+  line-height: 212px;
+  text-align: center;
+  color: #fabd0c;
 }
 </style>
