@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <lottery ref="lottery" :id="4" :defaultPrize="3" :withMsgList="true" @drawClick="startDraw" @end="endLottery"></lottery>
+  <div class="bg">
+    <lottery ref="lottery" :id="8" :defaultPrizeIndex="3" :btnGray="false" :withMsgList="true" @drawClick="startDraw" @end="endLottery"></lottery>
   </div>
 </template>
 <script>
@@ -19,3 +19,8 @@ export default {
   }
 }
 </script>
+<style lang="less">
+.bg {
+  background: #21b7ff;
+}
+</style>
