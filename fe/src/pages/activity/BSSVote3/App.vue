@@ -950,7 +950,7 @@ export default {
         )
       } else {
         this.$refs.loading.start()
-        callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.href, () => {
+        callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + encodeURIComponent(window.location.href), () => {
           // 下载App
           this.mSendEvLog('downloadpopup_show', label, '')
           this.$refs.loading.finish()
