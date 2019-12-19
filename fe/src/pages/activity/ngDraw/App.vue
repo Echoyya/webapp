@@ -243,7 +243,7 @@ export default {
       if (prize.prizeIndex == 0) {
         setTimeout(() => {
           this.$refs.alert.show(
-            `<p>Hit the Jackpot!</p><p>You've got Alibaba's Jan 1st Concert Ticket!</p>`,
+            `<p>Hit the Jackpot!</p><p>You've got Alibaba's Jan 1st Concert Ticket!</p><p style="text-align:left;font-size:0.8rem;color:#666;">Take the prize information at StarTimes lagos office. Before 30th Dec 5:00 pm (Afribank house, Fatai Atere way, Mushin), Or you can collect at event. Marketing Mnagaer Contact: 08172398138.</p>`,
             () => {
               this.toShare('ticket')
               this.click = true
