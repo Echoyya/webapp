@@ -92,6 +92,7 @@ import lottery from '@/components/lotteryFull'
 import BScroll from 'better-scroll'
 import {
   callApp,
+  callMarket,
   downApk,
   playVodinApp,
   toNativePage,
@@ -119,7 +120,7 @@ export default {
       startTime: '',
       endTime: '',
 
-      imgUrl: 'http://cdn.startimestv.com/banner/BSSVote3-banner.png',
+      imgUrl: 'http://cdn.startimestv.com/banner/img-banner.png',
       shareTitle: 'StarTimes Giveaway',
       shareText: "Come on, I'm drawing the Alibaba's Jan 1st Concert Ticket Free, Join with me!",
       show_rules: false,
@@ -142,7 +143,7 @@ export default {
   },
   computed: {
     lotteryBtnGray() {
-      return this.appType > 0 && this.lotteryLeft <= 0
+      return this.appType > 0 && this.$serverTime >= this.startTime && this.$serverTime < this.endTime && this.isLogin && this.lotteryLeft <= 0
     }
   },
   mounted() {
@@ -178,7 +179,7 @@ export default {
             if (this.$serverTime < this.startTime) {
               this.showMsg = false
             }
-            if (this.appType > 0 && this.isLogin) {
+            if (this.appType > 0 && this.isLogin && this.$serverTime >= this.startTime && this.$serverTime < this.endTime) {
               this.getVoteRemain()
             }
             this.getVideoMsg()
@@ -420,22 +421,24 @@ export default {
         this.$refs.loading.start()
         this.mSendEvLog('callApp', label, '1')
         callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.href, () => {
-          // 下载App
-          this.mSendEvLog('downloadpopup_show', label, '1')
-          this.$refs.loading.finish()
-          this.$refs.confirm.show(
-            'Pakua Startimes ON app na shiriki BSS2019',
-            () => {
-              this.mSendEvLog('downloadpopup_clickok', label, '1')
-              downApk.call(this)
-              addTicketByDownload.call(this, this.vote_id)
-            },
-            () => {
-              this.mSendEvLog('downloadpopup_clicknot', label, '1')
-            },
-            'PAKUA',
-            'FUTA'
-          )
+          callMarket.call(this, () => {
+            // 下载App
+            this.mSendEvLog('downloadpopup_show', label, '1')
+            this.$refs.loading.finish()
+            this.$refs.confirm.show(
+              'Pakua Startimes ON app na shiriki BSS2019',
+              () => {
+                this.mSendEvLog('downloadpopup_clickok', label, '1')
+                downApk.call(this)
+                addTicketByDownload.call(this, this.vote_id)
+              },
+              () => {
+                this.mSendEvLog('downloadpopup_clicknot', label, '1')
+              },
+              'PAKUA',
+              'FUTA'
+            )
+          })
         })
       }
     },
