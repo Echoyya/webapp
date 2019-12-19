@@ -15,20 +15,16 @@ export default {
         return {}
       }
     }
-  },
-  data() {
-    return {}
   }
 }
 </script>
-
 <style lang="less">
 .baberrage-item {
   position: absolute;
   width: auto;
   display: block;
   color: #000;
-  transform: translateX(500%);
+  transform: translateX(700%); // 初始化的未知
   padding: 5px 8px 5px 38px;
   text-align: left;
   white-space: nowrap;
@@ -45,6 +41,7 @@ export default {
     }
   }
   .baberrage-msg {
+    height: 30px;
     line-height: 30px;
     padding-left: 8px;
     white-space: nowrap;

@@ -925,6 +925,7 @@ export default {
     callOrDownApp(label) {
       const browser = getBrowser()
       if (browser.isIos) {
+        this.mSendEvLog('downloadpopup_show', label, '')
         this.$refs.confirm.show(
           'Pakua Startimes ON app na shiriki BSS2019',
           () => {

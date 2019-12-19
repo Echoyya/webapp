@@ -22,5 +22,6 @@
       "tabWidth": 2
     }
   },
-  "eslint.validate": ["javascript", "vue", "html"]
+  "eslint.validate": ["javascript", "vue", "html"],
+  "prettier.tabWidth": 2
 }

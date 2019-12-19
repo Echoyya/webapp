@@ -50,8 +50,12 @@ export const pageDlay = function(callback, second) {
       if (now - lastFired < deviation + interval) {
         // 浏览器健康状态
         if (now - timerStart > timeout) {
-          if (!document.hidden) callback && callback()
+          if (!document.hidden) {
+            clearInterval(timer)
+            callback && callback()
+          }
           clearInterval(timer)
+          this.$refs.loading.finish()
         }
       } else {
         // 不健康,代表浏览器进入后台，则不做操作
@@ -124,11 +128,9 @@ export const callApp = function(page, failback) {
       invokeByHref.call(this, createScheme(page), failback)
     }
   } else {
-    if (navigator.userAgent.indexOf('HUAWEIY360') > 0) {
-      invokeByIframe.call(this, createScheme(page), failback)
-    } else {
-      invokeByHref.call(this, createIntent(page), failback)
-    }
+    // 用ifame是常态，其他做兼容
+    invokeByIframe.call(this, createScheme(page), failback)
+    // HUAWEIY360 I9268 I9502 HUAWEINOVA
   }
 }
 
@@ -189,11 +191,15 @@ export const callMarket = function(failback) {
       utmParam.map
     )
   )
-
   if (browser.isIos) {
     this.$refs.loading.finish()
     window.location.href = appleStore
-  } else if (browser.ua.indexOf('MuMu') >= 0 || browser.ua.indexOf('I9502') > 0) {
+  } else if (
+    browser.ua.indexOf('MuMu') >= 0 ||
+    browser.ua.indexOf('I9502') > 0 ||
+    browser.ua.indexOf('I9268') > 0 ||
+    browser.ua.indexOf('Firefox') > 0
+  ) {
     // android 6+
     invokeByIframe.call(this, `market://details?id=com.star.mobile.video${source}`, failback)
   } else {
@@ -288,7 +294,7 @@ export const getUtmParam = function() {
 
   if (referrer) {
     // 通过referrer 参数接收
-    source = source + referrer
+    source = source + encodeURIComponent(referrer)
     utmSource = getQuery('utm_source', decodeURIComponent(referrer)) || ''
     utmMedium = getQuery('utm_medium', decodeURIComponent(referrer)) || ''
     utmCampaign = getQuery('utm_campaign', decodeURIComponent(referrer)) || ''
