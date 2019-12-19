@@ -29,7 +29,7 @@ export const pageDlay = function(callback, second) {
   if (browser.browserVer > 40) {
     const exam = () => {
       const now = new Date().getTime()
-      if (now - lastFired < 100) {
+      if (now - lastFired < 250) {
         // 健康状态
         if (now - timerStart > timeout) {
           if (!document.hidden) callback && callback()
