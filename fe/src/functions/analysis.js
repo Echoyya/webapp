@@ -17,7 +17,7 @@ let deviceId = ''
       ;(i[r].q = i[r].q || []).push(arguments)
       // eslint-disable-next-line no-sequences
     }),
-    (i[r].l = 1 * new Date())
+  (i[r].l = 1 * new Date())
   // eslint-disable-next-line no-unused-expressions
   ;(a = s.createElement(o)), (m = s.getElementsByTagName(o)[0])
   a.async = 1
