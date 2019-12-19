@@ -52,9 +52,9 @@
           <p>1. From Dec 20th to 27th you have 1 chance to win a free ticket each day.</p>
           <p>2. Share the link to invite your friends to download StarTimes ON APP to get more chances. Each new user you invite will get you 1 more chance to win. The more you invite, the more chances you can get.</p>
           <p>3. You can also following our social media page @startimesng to get more informations.</p>
-          <p>4. Ticket collection: Take the prize information at the appointed StarTimes Business Hall or the Performance Site.</p>
-          <p>5. Time: January 1, 2020 @ 6:00 pm - 11:30 pm</p>
-          <p>6. Venue: Eko Hotel Convention Centre, Victoria Island, Lagos.</p>
+          <p>Ticket collection: Take the prize information at StarTimes lagos office.</p>
+          <p>Time: Before 30th Dec 5:00 pm(Afribank house, Fatai Atere way, Mushin ),Or you can collect at event.</p>
+          <p>Marketing Mnagaer Contact: 08172398138</p>
         </div>
       </div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
@@ -122,7 +122,7 @@ export default {
 
       imgUrl: 'http://cdn.startimestv.com/banner/img-banner.png',
       shareTitle: 'StarTimes Giveaway',
-      shareText: "Come on, I'm drawing the Alibaba's Jan 1st Concert Ticket Free, Join with me!",
+      shareText: "Try your luck to WIN A FREE TICKET of Alibaba's New Year Concert!",
       show_rules: false,
       show_awards: false,
       appType: this.$appType,
@@ -243,7 +243,7 @@ export default {
       if (prize.prizeIndex == 0) {
         setTimeout(() => {
           this.$refs.alert.show(
-            "You've got Alibaba's Jan 1st Concert Ticket!",
+            `<p>Hit the Jackpot!</p><p>You've got Alibaba's Jan 1st Concert Ticket!</p>`,
             () => {
               this.toShare('ticket')
               this.click = true
@@ -254,7 +254,7 @@ export default {
       } else if (prize.prizeIndex == 1) {
         setTimeout(() => {
           this.$refs.alert.show(
-            "You've got Monthly MAX VIP!",
+            `<p>Hit the Jackpot!</p><p>You've got Monthly MAX VIP!</p>`,
             () => {
               this.toShare('30dayvip')
               this.click = true
@@ -265,7 +265,7 @@ export default {
       } else if (prize.prizeIndex == 7) {
         setTimeout(() => {
           this.$refs.alert.show(
-            "You've got Weekly MAX VIP!",
+            `<p>So lucky!</p><p>You've got Weekly MAX VIP!</p>`,
             () => {
               this.toShare('7dayvip')
               this.click = true
@@ -276,7 +276,7 @@ export default {
       } else if (prize.prizeIndex == 3 || prize.prizeIndex == 5) {
         setTimeout(() => {
           this.$refs.alert.show(
-            "You've got 1 DAY MAX VIP!",
+            `<p>So lucky!</p><p>You've got 1 DAY MAX VIP!</p>`,
             () => {
               this.toShare('ticket')
               this.click = true
@@ -288,7 +288,7 @@ export default {
         setTimeout(() => {
           this.lotteryLeft++
           this.$refs.alert.show(
-            "Congrats! You've got 1 more chance!",
+            `<p>Congrats!</p><p>You've got 1 more chance!</p>`,
             () => {
               this.toShare('chance')
               this.click = true
@@ -299,7 +299,7 @@ export default {
       } else if (prize.prizeIndex === 4) {
         setTimeout(() => {
           this.$refs.alert.show(
-            'Thanks for your participation. Share for more chances!',
+            `<p>Thanks for your participation.</p><p>Share for more chances!</p>`,
             () => {
               this.toShare('thanks')
               this.click = true
@@ -420,7 +420,7 @@ export default {
       } else {
         this.$refs.loading.start()
         this.mSendEvLog('callApp', label, '1')
-        callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + window.location.href, () => {
+        callApp.call(this, 'com.star.mobile.video.activity.BrowserActivity?loadUrl=' + encodeURIComponent(window.location.href), () => {
           callMarket.call(this, () => {
             // 下载App
             this.mSendEvLog('downloadpopup_show', label, '1')
@@ -787,5 +787,11 @@ export default {
   opacity: 0.5;
   background-color: #000;
   z-index: 998;
+}
+/deep/ .dialog {
+  text-align: center;
+  span p {
+    padding: 0.5rem 0;
+  }
 }
 </style>
