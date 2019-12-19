@@ -5,14 +5,14 @@
         <img src="@/assets/img/vote/ngDraw/img-banner.png" alt="bg-img" class="bg-img" />
         <div class="tab-box">
           <img src="@/assets/img/vote/ngDraw/ic-rules.png" @click="showRule" />
-          <img src="@/assets/img/vote/ngDraw/ic-prize.png" @click="showAward" />
+          <img v-show="appType>0" src="@/assets/img/vote/ngDraw/ic-prize.png" @click="showAward" />
         </div>
       </div>
       <div class="page-vote">
         <img v-if="appType!==0" src="@/assets/img/vote/ngDraw/ic-share.png" class="share" @click="toShare('home')" />
         <img v-else src="@/assets/img/vote/ngDraw/ic-callapp.png" class="share" @click="callOrDownApp('download now')" />
         <div class="lottery-type">
-          <div class="count">CHANCES REMAINING:{{ appType > 0 ? lotteryLeft : 0 }}</div>
+          <div class="count">CHANCES REMAINING:{{ appType>0&&isLogin?lotteryLeft:0 }}</div>
           <lottery
             ref="lottery"
             :id="lottery_id"
@@ -47,7 +47,7 @@
       <img src="@/assets/img/vote/ngDraw/bg-rules.png" alt />
       <div class="rule-text">
         <div>
-          <p>Are you a lover of comedy and a good laugh? Then Alibaba's January 1st Concert  is just what you need; to get a chance to win a ticket to attend the show come 1st of January, 2020.</p>
+          <p>Are you a lover of comedy and a good laugh? Then Alibaba's January 1st Concert is just what you need; to get a chance to win a ticket to attend the show come 1st of January, 2020.</p>
           <p>The King of comedy is set to host Lagos with music, comedy and celebration. Each ticket costs ₦ 6000!</p>
           <p>1. From Dec 20th to 27th you have 1 chance to win a free ticket each day.</p>
           <p>2. Share the link to invite your friends to download StarTimes ON APP to get more chances. Each new user you invite will get you 1 more chance to win. The more you invite, the more chances you can get.</p>
@@ -64,11 +64,12 @@
       <div class="award-item">
         <ul v-if="awardsList.length>0">
           <li v-for="(item, i) in awardsList" :key="i">
-            <img :src="item.reward_picture_url" alt />
+            <img :src="item.reward_description" alt />
             <span>{{item.reward_name}}</span>
             <span>{{item.created_time.substr(0,10)}}</span>
           </li>
         </ul>
+        <div v-else class="noaward">You have no prizes. Invite more friends to get more chances to win prizes.</div>
       </div>
       <img src="@/assets/img/vote/BSSRegister/ic-close.png" alt @click="closeShadow" />
     </div>
@@ -89,7 +90,17 @@ import mShare from '@/components/web/share.vue'
 import loading from '@/components/loading'
 import lottery from '@/components/lotteryFull'
 import BScroll from 'better-scroll'
-import { callApp, downApk, playVodinApp, shareInvite, shareInviteIos, addTicketByDownload, getQuery, callAppleStore } from '@/functions/app'
+import {
+  callApp,
+  downApk,
+  playVodinApp,
+  toNativePage,
+  shareInvite,
+  shareInviteIos,
+  addTicketByDownload,
+  getQuery,
+  callAppleStore
+} from '@/functions/app'
 import { getBrowser } from '@/functions/utils'
 export default {
   components: {
@@ -184,7 +195,7 @@ export default {
       if (!this.click) {
         return
       }
-      if (this.appType == 0 || this.$serverTime < this.startTime || this.$serverTime >= this.endTime || this.lotteryLeft <= 0) {
+      if (this.appType == 0 || this.$serverTime < this.startTime || this.$serverTime >= this.endTime || this.lotteryLeft <= 0 || !this.isLogin) {
         this.mSendEvLog('winbtn_click', '', '0')
       }
       if (this.appType == 0) {
@@ -192,11 +203,21 @@ export default {
         return
       }
       if (this.$serverTime < this.startTime) {
-        this.$refs.alert.show('活动未开始', () => {}, 'GOT IT')
+        this.$refs.alert.show('Stay tuned! Lottery will begin on December 20, 2019.', () => {}, 'GOT IT')
         return
       }
       if (this.$serverTime >= this.endTime) {
-        this.$refs.alert.show('活动已结束', () => {}, 'GOT IT')
+        this.$refs.alert.show('Sorry, the lottery has ended.', () => {}, 'GOT IT')
+        return
+      }
+      if (!this.isLogin) {
+        this.$refs.alert.show(
+          'Login to win prize now.',
+          () => {
+            this.toSignIn()
+          },
+          'SIGN IN'
+        )
         return
       }
       if (this.lotteryLeft <= 0) {
@@ -238,7 +259,7 @@ export default {
             'Share the joy with friends'
           )
         }, 1000)
-      }else if (prize.prizeIndex == 7) {
+      } else if (prize.prizeIndex == 7) {
         setTimeout(() => {
           this.$refs.alert.show(
             "You've got Weekly MAX VIP!",
@@ -249,7 +270,7 @@ export default {
             'Share the joy with friends'
           )
         }, 1000)
-      }else if (prize.prizeIndex == 3 || prize.prizeIndex == 5) {
+      } else if (prize.prizeIndex == 3 || prize.prizeIndex == 5) {
         setTimeout(() => {
           this.$refs.alert.show(
             "You've got 1 DAY MAX VIP!",
@@ -285,6 +306,17 @@ export default {
         }, 1000)
       }
     },
+    toSignIn() {
+      if (this.appType == 1) {
+        // 原生登录，跳回活动页面
+        toNativePage(
+          'com.star.mobile.video.account.LoginActivity?returnClass=com.star.mobile.video.activity.BrowserActivity?loadUrl=' +
+            encodeURIComponent(window.location.href)
+        )
+      } else {
+        this.$iosBridge && this.$iosBridge.callHandler('startLogin')
+      }
+    },
     showRule() {
       this.mSendEvLog('rulesbtn_click', '', '1')
       this.show_rules = true
@@ -305,6 +337,16 @@ export default {
     },
     showAward() {
       this.mSendEvLog('myprize_click', '', '1')
+      if (!this.isLogin) {
+        this.$refs.alert.show(
+          'Login to win prize now.',
+          () => {
+            this.toSignIn()
+          },
+          'SIGN IN'
+        )
+        return
+      }
       this.getAwardsList()
       this.show_awards = true
       document.body.style.overflow = 'hidden'
@@ -482,16 +524,18 @@ export default {
       })
     },
     getAwardsList() {
-      this.$axios.get(`/voting/lottery/v1/user/winnings?lottery_id=${this.lottery_id}&user_id=${this.$user.id}`).then(res => {
-        if (res.data.code === 0) {
-          this.awardsList = res.data.data
-          console.log(this.awardsList)
-        }else {
-          this.$refs.alert.show('Get Prize List Error! '+res.data.message)
-        }
-      }).catch(err=>{
-        this.$refs.alert.show('Get Prize List Error!! ' + err)
-      })
+      this.$axios
+        .get(`/voting/lottery/v1/user/winnings?lottery_id=${this.lottery_id}&user_id=${this.$user.id}`)
+        .then(res => {
+          if (res.data.code === 0) {
+            this.awardsList = res.data.data
+          } else {
+            this.$refs.alert.show('Get Prize List Error! ' + res.data.message)
+          }
+        })
+        .catch(err => {
+          this.$refs.alert.show('Get Prize List Error!! ' + err)
+        })
     }
   }
 }
@@ -535,7 +579,7 @@ export default {
   > img {
     display: block;
     margin: 0 auto;
-    padding: 1rem 0 ;
+    padding: 1rem 0;
     width: 90%;
   }
   .lottery-type {
@@ -720,6 +764,14 @@ export default {
           color: #4f3b16;
         }
       }
+    }
+    .noaward {
+      width: 100%;
+      height: 11.5rem;
+      line-height: 1.5rem;
+      font-size: 1rem;
+      color: #666;
+      padding: 1rem;
     }
   }
 }
