@@ -433,10 +433,6 @@ img {
   }
 }
 
-.fade-enter,
-.fade-leave-to {
-  opacity: 0;
-}
 .fade-enter {
   transform: translateY(100%);
 }
