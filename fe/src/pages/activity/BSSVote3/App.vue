@@ -79,7 +79,7 @@
       </div>
       <div v-else class="page-barrage">
         <div class="topic">
-          <img class="title" :src="topic + '?w=350'" alt />
+          <img class="title" :src="topic" alt />
           <div class="pick-box">
             <div class="left">
               <div>
