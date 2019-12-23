@@ -16,6 +16,7 @@
           <lottery
             ref="lottery"
             :id="lottery_id"
+            :voteId="vote_id"
             :defaultPrizeIndex="4"
             :withMsgList="showMsg"
             :btnGray="lotteryBtnGray"
