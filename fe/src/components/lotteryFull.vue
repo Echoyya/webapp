@@ -43,6 +43,11 @@ export default {
       type: Number,
       default: 1
     },
+    voteId: {
+      required: true,
+      type: Number,
+      default: 1
+    },
     defaultPrizeIndex: {
       required: true,
       type: Number,
@@ -208,10 +213,11 @@ export default {
           'content-type': 'application/x-www-form-urlencoded'
         },
         data: qs.stringify({
-          lottery_id: this.id
+          lottery_id: this.id,
+          vote_id: this.voteId
         }),
         timeout: 6000,
-        url: '/voting/lottery/v1/drawing'
+        url: '/voting/v1/lottery/drawing'
       })
         .then(res => {
           if (res.data.code == 0) {
