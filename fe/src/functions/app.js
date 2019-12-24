@@ -150,12 +150,13 @@ export const downApk = function(callback) {
     this.$refs.loading.finish()
     window.location.href = appleStore
   } else {
-    axios.get('http://upms.startimestv.com/cms/public/app').then(data => {
-      this.$refs.loading.finish()
-      const url = data.data.apkUrl
-      const direct = url.indexOf('google') > 0 ? url.replace('google', 'officialWap') : url
-      window.location.href = direct
-    })
+    window.location.href = 'http://cdn.startimestv.com/dl/ol/StarTimesON-production-officialWap-5.19-develop-27362.apk'
+    // axios.get('http://upms.startimestv.com/cms/public/app').then(data => {
+    //   this.$refs.loading.finish()
+    //   const url = data.data.apkUrl
+    //   const direct = url.indexOf('google') > 0 ? url.replace('google', 'officialWap') : url
+    //   window.location.href = direct
+    // })
   }
   callback && callback()
 }
