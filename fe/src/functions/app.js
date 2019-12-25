@@ -1,4 +1,4 @@
-import axios from 'axios'
+// import axios from 'axios'
 import qs from 'qs'
 import { getBrowser, getCookie, setCookie } from '@/functions/utils'
 import env from '@/functions/config'
