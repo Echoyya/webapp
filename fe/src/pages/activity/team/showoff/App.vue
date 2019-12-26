@@ -81,7 +81,7 @@ export default {
         `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?activity=${this.activity_id}`,
         () => {
           callMarket.call(this, () => {
-             this.$refs.loading.finish()
+            this.$refs.loading.finish()
             this.$refs.confirm.show(
               this.$t('vote.team.download_tip'),
               () => {
