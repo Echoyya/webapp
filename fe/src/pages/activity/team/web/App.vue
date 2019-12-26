@@ -1,7 +1,11 @@
 <template>
   <div class="wrapper">
     <mBanner />
-    <div v-if="mumberList.length<3" class="text text0" v-html="$t('vote.team.invite_tip',[leader_name])"></div>
+    <div
+      v-if="mumberList.length<3"
+      class="text text0"
+      v-html="$t('vote.team.invite_tip',[leader_name])"
+    ></div>
     <div v-else class="text text1">{{$t('vote.team.full_team')}}</div>
     <div class="invite">
       <div v-show="mumberList.length>0" class="team clearfix">
@@ -178,13 +182,16 @@ export default {
       }
 
       const loadURl = window.location.origin + '/activity/team/home.html?activity=' + this.activity_id + url
+      this.$refs.loading.start()
       callApp.call(this, `com.star.mobile.video.activity.BrowserActivity?loadUrl=${encodeURIComponent(loadURl)}`, () => {
         callMarket.call(this, () => {
           this.mSendEvLog('downloadpopup_show', val, '1')
+          this.$refs.loading.finish()
           this.$refs.confirm.show(
             this.$t('vote.team.download_tip'),
             () => {
               this.mSendEvLog('downloadpopup_clickok', val, '1')
+              this.$refs.loading.start()
               downApk.call(this)
             },
             () => {

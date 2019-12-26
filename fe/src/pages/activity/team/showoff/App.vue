@@ -75,14 +75,17 @@ export default {
       window.location.href = `/activity/team/home.html?activity=${this.activity_id}`
     },
     callOrDownApp() {
+      this.$refs.loading.start()
       callApp.call(
         this,
         `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?activity=${this.activity_id}`,
         () => {
           callMarket.call(this, () => {
+             this.$refs.loading.finish()
             this.$refs.confirm.show(
               this.$t('vote.team.download_tip'),
               () => {
+                this.$refs.loading.start()
                 downApk.call(this)
               },
               () => {},

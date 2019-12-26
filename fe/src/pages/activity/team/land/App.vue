@@ -42,6 +42,7 @@ export default {
     },
     down() {
       this.mSendEvLog('callApp', 'landingpage', '1')
+      this.$refs.loading.start()
       callApp.call(
         this,
         `com.star.mobile.video.activity.BrowserActivity?loadUrl=${window.location.origin}/activity/team/home.html?activity=${this.activity_id}`,
