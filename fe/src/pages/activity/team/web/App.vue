@@ -84,6 +84,7 @@
     <confirm-dialog ref="confirm" />
     <toast-dialog ref="toast" />
     <malert ref="malert" />
+    <loading ref="loading" />
   </div>
 </template>
 <script>
@@ -95,11 +96,13 @@ import confirmDialog from '@/components/confirm'
 import malert from '@/pages/activity/team/malert'
 import ClipboardJS from 'clipboard'
 import toastDialog from '@/components/toast'
+import loading from '@/components/loading'
 export default {
   components: {
     mBanner,
     confirmDialog,
     toastDialog,
+    loading,
     malert
   },
   data() {
