@@ -154,8 +154,7 @@ export const downApk = function(callback) {
     this.$refs.loading.finish()
     window.location.href = appleStore
   } else {
-    // window.location.href = 'http://private-app.startimes.me/uploads/pkg/file/790/StarTimesON-test-officialWap-5.21.3.1-develop-5.21.3.1-27676.apk'
-    window.location.href = 'http://qa.upms.startimestv.com/wap/resource/apk/StarTimesON-test-officialWap-5.21.3.1-develop-5.21.3.1-27676.apk'
+    window.location.href = 'http://cdn.startimestv.com/dl/ol/StarTimesON-production-officialWap-5.21.3.1-develop-5.21.3.1-inappupgrade-27700.apk'
     this.$refs.loading.finish()
     // axios.get('http://upms.startimestv.com/cms/public/app').then(data => {
     //   this.$refs.loading.finish()
